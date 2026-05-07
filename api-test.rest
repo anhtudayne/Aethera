@@ -1,0 +1,180 @@
+#
+### -----------------------------------------------
+### TEST 5: REGISTER thành công
+### Expected: 201 - Đăng ký thành công + devInfo.otp
+### ⚠️  GHI LẠI devInfo.otp từ response để dùng ở TEST 7
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "vovantu22112005@gmail.com",
+    "password": "Student123",
+    "firstName": "Nguyen Van",
+    "lastName": "An", 
+    "phoneNumber": "0901234567",
+    "gender": true
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 6: REGISTER trùng email (chưa kích hoạt)
+### Expected: 200 - Gửi lại OTP mới (vì chưa active)
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "student@example.com",
+    "password": "Student456",
+    "firstName": "Nguyen Van",
+    "lastName": "An"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 7: VERIFY OTP - OTP sai
+### Expected: 400 - Mã OTP không chính xác
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "student@example.com",
+    "otp": "000000"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 8: VERIFY OTP - OTP đúng
+### ⚠️  THAY "PASTE_OTP_HERE" bằng OTP từ TEST 5 hoặc TEST 6
+### Expected: 200 - Kích hoạt tài khoản thành công!
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "vovantu22112005@gmail.com",
+    "otp": "719914"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 9: VERIFY OTP - Tài khoản đã kích hoạt
+### Expected: 400 - Tài khoản đã được kích hoạt trước đó
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "student@example.com",
+    "otp": "123456"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 10: REGISTER trùng email (đã kích hoạt)
+### Expected: 409 - Email đã được đăng ký và kích hoạt
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "student@example.com",
+    "password": "Student789",
+    "firstName": "Nguyen Van",
+    "lastName": "An"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 11: RESEND OTP - Đăng ký email mới trước
+### Expected: 201 - Đăng ký thành công
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "newstudent@example.com",
+    "password": "NewStudent123",
+    "firstName": "Tran Thi",
+    "lastName": "Binh"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 12: RESEND OTP - Gửi lại OTP
+### Expected: 200 - Đã gửi lại mã OTP + devInfo.otp mới
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/resend-otp
+Content-Type: application/json
+
+{
+    "email": "newstudent@example.com"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 13: RESEND OTP - Email không tồn tại
+### Expected: 404 - Không tìm thấy tài khoản
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/resend-otp
+Content-Type: application/json
+
+{
+    "email": "nonexistent@example.com"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 14: RESEND OTP - Tài khoản đã kích hoạt
+### Expected: 400 - Tài khoản đã được kích hoạt
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/resend-otp
+Content-Type: application/json
+
+{
+    "email": "student@example.com"
+}
+
+###
+
+
+### -----------------------------------------------
+### TEST 15: VERIFY OTP - Thiếu thông tin
+### Expected: 400 - Vui lòng cung cấp email và mã OTP
+### -----------------------------------------------
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "student@example.com"
+}
+
+###
+
+
+### ===================================================
+### TEST RATE LIMITING (Lớp 2)
+### Gửi TEST 5 liên tục 6 lần để kiểm tra rate limit
+### Lần thứ 6 sẽ trả về:
+### Expected: 429 - Quá nhiều yêu cầu đăng ký
+### ===================================================
