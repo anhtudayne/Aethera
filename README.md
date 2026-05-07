@@ -1,5 +1,12 @@
 # E-Learning API Platform (Bài Tập 02)
 
+### 👥 Nhóm thực hiện:
+| MSSV | Họ và Tên |
+|------|-----------|
+| 23110285 | NGUYỄN THUẬN PHÚ |
+| 23110296 | VŨ ANH QUỐC |
+| 23110359 | VÕ VĂN TÚ |
+
 Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật API và kiến trúc mã nguồn chuẩn.
 
 ## 🚀 Tính năng nổi bật (Chức năng 1)
@@ -10,6 +17,14 @@ Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật A
   - **Lớp 1 (Input Validation)**: Kiểm tra dữ liệu đầu vào bằng `express-validator`.
   - **Lớp 2 (Rate Limiting)**: Giới hạn số lần đăng ký/gửi lại OTP để chống Brute-force & DDoS.
 - **Kiến trúc 3 tầng (3-Layer Architecture)**: Presentation (Controller) -> Business Logic (Service) -> Data Access (Model).
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description | Auth/Security | Người thực hiện |
+|--------|----------|-------------|---------------|-----------------|
+| `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation | Võ Văn Tú |
+| `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - | Võ Văn Tú |
+| `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit | Võ Văn Tú |
 
 ## 🛠 Công nghệ sử dụng
 
@@ -70,17 +85,8 @@ npx sequelize-cli db:migrate
 npm start
 ```
 
-## 📡 API Endpoints
-
-| Method | Endpoint | Description | Auth/Security |
-|--------|----------|-------------|---------------|
-| `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation |
-| `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - |
-| `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit |
-
 ## 🧪 Testing
 
 - Bạn có thể dùng **Postman** hoặc **REST Client (VS Code)**.
 
 ---
-
