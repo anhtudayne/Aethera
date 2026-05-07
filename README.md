@@ -20,11 +20,11 @@ Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật A
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description | Auth/Security | Người thực hiện |
-|--------|----------|-------------|---------------|-----------------|
-| `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation | Võ Văn Tú |
-| `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - | Võ Văn Tú |
-| `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit | Võ Văn Tú |
+| Method | Endpoint | Description | Auth/Security |
+|--------|----------|-------------|---------------|
+| `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation |
+| `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - |
+| `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit |
 
 ## 🛠 Công nghệ sử dụng
 
