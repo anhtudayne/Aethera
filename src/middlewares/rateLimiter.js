@@ -23,3 +23,15 @@ export const resendOtpLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+
+// Rate Limiter for Update Profile
+export const updateProfileLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 10, 
+    message: {
+        status: 429,
+        message: 'Quá nhiều yêu cầu cập nhật hồ sơ từ IP này. Vui lòng thử lại sau 15 phút.',
+    },
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});

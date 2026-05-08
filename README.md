@@ -9,13 +9,16 @@
 
 Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật API và kiến trúc mã nguồn chuẩn.
 
-## 🚀 Tính năng nổi bật (Chức năng 1)
+## 🚀 Tính năng nổi bật (Chức năng 1 & 2)
 
 - **Đăng ký tài khoản**: Hỗ trợ đăng ký người dùng mới.
 - **Xác thực OTP qua Email**: Tự động gửi mã OTP 6 số để kích hoạt tài khoản.
 - **Bảo mật đa lớp**:
   - **Lớp 1 (Input Validation)**: Kiểm tra dữ liệu đầu vào bằng `express-validator`.
   - **Lớp 2 (Rate Limiting)**: Giới hạn số lần đăng ký/gửi lại OTP để chống Brute-force & DDoS.
+  - **Chỉnh sửa hồ sơ cá nhân**: Cập nhật thông tin với Whitelist để bảo vệ dữ liệu nhạy cảm.
+  - **Lớp 1 (Rate Limiting)**: Chống Spam & Brute-force bằng `express-rate-limit`.
+  - **Lớp 2 (Input Validation)**: Làm sạch và kiểm tra tính hợp lệ của dữ liệu (chuẩn Regex) bằng `express-validator`.
 - **Kiến trúc 3 tầng (3-Layer Architecture)**: Presentation (Controller) -> Business Logic (Service) -> Data Access (Model).
 
 ## 📡 API Endpoints
@@ -25,6 +28,7 @@ Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật A
 | `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation |
 | `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - |
 | `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit |
+| `PUT`  | `/api/user/profile`  | Cập nhật hồ sơ cá nhân | 4 Lớp Bảo Mật |
 
 ## 🛠 Công nghệ sử dụng
 

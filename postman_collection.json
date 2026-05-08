@@ -160,6 +160,228 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "User - Profile",
+			"item": [
+				{
+					"name": "Update Profile - Success (Full Data)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Nguyen\",\n    \"lastName\": \"Phu\",\n    \"phoneNumber\": \"0912345678\",\n    \"address\": \"TP. Ho Chi Minh\",\n    \"gender\": true,\n    \"image\": \"avatar_updated.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Cập nhật đầy đủ các trường thông tin hợp lệ."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Success (Partial Update)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"Ha Noi - Da Nang\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Chỉ cập nhật duy nhất trường địa chỉ. Các trường khác giữ nguyên."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Error: Name Too Short (Lớp 4)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"A\",\n    \"lastName\": \"B\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Test Lớp 4: Tên và Họ phải có ít nhất 2 ký tự."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Error: Invalid Phone Regex (Lớp 4)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phoneNumber\": \"1234567890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Test Lớp 4: Số điện thoại phải đúng chuẩn đầu số Việt Nam."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Error: Duplicate Phone",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phoneNumber\": \"0987654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Không cho phép cập nhật số điện thoại đã có người khác dùng."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Security: Whitelist Check",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Hacker\",\n    \"roleId\": \"admin\",\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Test Whitelist: Cố tình thay đổi roleId và trạng thái kích hoạt. Kết quả: firstName thay đổi nhưng roleId và isActive KHÔNG được đổi."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Rate Limit (Lớp 1)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Spam\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						},
+						"description": "Bấm Send liên tục hơn 10 lần trong 15 phút sẽ nhận được lỗi 429 Too Many Requests."
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

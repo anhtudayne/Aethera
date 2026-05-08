@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/configdb';
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 import errorHandler from './middlewares/errorHandler';
 
 require('dotenv').config();
@@ -31,7 +32,7 @@ app.use('/api/auth', authRoutes);
 // Placeholder for other functions
 // app.use('/api/auth', loginRoutes);
 // app.use('/api/auth', passwordRoutes);
-// app.use('/api/user', userRoutes);
+app.use('/api/user', userRoutes);
 // app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);
