@@ -9,7 +9,7 @@ import { handleValidationErrors } from '../middlewares/validators/authValidator'
 const router = express.Router();
 
 // Lớp 1: updateProfileLimiter (Rate Limit)
-// Lớp 2: verifyToken (Mock Auth)
+// Lớp 2: verifyToken (Mock Auth -> Real JWT Auth)
 // Lớp 3: authorizeRole (Authorization)
 // Lớp 4: updateProfileValidation & handleValidationErrors (Input Validation)
 router.put(
@@ -20,6 +20,19 @@ router.put(
     updateProfileValidation,
     handleValidationErrors,
     updateProfile
+);
+
+router.get(
+    '/profile',
+    verifyToken,
+    authorizeRole('user'),
+    (req, res) => {
+        return res.status(200).json({
+            status: 200,
+            message: 'Thông tin hồ sơ người dùng',
+            user: req.user
+        });
+    }
 );
 
 export default router;

@@ -32,6 +32,42 @@ export const registerValidation = [
         .isBoolean().withMessage('Giới tính phải là true hoặc false'),
 ];
 
+// Validation rules for Login
+export const loginValidation = [
+    body('email')
+        .notEmpty().withMessage('Email không được để trống')
+        .isEmail().withMessage('Email không hợp lệ')
+        .normalizeEmail(),
+
+    body('password')
+        .notEmpty().withMessage('Mật khẩu không được để trống'),
+];
+
+// Validation rules for Forgot Password
+export const forgotPasswordValidation = [
+    body('email')
+        .notEmpty().withMessage('Email không được để trống')
+        .isEmail().withMessage('Email không hợp lệ')
+        .normalizeEmail(),
+];
+
+// Validation rules for Reset Password
+export const resetPasswordValidation = [
+    body('email')
+        .notEmpty().withMessage('Email không được để trống')
+        .isEmail().withMessage('Email không hợp lệ')
+        .normalizeEmail(),
+        
+    body('otp')
+        .notEmpty().withMessage('Mã OTP không được để trống'),
+
+    body('newPassword')
+        .notEmpty().withMessage('Mật khẩu mới không được để trống')
+        .isLength({ min: 6 }).withMessage('Mật khẩu mới phải có ít nhất 6 ký tự')
+        .matches(/\d/).withMessage('Mật khẩu mới phải chứa ít nhất 1 chữ số')
+        .matches(/[a-zA-Z]/).withMessage('Mật khẩu mới phải chứa ít nhất 1 chữ cái'),
+];
+
 // Handle validation results
 export const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);

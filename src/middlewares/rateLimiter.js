@@ -35,3 +35,27 @@ export const updateProfileLimiter = rateLimit({
     standardHeaders: true, 
     legacyHeaders: false, 
 });
+
+// Rate Limiter for Login
+export const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 5, 
+    message: {
+        status: 429,
+        message: 'Quá nhiều yêu cầu đăng nhập từ IP này. Vui lòng thử lại sau 15 phút.',
+    },
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});
+
+// Rate Limiter for Forgot Password
+export const forgotPasswordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 3, 
+    message: {
+        status: 429,
+        message: 'Quá nhiều yêu cầu quên mật khẩu. Vui lòng thử lại sau 15 phút.',
+    },
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});

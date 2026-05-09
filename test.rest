@@ -1,0 +1,16 @@
+POST http://localhost:8089/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "vuanhquoc0397144200@gmail.comcom",
+    "password": "quoccute123456"
+}
+
+###
+POST http://localhost:8089/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "vuanhquoc0397144200@gmail.com",
+    "password": "q123456"
+}

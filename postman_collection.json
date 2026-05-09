@@ -162,8 +162,135 @@
 			]
 		},
 		{
+			"name": "Auth - Login",
+			"item": [
+				{
+					"name": "Login - Success",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"password\": \"Student123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth - Password",
+			"item": [
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/auth/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewPassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8089/api/auth/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "User - Profile",
 			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8089/api/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Update Profile - Success (Full Data)",
 					"request": {
@@ -378,6 +505,38 @@
 							]
 						},
 						"description": "Bấm Send liên tục hơn 10 lần trong 15 phút sẽ nhận được lỗi 429 Too Many Requests."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Profile",
+			"item": [
+				{
+					"name": "Get Admin Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_ADMIN_JWT_TOKEN",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8089/api/admin/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8089",
+							"path": [
+								"api",
+								"admin",
+								"profile"
+							]
+						}
 					},
 					"response": []
 				}

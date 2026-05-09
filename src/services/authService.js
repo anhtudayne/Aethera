@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import db from '../models/index';
 import { generateOTP, getOTPExpireTime } from '../utils/otpHelper';
 import { sendOTPEmail } from './emailService';
+import { generateToken } from '../utils/jwtHelper';
 
 const User = db.User;
 const salt = bcrypt.genSaltSync(10);
@@ -116,7 +117,7 @@ export const verifyOTP = async (email, otp) => {
             return { status: 400, message: 'Tài khoản đã được kích hoạt trước đó.' };
         }
 
-        if (user.otp !== otp) {
+        if (String(user.otp) !== String(otp)) {
             return { status: 400, message: 'Mã OTP không chính xác. Vui lòng kiểm tra lại.' };
         }
 
@@ -179,6 +180,128 @@ export const resendOTP = async (email) => {
         return response;
     } catch (error) {
         console.error('Lỗi gửi lại OTP:', error);
+        throw error;
+    }
+};
+
+// Login user
+export const loginUser = async (email, password) => {
+    try {
+        const user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            return { status: 404, message: 'Email hoặc mật khẩu không chính xác.' };
+        }
+
+        if (!user.isActive) {
+            return { status: 403, message: 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP.' };
+        }
+
+        const isMatch = bcrypt.compareSync(password, user.password);
+        if (!isMatch) {
+            return { status: 401, message: 'Email hoặc mật khẩu không chính xác.' };
+        }
+
+        const token = generateToken({ id: user.id, role: user.roleId, email: user.email });
+        
+        let redirectUrl = '/user/profile';
+        if (user.roleId === 'admin') {
+            redirectUrl = '/admin/profile';
+        }
+
+        return {
+            status: 200,
+            message: 'Đăng nhập thành công',
+            data: {
+                token,
+                redirectUrl,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    role: user.roleId
+                }
+            }
+        };
+    } catch (error) {
+        console.error('Lỗi đăng nhập:', error);
+        throw error;
+    }
+};
+
+// Forgot Password
+export const forgotPassword = async (email) => {
+    try {
+        const user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            return { status: 404, message: 'Không tìm thấy tài khoản với email này.' };
+        }
+
+        if (!user.isActive) {
+            return { status: 403, message: 'Tài khoản chưa được kích hoạt.' };
+        }
+
+        const otpCode = generateOTP();
+        const otpExpires = getOTPExpireTime();
+
+        await user.update({
+            otp: otpCode,
+            otpExpires: otpExpires,
+        });
+
+        let emailSent = true;
+        try {
+            await sendOTPEmail(email, otpCode, user.firstName);
+        } catch (emailError) {
+            console.error('Không thể gửi email OTP:', emailError.message);
+            emailSent = false;
+        }
+
+        const response = {
+            status: 200,
+            message: emailSent
+                ? 'Đã gửi mã OTP đặt lại mật khẩu. Vui lòng kiểm tra email của bạn.'
+                : 'Đã tạo OTP. Tuy nhiên không thể gửi email.',
+            emailSent: emailSent,
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+            response.devInfo = { otp: otpCode, otpExpires: otpExpires };
+        }
+        return response;
+    } catch (error) {
+        console.error('Lỗi quên mật khẩu:', error);
+        throw error;
+    }
+};
+
+// Reset Password
+export const resetPassword = async (email, otp, newPassword) => {
+    try {
+        const user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            return { status: 404, message: 'Không tìm thấy tài khoản với email này.' };
+        }
+
+        if (String(user.otp) !== String(otp)) {
+            return { status: 400, message: 'Mã OTP không chính xác. Vui lòng kiểm tra lại.' };
+        }
+
+        if (new Date() > new Date(user.otpExpires)) {
+            return { status: 400, message: 'Mã OTP đã hết hạn. Vui lòng yêu cầu gửi lại OTP mới.' };
+        }
+
+        const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+        await user.update({
+            password: hashedPassword,
+            otp: null,
+            otpExpires: null,
+        });
+
+        return { status: 200, message: 'Đặt lại mật khẩu thành công!' };
+    } catch (error) {
+        console.error('Lỗi đặt lại mật khẩu:', error);
         throw error;
     }
 };

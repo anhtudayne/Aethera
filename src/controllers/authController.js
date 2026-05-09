@@ -1,4 +1,4 @@
-import { registerUser, verifyOTP, resendOTP } from '../services/authService';
+import { registerUser, verifyOTP, resendOTP, loginUser, forgotPassword, resetPassword } from '../services/authService';
 
 // Register new account
 export const handleRegister = async (req, res) => {
@@ -49,6 +49,69 @@ export const handleResendOTP = async (req, res) => {
         return res.status(result.status).json(result);
     } catch (error) {
         console.error('Controller - Lỗi gửi lại OTP:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Lỗi server. Vui lòng thử lại sau.',
+        });
+    }
+};
+
+// Login user
+export const handleLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Vui lòng cung cấp email và mật khẩu.',
+            });
+        }
+        const result = await loginUser(email, password);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi đăng nhập:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Lỗi server. Vui lòng thử lại sau.',
+        });
+    }
+};
+
+// Forgot Password
+export const handleForgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Vui lòng cung cấp email.',
+            });
+        }
+        const result = await forgotPassword(email);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi quên mật khẩu:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Lỗi server. Vui lòng thử lại sau.',
+        });
+    }
+};
+
+// Reset Password
+export const handleResetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Vui lòng cung cấp đầy đủ email, mã OTP và mật khẩu mới.',
+            });
+        }
+        const result = await resetPassword(email, otp, newPassword);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi đặt lại mật khẩu:', error);
         return res.status(500).json({
             status: 500,
             message: 'Lỗi server. Vui lòng thử lại sau.',

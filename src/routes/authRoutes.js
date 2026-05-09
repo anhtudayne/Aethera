@@ -1,7 +1,7 @@
 import express from 'express';
-import { handleRegister, handleVerifyOTP, handleResendOTP } from '../controllers/authController';
-import { registerLimiter, resendOtpLimiter } from '../middlewares/rateLimiter';
-import { registerValidation, handleValidationErrors } from '../middlewares/validators/authValidator';
+import { handleRegister, handleVerifyOTP, handleResendOTP, handleLogin, handleForgotPassword, handleResetPassword } from '../controllers/authController';
+import { registerLimiter, resendOtpLimiter, loginLimiter, forgotPasswordLimiter } from '../middlewares/rateLimiter';
+import { registerValidation, handleValidationErrors, loginValidation, forgotPasswordValidation, resetPasswordValidation } from '../middlewares/validators/authValidator';
 
 let router = express.Router();
 
@@ -22,6 +22,32 @@ router.post(
     '/resend-otp',
     resendOtpLimiter,
     handleResendOTP
+);
+
+// Login route with rate limit and validation
+router.post(
+    '/login',
+    loginLimiter,
+    loginValidation,
+    handleValidationErrors,
+    handleLogin
+);
+
+// Forgot Password route with rate limit and validation
+router.post(
+    '/forgot-password',
+    forgotPasswordLimiter,
+    forgotPasswordValidation,
+    handleValidationErrors,
+    handleForgotPassword
+);
+
+// Reset Password route with validation
+router.post(
+    '/reset-password',
+    resetPasswordValidation,
+    handleValidationErrors,
+    handleResetPassword
 );
 
 export default router;
