@@ -2,6 +2,21 @@ import db from '../models/index';
 
 const User = db.User;
 
+export const getUserProfile = async (userId) => {
+    try {
+        const user = await User.findByPk(userId, {
+            attributes: { exclude: ['password', 'otp', 'otpExpires'] },
+        });
+        if (!user) {
+            return { status: 404, message: 'Không tìm thấy người dùng.' };
+        }
+        return { status: 200, data: user };
+    } catch (error) {
+        console.error('Lỗi lấy hồ sơ:', error);
+        throw error;
+    }
+};
+
 export const updateUserProfile = async (userId, data) => {
     try {
         const user = await User.findByPk(userId);

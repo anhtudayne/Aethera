@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile - UserAdmin</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary-container": "#57657b",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#45464d",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d5e3fd",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#3a485c",
+                        "on-secondary-fixed": "#0d1c2f",
+                        "on-tertiary-container": "#98805d",
+                        "outline": "#76777d",
+                        "secondary-fixed-dim": "#b9c7e0",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea",
+                        "on-background": "#191c1e",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#7c839b",
+                        "inverse-primary": "#bec6e0",
+                        "tertiary": "#000000",
+                        "secondary-fixed": "#d5e3fd",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-dim": "#d8dadc",
+                        "on-surface": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#271901",
+                        "primary-fixed-dim": "#bec6e0",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#fcdeb5",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary-container": "#271901",
+                        "surface": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "inverse-surface": "#2d3133",
+                        "secondary": "#515f74",
+                        "background": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "primary-container": "#131b2e",
+                        "inverse-on-surface": "#eff1f3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "0.5rem",
+                        "gutter": "24px",
+                        "md": "1rem",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "xs": "0.25rem",
+                        "lg": "1.5rem",
+                        "xl": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "title-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "display-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Spinner for Loading Button */
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #ffffff;
+            width: 16px;
+            height: 16px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-sm text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest border-b border-outline-variant shadow-sm w-full sticky top-0 z-50">
+<div class="flex justify-between items-center h-16 px-gutter w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-md">
+<span class="font-display-lg text-display-lg text-primary">UserAdmin</span>
+</div>
+<nav class="hidden md:flex gap-lg h-full">
+<a class="flex items-center h-full px-sm font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Dashboard</a>
+<a class="flex items-center h-full px-sm font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Users</a>
+<a class="flex items-center h-full px-sm font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1 cursor-pointer" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="ml-sm w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident individual in a corporate setting. The lighting is soft and flattering, typical of high-end corporate photography. The individual is wearing a modern, tailored suit against a blurred, bright office background. The overall mood is approachable yet authoritative, fitting perfectly within a clean, minimalist UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkjo57NJy57Geh6PhJp4JvGGKKDtyu2IX7r1vMAau2q9RsYoOmEzVkYxshhOvwzNwo8J6MIOMms1WHX_f-fOM4ISnUDXcQNJMDrydrEkS2m4PXOoOor_9pauNelfgjwxL-ZlTzfIQoX5MQw68Xy3pnAq5nq6DlTPbHRW540ACpadnB2IPZ9DVe_5PfuRCnnNQt1s-1531TFIVpuXx-q7EbQFZzlkJbB2Gv3lQlLZ1bKpBPIos545gRTDwXe_FkPkk8ivhogPhusw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex max-w-container-max mx-auto">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col gap-sm p-md w-64 bg-surface-container-low h-[calc(100vh-64px)] sticky top-16 border-r border-outline-variant">
+<div class="mb-md pb-md border-b border-outline-variant">
+<h2 class="font-title-sm text-title-sm font-bold text-on-surface">Management</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System Admin</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container-high transition-all scale-95 active:scale-90 duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Overview
+                </a>
+<a class="flex items-center gap-md px-md py-sm font-label-caps text-label-caps bg-secondary-container text-on-secondary-container rounded-xl transition-all scale-95 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                    Profile
+                </a>
+
+<a class="flex items-center gap-md px-md py-sm font-label-caps text-label-caps text-error hover:bg-error-container transition-all scale-95 active:scale-90 duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Logout
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-gutter max-w-4xl">
+<div class="mb-xl">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xs">Edit Profile</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your personal information and contact details.</p>
+</div>
+<!-- Bento Grid / Asymmetric Layout for Edit Profile -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Avatar Section (4 cols) -->
+<div class="lg:col-span-4 flex flex-col items-center p-xl bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(15,23,42,0.05)] border border-outline-variant h-fit">
+<div class="relative group cursor-pointer mb-lg">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container bg-surface-container-low">
+<img alt="Current Avatar" class="w-full h-full object-cover group-hover:opacity-75 transition-opacity" data-alt="A professional headshot of a confident individual in a corporate setting. The lighting is soft and flattering, typical of high-end corporate photography. The individual is wearing a modern, tailored suit against a blurred, bright office background. The overall mood is approachable yet authoritative, fitting perfectly within a clean, minimalist UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKpzZNaITytRFyq1U1RoCLoxYekbNpl3Vsk7g9Z2sRFOFcJ98xaaDBTB64JW4mAs0RLLfEQc68WhjYbpjT0ZtVYq75aQ9_dOGqwsIt_BqUXw9lOOUVokgvVJ-eWJutsrjfjhjOOGox4qTbYbHjJyTZEIZ00HIxJ_21wHhLlRyfbmWZctVz_fL_JXUxhX_THS74cjDy9CefBz3GgpAyx3EyXaduBci-8a7HnNKQhH5OKxRKEpWOAf2nk5GC_3OEhDHwtTAdiiEFTA"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/30 rounded-full">
+<span class="material-symbols-outlined text-on-primary" data-icon="photo_camera">photo_camera</span>
+</div>
+</div>
+<button class="px-md py-sm border border-outline-variant rounded-lg font-label-caps text-label-caps text-primary hover:bg-surface-container-low transition-colors w-full flex justify-center items-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="upload">upload</span>
+                        Thay đổi ảnh
+                    </button>
+<p class="mt-sm font-body-sm text-body-sm text-on-surface-variant text-center text-xs">
+                        Định dạng: JPG, PNG hoặc GIF.<br/>Dung lượng tối đa 2MB.
+                    </p>
+</div>
+<!-- Right Column: Form Section (8 cols) -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(15,23,42,0.05)] border border-outline-variant p-xl">
+<form action="#" class="flex flex-col gap-lg" method="POST">
+<!-- Row 1: First Name & Last Name -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface" for="firstName">Họ</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow placeholder:text-outline-variant" id="firstName" name="firstName" type="text" value="Nguyễn"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface" for="lastName">Tên</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow placeholder:text-outline-variant" id="lastName" name="lastName" type="text" value="Văn A"/>
+</div>
+</div>
+<!-- Row 2: Email (Read-only) -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface" for="email">Email</label>
+<input class="w-full px-md py-sm bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface-variant cursor-not-allowed" disabled="" id="email" name="email" readonly="" type="email" value="nguyenvana@corporate.com"/>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] mt-1">Email được liên kết với tài khoản hệ thống và không thể thay đổi.</p>
+</div>
+<!-- Row 3: Phone & Address -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface" for="phone">Số điện thoại</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-error rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-error focus:ring-1 focus:ring-error transition-shadow" id="phone" name="phone" type="tel" value="098765432"/>
+<!-- Validation Error Message -->
+<div class="flex items-center gap-1 mt-1 text-error">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+<span class="font-body-sm text-body-sm text-[12px]">Số điện thoại không hợp lệ</span>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface" for="address">Địa chỉ</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow placeholder:text-outline-variant" id="address" name="address" placeholder="Nhập địa chỉ của bạn" type="text"/>
+</div>
+</div>
+<!-- Row 4: Gender (Radio Buttons) -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-caps text-label-caps text-on-surface">Giới tính</label>
+<div class="flex items-center gap-lg">
+<label class="flex items-center gap-sm cursor-pointer">
+<input checked="" class="w-4 h-4 text-primary bg-surface-container-lowest border-outline-variant focus:ring-primary focus:ring-2" name="gender" type="radio" value="male"/>
+<span class="font-body-md text-body-md text-on-surface">Nam</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer">
+<input class="w-4 h-4 text-primary bg-surface-container-lowest border-outline-variant focus:ring-primary focus:ring-2" name="gender" type="radio" value="female"/>
+<span class="font-body-md text-body-md text-on-surface">Nữ</span>
+</label>
+</div>
+</div>
+<!-- Divider -->
+<hr class="border-outline-variant my-sm"/>
+<!-- Action Buttons -->
+<div class="flex justify-end items-center gap-md pt-sm">
+<button class="px-xl py-sm bg-surface-container-lowest border border-outline-variant text-on-surface font-label-caps text-label-caps rounded-lg hover:bg-surface-container-low transition-colors" type="button">
+                                Hủy
+                            </button>
+<!-- Primary Button in Loading State -->
+<button class="px-xl py-sm bg-primary text-on-primary font-label-caps text-label-caps rounded-lg flex items-center justify-center gap-sm opacity-90 cursor-wait w-[140px]" disabled="" type="button">
+<div class="spinner"></div>
+                                Cập nhật
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+<!-- Success Toast Notification (Simulating success after update) -->
+<div class="fixed bottom-lg right-lg z-50 flex items-center gap-md p-md bg-surface-container-lowest border-l-4 border-[#22c55e] shadow-[0px_10px_15px_-3px_rgba(15,23,42,0.1)] rounded-r-lg max-w-sm animate-fade-in-up">
+<div class="w-8 h-8 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-[#166534]">
+<span class="material-symbols-outlined text-[20px] fill-icon" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-sm text-title-sm text-on-surface text-[14px]">Thành công</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[13px]">Cập nhật thành công! Đang chuyển hướng về /user/profile...</span>
+</div>
+<button class="ml-auto text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</body></html>

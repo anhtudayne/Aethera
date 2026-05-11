@@ -9,6 +9,106 @@
   --color-success: #48bb78;
   --color-danger: #fc8181;
   --color-warning: #f6e05e;
+
+  /* Thêm các biến font mới cho Edit Profile */
+  --font-body-sm: 'Manrope', sans-serif;
+  --font-label-caps: 'Manrope', sans-serif;
+  --font-title-sm: 'Manrope', sans-serif;
+  --font-headline-md: 'Manrope', sans-serif;
+  --font-body-md: 'Manrope', sans-serif;
+  --font-display-lg: 'Manrope', sans-serif;
+
+  /* Các màu mới cho Edit Profile (không ghi đè primary/secondary của system) */
+  --color-surface-container-highest: #e0e3e5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container: #eceef0;
+  --color-surface: #f7f9fb;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #45464d;
+  --color-outline: #76777d;
+  --color-outline-variant: #c6c6cd;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-secondary-container: #d5e3fd;
+  --color-on-secondary-container: #57657b;
+  --color-on-primary: #ffffff;
+}
+
+@layer utilities {
+  .text-body-sm {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+
+  .text-label-caps {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+
+  .text-title-sm {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+
+  .text-headline-md {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  .text-body-md {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+  }
+
+  .text-display-lg {
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .font-body-sm {
+    font-family: var(--font-body-sm);
+  }
+
+  .font-label-caps {
+    font-family: var(--font-label-caps);
+  }
+
+  .font-title-sm {
+    font-family: var(--font-title-sm);
+  }
+
+  .font-headline-md {
+    font-family: var(--font-headline-md);
+  }
+
+  .font-body-md {
+    font-family: var(--font-body-md);
+  }
+
+  .font-display-lg {
+    font-family: var(--font-display-lg);
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  .fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
 }
 
 body {
@@ -19,28 +119,96 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
 }
 
 @keyframes pulse-border {
-  0%, 100% { border-color: var(--color-primary); }
-  50% { border-color: var(--color-accent); }
+
+  0%,
+  100% {
+    border-color: var(--color-primary);
+  }
+
+  50% {
+    border-color: var(--color-accent);
+  }
 }
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #ffffff;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
 }
 
 .animate-slide-in {

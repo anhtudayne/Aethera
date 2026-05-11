@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateProfile } from '../controllers/userController';
+import { updateProfile, getProfile } from '../controllers/userController';
 import { updateProfileLimiter } from '../middlewares/rateLimiter';
 import { verifyToken } from '../middlewares/authMiddleware';
 import { authorizeRole } from '../middlewares/authorizeMiddleware';
@@ -12,13 +12,7 @@ router.get(
     '/profile',
     verifyToken,
     authorizeRole('admin'),
-    (req, res) => {
-        return res.status(200).json({
-            status: 200,
-            message: 'Chào mừng Admin!',
-            user: req.user
-        });
-    }
+    getProfile
 );
 
 // Cho phép Admin tự sửa profile của mình

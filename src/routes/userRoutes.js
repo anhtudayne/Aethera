@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateProfile } from '../controllers/userController';
+import { updateProfile, getProfile } from '../controllers/userController';
 import { updateProfileLimiter } from '../middlewares/rateLimiter';
 import { verifyToken } from '../middlewares/authMiddleware';
 import { authorizeRole } from '../middlewares/authorizeMiddleware';
@@ -26,13 +26,7 @@ router.get(
     '/profile',
     verifyToken,
     authorizeRole('user'),
-    (req, res) => {
-        return res.status(200).json({
-            status: 200,
-            message: 'Thông tin hồ sơ người dùng',
-            user: req.user
-        });
-    }
+    getProfile
 );
 
 export default router;

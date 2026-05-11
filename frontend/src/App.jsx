@@ -5,6 +5,7 @@ import VerifyOtpPage from './pages/VerifyOtpPage';
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import EditProfilePage from './pages/EditProfilePage';
 
 export default function App() {
   return (
@@ -15,8 +16,8 @@ export default function App() {
 
       {/* Protected routes */}
       <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/user/profile" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/admin/profile" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+      <Route path="/user/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+      <Route path="/admin/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
       {/* Placeholder for other team members */}
       <Route path="/forgot-password" element={<div className="min-h-screen flex items-center justify-center text-gray-400">Trang Quên mật khẩu — sẽ do bạn khác implement</div>} />

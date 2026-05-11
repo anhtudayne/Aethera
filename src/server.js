@@ -6,7 +6,9 @@ import connectDB from './config/configdb';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import adminRoutes from './routes/adminRoutes';
+import uploadRoutes from './routes/uploadRoutes';
 import errorHandler from './middlewares/errorHandler';
+import path from 'path';
 
 let app = express();
 
@@ -35,6 +37,10 @@ app.use('/api/auth', authRoutes);
 // app.use('/api/auth', passwordRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 app.use(errorHandler);
 
