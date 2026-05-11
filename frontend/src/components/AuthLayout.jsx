@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function AuthLayout({ children, title, subtitle, footerText, footerLink, footerLinkText }) {
+export default function AuthLayout({ children, title, subtitle, footerText, footerLink, footerLinkText, onFooterLinkClick }) {
   return (
     <div className="min-h-screen flex">
       {/* Left panel — gradient */}
@@ -47,9 +47,18 @@ export default function AuthLayout({ children, title, subtitle, footerText, foot
           {footerText && (
             <p className="text-center text-sm text-gray-500 mt-6">
               {footerText}{' '}
-              <Link to={footerLink} className="text-primary font-semibold hover:text-primary-dark transition-colors">
-                {footerLinkText}
-              </Link>
+              {onFooterLinkClick ? (
+                <button 
+                  onClick={onFooterLinkClick}
+                  className="text-primary font-semibold hover:text-primary-dark transition-colors"
+                >
+                  {footerLinkText}
+                </button>
+              ) : (
+                <Link to={footerLink} className="text-primary font-semibold hover:text-primary-dark transition-colors">
+                  {footerLinkText}
+                </Link>
+              )}
             </p>
           )}
         </div>

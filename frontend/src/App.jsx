@@ -7,6 +7,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import EditProfilePage from './pages/EditProfilePage';
 
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+
 export default function App() {
   return (
     <Routes>
@@ -19,8 +21,7 @@ export default function App() {
       <Route path="/user/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
       <Route path="/admin/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
-      {/* Placeholder for other team members */}
-      <Route path="/forgot-password" element={<div className="min-h-screen flex items-center justify-center text-gray-400">Trang Quên mật khẩu — sẽ do bạn khác implement</div>} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

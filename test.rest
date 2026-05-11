@@ -1,16 +1,90 @@
-POST http://localhost:8089/api/auth/login
+### 1. Đăng ký tài khoản mới
+POST http://localhost:8089/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "vuanhquoc0397144200@gmail.comcom",
-    "password": "quoccute123456"
+    "fullName": "Nguyễn Văn A",
+    "email": "testuser@example.com",
+    "password": "Password123!",
+    "phone": "0123456789"
 }
 
-###
+### 2. Xác nhận OTP (Kích hoạt tài khoản)
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "otp": "123456"
+}
+
+### 3. Gửi lại mã OTP
+POST http://localhost:8089/api/auth/resend-otp
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com"
+}
+
+### 4. Đăng nhập
 POST http://localhost:8089/api/auth/login
 Content-Type: application/json
 
 {
     "email": "vuanhquoc0397144200@gmail.com",
-    "password": "q123456"
+    "password": "123456q"
+}
+
+### 5. Quên mật khẩu (Yêu cầu mã OTP)
+POST http://localhost:8089/api/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com"
+}
+
+### 6. Đặt lại mật khẩu (Dùng OTP và mật khẩu mới)
+POST http://localhost:8089/api/auth/reset-password
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "otp": "123456",
+    "newPassword": "NewPassword123!"
+}
+
+### 7. Lấy thông tin cá nhân (User)
+# Thay [YOUR_TOKEN] bằng token nhận được từ login
+GET http://localhost:8089/api/user/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjA3NCwiZXhwIjoxNzc4NDg1Njc0fQ.li4jZg_0cSpFhRYj1Y1MT44akhOpRv3FUFrZiB3po9s
+
+### 8. Cập nhật thông tin cá nhân (User)
+# Thay [YOUR_TOKEN] bằng token nhận được từ login
+PUT http://localhost:8089/api/user/profile
+Authorization: Bearer [YOUR_TOKEN]
+Content-Type: application/json
+
+{
+    "fullName": "Nguyễn Văn A Updated",
+    "phone": "0987654321"
+}
+
+### 9. Lấy thông tin cá nhân (Admin)
+# Thay [YOUR_TOKEN] bằng token nhận được từ login
+GET http://localhost:8089/api/admin/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjM4OCwiZXhwIjoxNzc4NDg1OTg4fQ.CZWwu19uuqwJ2B6DjogFPNI1Z9pI3J4pHm0VOuDfLLs
+
+### 10. Admin cập nhật thông tin cá nhân
+# Thay [YOUR_TOKEN] bằng token nhận được từ login
+PUT http://localhost:8089/api/admin/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjM4OCwiZXhwIjoxNzc4NDg1OTg4fQ.CZWwu19uuqwJ2B6DjogFPNI1Z9pI3J4pHm0VOuDfLLs
+Content-Type: application/json
+
+{
+    "firstName": "Vũ",
+    "lastName": "Anh Quốc 2",
+    "address": "Hà Nội",
+    "gender": true,
+    "phoneNumber": "0338997920",
+    "image": "https://example.com/image.jpg"
 }

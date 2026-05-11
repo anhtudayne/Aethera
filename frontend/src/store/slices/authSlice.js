@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerService, loginService, verifyOtpService, resendOtpService } from '../../services/authService';
+import { registerService, loginService, verifyOtpService, resendOtpService, forgotPasswordService, resetPasswordService } from '../../services/authService';
 
 // Async Thunks
 export const registerUser = createAsyncThunk('auth/register', async (data, { rejectWithValue }) => {
@@ -32,6 +32,24 @@ export const verifyOtp = createAsyncThunk('auth/verifyOtp', async (data, { rejec
 export const resendOtp = createAsyncThunk('auth/resendOtp', async (data, { rejectWithValue }) => {
   try {
     const res = await resendOtpService(data);
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data || { message: 'Lỗi kết nối server' });
+  }
+});
+
+export const forgotPassword = createAsyncThunk('auth/forgotPassword', async (data, { rejectWithValue }) => {
+  try {
+    const res = await forgotPasswordService(data);
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data || { message: 'Lỗi kết nối server' });
+  }
+});
+
+export const resetPassword = createAsyncThunk('auth/resetPassword', async (data, { rejectWithValue }) => {
+  try {
+    const res = await resetPasswordService(data);
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: 'Lỗi kết nối server' });
@@ -139,6 +157,34 @@ const authSlice = createSlice({
       .addCase(resendOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Gửi lại OTP thất bại';
+      })
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.message = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Yêu cầu đặt lại mật khẩu thất bại';
+      })
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.message = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Đặt lại mật khẩu thất bại';
       });
   },
 });
