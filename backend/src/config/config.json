@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "vovantu",
+    "password": "vovantu123!!!",
+    "database": "elearning_nhom08",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "vovantu",
+    "password": "vovantu123!!!",
+    "database": "elearning_nhom08",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "vovantu",
+    "password": "vovantu123!!!",
+    "database": "elearning_nhom08",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

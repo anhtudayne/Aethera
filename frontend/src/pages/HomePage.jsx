@@ -1,48 +1,85 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFeatured, fetchNewArrivals, fetchBestSellers, fetchCategories } from '../store/slices/courseSlice';
 import Navbar from '../components/Navbar';
+import HeroBanner from '../components/HeroBanner';
+import CategoryCard from '../components/CategoryCard';
+import CourseSection from '../components/CourseSection';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { featuredCourses, newArrivals, bestSellers, categories, loading } = useSelector((state) => state.course);
+
+  useEffect(() => {
+    dispatch(fetchFeatured());
+    dispatch(fetchNewArrivals());
+    dispatch(fetchBestSellers());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-8 md:p-12">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-primary to-secondary mb-4">
-                <span className="text-4xl">🎓</span>
-              </div>
-              <h1 className="text-3xl font-bold text-gray-800">
-                Xin chào, {user?.firstName} {user?.lastName}!
-              </h1>
-              <p className="text-gray-500 mt-2">Chào mừng bạn đến với E-Learning Platform</p>
-            </div>
+      <HeroBanner />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/10 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-700 mb-1">📧 Email</h3>
-                <p className="text-sm text-gray-500">{user?.email}</p>
-              </div>
-              <div className="bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-xl p-6 border border-secondary/10 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-700 mb-1">🏷️ Vai trò</h3>
-                <p className="text-sm text-gray-500">{user?.role === 'admin' ? 'Quản trị viên' : 'Học viên'}</p>
-              </div>
-              <div className="bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl p-6 border border-accent/10 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-700 mb-1">📚 Trạng thái</h3>
-                <p className="text-sm text-gray-500">Đang hoạt động</p>
-              </div>
-            </div>
-
-            <div className="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-100">
-              <p className="text-sm text-gray-400 text-center">
-                Trang này là placeholder. Các bạn khác sẽ implement trang Profile, Forgot Password tại đây.
-              </p>
+      {/* Categories */}
+      {categories.length > 0 && (
+        <section className="py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
+              📂 Danh mục khóa học
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+              {categories.map((cat) => (
+                <CategoryCard key={cat.id} category={cat} />
+              ))}
             </div>
           </div>
+        </section>
+      )}
+
+      {/* Sale / Featured */}
+      <div className="bg-gradient-to-b from-red-50/50 to-gray-50">
+        <CourseSection
+          title="Khuyến mãi hot"
+          emoji="🔥"
+          courses={featuredCourses.filter((c) => c.salePrice && c.salePrice < c.price)}
+          linkTo="/courses?sort=price_asc"
+          linkText="Xem tất cả khuyến mãi"
+        />
+      </div>
+
+      {/* New Arrivals */}
+      <CourseSection
+        title="Khóa học mới nhất"
+        emoji="✨"
+        courses={newArrivals}
+        linkTo="/courses?sort=newest"
+        linkText="Xem tất cả khóa học mới"
+      />
+
+      {/* Best Sellers */}
+      <div className="bg-gradient-to-b from-amber-50/50 to-gray-50">
+        <CourseSection
+          title="Bán chạy nhất"
+          emoji="🏆"
+          courses={bestSellers}
+          linkTo="/courses?sort=best_seller"
+          linkText="Xem tất cả bán chạy"
+        />
+      </div>
+
+      {loading && (
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 shadow-xl flex items-center gap-3">
+            <div className="spinner" />
+            <span className="text-sm text-gray-600">Đang tải...</span>
+          </div>
         </div>
-      </main>
+      )}
+
+      <Footer />
     </div>
   );
 }

@@ -34,5 +34,5 @@ Thumbs.db
 coverage/
 
 # Project specific
-/public/uploads/*
-!/public/uploads/.gitkeep
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep

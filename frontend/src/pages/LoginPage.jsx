@@ -52,8 +52,7 @@ export default function LoginPage() {
 
     const result = await dispatch(loginUser(form));
     if (loginUser.fulfilled.match(result)) {
-      const redirectUrl = result.payload.data.redirectUrl;
-      navigate(redirectUrl || '/');
+      navigate('/');
     }
   };
 

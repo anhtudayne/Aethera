@@ -1,31 +1,36 @@
-# E-Learning API Platform (Bài Tập 02)
+# E-Learning Platform (Bài Tập 02 & 04)
 
-### 👥 Nhóm thực hiện:
-| MSSV | Họ và Tên |
-|------|-----------|
-| 23110285 | NGUYỄN THUẬN PHÚ |
-| 23110296 | VŨ ANH QUỐC |
-| 23110359 | VÕ VĂN TÚ |
+### 👥 Nhóm 08:
+| MSSV | Họ và Tên | Nhiệm vụ BT04 |
+|------|-----------|----------------|
+| 23110285 | NGUYỄN THUẬN PHÚ | Trang chi tiết khóa học |
+| 23110296 | VŨ ANH QUỐC | Tìm kiếm & Lọc dữ liệu |
+| 23110359 | VÕ VĂN TÚ | Trang chủ bán khóa học |
 
-Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật API và kiến trúc mã nguồn chuẩn.
+Dự án xây dựng nền tảng E-Learning bán khóa học trực tuyến kiểu Udemy, bao gồm Backend API bảo mật và Frontend giao diện hiện đại.
+
+---
 
 ## 🚀 Tính năng nổi bật
 
-- **Đăng ký tài khoản**: Hỗ trợ đăng ký người dùng mới.
-- **Xác thực OTP qua Email**: Tự động gửi mã OTP 6 số để kích hoạt tài khoản.
-- **Đăng nhập (Login)**: Đăng nhập sinh token bằng **JWT (JSON Web Token)** kết hợp điều hướng dựa trên role (User/Admin).
-- **Quên mật khẩu & Đặt lại mật khẩu**: Quy trình cấp lại mật khẩu tự động qua mã OTP gửi bằng **Nodemailer**.
-- **Chỉnh sửa hồ sơ cá nhân**: Cập nhật thông tin với Whitelist để bảo vệ dữ liệu nhạy cảm.
-- **Bảo mật đa lớp**:
-  - **Lớp 1 (Rate Limiting)**: Giới hạn số lần đăng ký, gửi lại OTP, đăng nhập, đổi mật khẩu để chống Brute-force & DDoS bằng `express-rate-limit`.
-  - **Lớp 2 (Authentication & Authorization)**: Xác thực JWT token ở Header và phân quyền `user`, `admin` truy cập profile.
-  - **Lớp 3 (Input Validation)**: Làm sạch và kiểm tra tính hợp lệ của dữ liệu (chuẩn Regex, giới hạn độ dài, check bắt buộc) bằng `express-validator`.
-- **Kiến trúc 3 tầng (3-Layer Architecture)**: Presentation (Controller) -> Business Logic (Service) -> Data Access (Model).
+### Chức năng xác thực (BT02)
+- **Đăng ký tài khoản**: Validation + Rate Limiting + OTP kích hoạt qua Email
+- **Đăng nhập (Login)**: JWT Token + Phân quyền User/Admin
+- **Quên mật khẩu & Đặt lại mật khẩu**: OTP qua Nodemailer
+- **Chỉnh sửa hồ sơ cá nhân**: Whitelist field bảo vệ dữ liệu
+
+### Chức năng E-Learning (BT04)
+- **Trang chủ bán khóa học**: Hero Banner, danh mục, khuyến mãi, khóa học mới, bán chạy nhất *(Võ Văn Tú)*
+- **Trang chi tiết khóa học**: Swiper hình ảnh, thông tin giảng viên, rating, số học viên, khóa học liên quan *(Nguyễn Thuận Phú)*
+- **Tìm kiếm & Lọc**: Lọc theo danh mục, level, khoảng giá + Sắp xếp + Phân trang *(Vũ Anh Quốc)*
+
+---
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description | Auth/Security |
-|--------|----------|-------------|---------------|
+### Auth APIs
+| Method | Endpoint | Mô tả | Security |
+|--------|----------|-------|----------|
 | `POST` | `/api/auth/register` | Đăng ký người dùng | Rate Limit + Validation |
 | `POST` | `/api/auth/verify-otp` | Xác nhận mã OTP | - |
 | `POST` | `/api/auth/resend-otp` | Gửi lại mã OTP | Rate Limit |
@@ -33,48 +38,93 @@ Dự án API backend cho hệ thống E-Learning, tập trung vào bảo mật A
 | `POST` | `/api/auth/forgot-password` | Quên mật khẩu | Rate Limit + Validation |
 | `POST` | `/api/auth/reset-password` | Đặt lại mật khẩu | Validation |
 | `GET`  | `/api/user/profile`  | Xem hồ sơ người dùng | JWT + Role: User |
-| `PUT`  | `/api/user/profile`  | Cập nhật hồ sơ cá nhân | Rate Limit + JWT + Role: User + Validation |
-| `GET`  | `/api/admin/profile` | Xem hồ sơ quản trị viên | JWT + Role: Admin |
-| `PUT`  | `/api/admin/profile` | Cập nhật hồ sơ quản trị viên |
+| `PUT`  | `/api/user/profile`  | Cập nhật hồ sơ | JWT + Role: User |
+
+### Course & Category APIs (BT04)
+| Method | Endpoint | Mô tả | Auth |
+|--------|----------|-------|------|
+| `GET` | `/api/courses` | Danh sách khóa học (filter, search, pagination) | Public |
+| `GET` | `/api/courses/featured` | Khóa học nổi bật | Public |
+| `GET` | `/api/courses/new-arrivals` | Khóa học mới nhất | Public |
+| `GET` | `/api/courses/best-sellers` | Khóa học bán chạy nhất | Public |
+| `GET` | `/api/courses/:slug` | Chi tiết khóa học | Public |
+| `GET` | `/api/courses/:id/related` | Khóa học tương tự | Public |
+| `GET` | `/api/categories` | Danh sách danh mục | Public |
+
+---
 
 ## 🛠 Công nghệ sử dụng
 
-- **Backend**: Node.js, Express.js (v4.x)
+### Backend
+- **Runtime**: Node.js, Express.js (v4.x)
 - **Database**: MySQL, Sequelize ORM
-- **Security**: jsonwebtoken (JWT), bcryptjs (hashing), express-validator, express-rate-limit
+- **Security**: JWT, bcryptjs, express-validator, express-rate-limit
 - **Email**: Nodemailer (SMTP Gmail)
-- **Tooling**: Babel (ES6+ support), Nodemon
+- **Tooling**: Babel (ES6+), Nodemon
+
+### Frontend
+- **UI**: React.js (Vite), TailwindCSS v4
+- **State**: Redux Toolkit, React Redux
+- **HTTP**: Axios (interceptors JWT)
+- **Routing**: React Router v7
+
+---
 
 ## 📂 Cấu trúc thư mục
 
 ```text
-BAITAP_02/
-├── src/
-│   ├── config/          # Cấu hình database
-│   ├── controllers/     # Tầng Presentation (Xử lý request/response)
-│   ├── middlewares/     # Lớp bảo mật & Xử lý lỗi (JWT Auth, Role Auth)
-│   ├── migrations/      # File migration tạo bảng MySQL
-│   ├── models/          # Tầng Data Access (Sequelize models)
-│   ├── routes/          # Định nghĩa các API endpoints
-│   ├── services/        # Tầng Business Logic (Xử lý nghiệp vụ chính)
-│   ├── utils/           # Tiện ích bổ trợ (OTP helper, JWT helper)
-│   └── server.js        # File khởi tạo ứng dụng
-├── .babelrc             # Cấu hình ES6
-├── .env                 # Biến môi trường
-├── postman_collection.json # File test API cho Postman
-└── package.json         # Danh sách thư viện & scripts
+BaiTap02_Nhom08/
+├── backend/                     # Backend Source (Express + MySQL)
+│   ├── src/
+│   │   ├── config/              # Cấu hình DB
+│   │   ├── controllers/         # Xử lý Request/Response
+│   │   ├── middlewares/         # JWT Auth, Role Auth, Validators
+│   │   ├── migrations/          # Migration tạo bảng
+│   │   ├── models/              # User, Category, Course, CourseImage
+│   │   ├── routes/              # API endpoints
+│   │   ├── seeders/             # Dữ liệu mẫu (5 danh mục, 18 khóa học)
+│   │   ├── services/            # Business Logic
+│   │   ├── utils/               # OTP, JWT helpers
+│   │   └── server.js            # Entry point
+│   ├── .env                     # Biến môi trường
+│   └── package.json
+│
+├── frontend/                    # Frontend Source (React + Vite)
+│   └── src/
+│       ├── api/                 # Axios config + interceptors
+│       ├── components/          # Reusable UI components
+│       │   ├── AuthLayout.jsx   # Layout đăng nhập/đăng ký
+│       │   ├── Navbar.jsx       # Navigation bar + search
+│       │   ├── HeroBanner.jsx   # Banner trang chủ
+│       │   ├── CourseCard.jsx   # Card khóa học
+│       │   ├── CategoryCard.jsx # Card danh mục
+│       │   ├── CourseSection.jsx# Section hiển thị khóa học
+│       │   └── Footer.jsx       # Footer
+│       ├── pages/               # Các trang
+│       │   ├── LoginPage.jsx
+│       │   ├── RegisterPage.jsx
+│       │   ├── EditProfilePage.jsx
+│       │   ├── ForgotPasswordPage.jsx
+│       │   └── HomePage.jsx     # Trang chủ E-Learning
+│       ├── store/               # Redux Toolkit
+│       │   └── slices/          # authSlice, courseSlice
+│       └── services/            # API service layer
+│
+├── .gitignore
+└── README.md
 ```
+
+---
 
 ## ⚙️ Cài đặt & Chạy ứng dụng
 
 ### 1. Chuẩn bị Database
-Tạo database MySQL tên `elearning_baitap02` hoặc chạy lệnh:
 ```sql
 CREATE DATABASE elearning_baitap02;
 ```
 
-### 2. Cấu hình Biến môi trường
-Tạo file `.env` và điền thông tin:
+### 2. Cấu hình biến môi trường
+Tạo file `.env` tại thư mục `backend/`:
 ```env
 PORT=8089
 NODE_ENV=development
@@ -84,23 +134,40 @@ JWT_SECRET=your_secret_key_here
 OTP_EXPIRE_MINUTES=5
 ```
 
-### 3. Cài đặt thư viện
+### 3. Cài đặt & Chạy Backend
 ```bash
+cd backend
 npm install
-```
-
-### 4. Chạy Migration (Tạo bảng)
-```bash
 npx sequelize-cli db:migrate
-```
-
-### 5. Chạy ứng dụng
-```bash
+npx sequelize-cli db:seed:all
 npm start
 ```
+*Backend chạy tại `http://localhost:8089`*
+
+### 4. Cài đặt & Chạy Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Frontend chạy tại `http://localhost:5173`*
+
+---
+
+## 🔒 Bảo mật (Security)
+
+- **Lớp 1 (Rate Limiting)**: Giới hạn request chống Brute-force & DDoS
+- **Lớp 2 (Authentication)**: JWT Token xác thực phiên làm việc
+- **Lớp 3 (Validation)**: Kiểm tra dữ liệu đầu vào bằng express-validator
+- **Lớp 4 (Authorization)**: Phân quyền User/Admin truy cập tài nguyên
+
+---
 
 ## 🧪 Testing
 
-- File **`postman_collection.json`** đã được cấu hình sẵn các Request để test. Bạn chỉ cần Import file này vào Postman là có thể chạy thử trực tiếp toàn bộ các API.
+- File **`postman_collection.json`** — Import vào Postman để test Auth APIs
+- Seed data tạo sẵn **5 danh mục** và **18 khóa học** để demo giao diện
 
 ---
+
+*Dự án được thực hiện bởi Nhóm 08 — Bài Tập 02 & 04*
