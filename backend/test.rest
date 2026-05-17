@@ -3,9 +3,11 @@ POST http://localhost:8089/api/auth/register
 Content-Type: application/json
 
 {
-    "fullName": "Nguyễn Văn A",
-    "email": "testuser@example.com",
-    "password": "Password123!",
+    "fullName": "Vu Anh Quoc",
+    "firstName": "Vu",
+    "lastName": "Quoc",
+    "email": "quoc1@gmail.com",
+    "password": "123456q",
     "phone": "0123456789"
 }
 
@@ -14,8 +16,8 @@ POST http://localhost:8089/api/auth/verify-otp
 Content-Type: application/json
 
 {
-    "email": "testuser@example.com",
-    "otp": "123456"
+    "email": "quoc1@gmail.com",
+    "otp": "917466"
 }
 
 ### 3. Gửi lại mã OTP
@@ -87,4 +89,20 @@ Content-Type: application/json
     "gender": true,
     "phoneNumber": "0338997920",
     "image": "https://example.com/image.jpg"
+}
+
+### 11. Tạo khóa học mới
+POST http://localhost:8089/api/courses
+Content-Type: application/json
+
+{
+    "name": "Khóa học Python nâng cao",
+    "description": "Học Python từ cơ bản đến nâng cao",
+    "thumbnail": "https://tse2.mm.bing.net/th/id/OIP.OhFIiZIh1cUZCiGfDr5i1gHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",
+    "price": 500000,
+    "salePrice": 300000,
+    "instructor": "Nguyen Van A",
+    "duration": "10h",
+    "level": "intermediate",
+    "language": "Tiếng Việt"
 }

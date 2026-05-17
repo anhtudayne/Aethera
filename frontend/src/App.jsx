@@ -7,6 +7,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import EditProfilePage from './pages/EditProfilePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import CourseDetailPage from './pages/CourseDetailPage';
 
 export default function App() {
   return (
@@ -23,7 +24,7 @@ export default function App() {
 
       {/* Placeholder routes — các bạn khác sẽ implement */}
       <Route path="/courses" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/course/:slug" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+      <Route path="/course/:slug" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -9,6 +9,8 @@ const includeOptions = [
     { model: CourseImage, as: 'images', attributes: ['id', 'imageUrl', 'isPrimary', 'sortOrder'] },
 ];
 
+const slugify = require('slugify');
+
 // Lấy danh sách khóa học (filter, search, sort, pagination)
 const getCourses = async (params) => {
     const { search, category, level, minPrice, maxPrice, sort = 'newest', page = 1, limit = 12 } = params;
@@ -44,7 +46,7 @@ const getFeaturedCourses = async () => {
 };
 
 const getNewArrivals = async () => {
-    const data = await Course.findAll({ where: { isNewArrival: true }, include: includeOptions, order: [['createdAt', 'DESC']], limit: 8 });
+    const data = await Course.findAll({ include: includeOptions, order: [['createdAt', 'DESC']], limit: 8 });
     return { data };
 };
 
@@ -73,4 +75,16 @@ const getCategories = async () => {
     return { data };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories };
+const createCourse = async (courseData) => {
+    try {
+        if (!courseData.slug && courseData.name) {
+            courseData.slug = slugify(courseData.name, { lower: true, strict: true }) + '-' + Date.now();
+        }
+        const newCourse = await Course.create(courseData);
+        return { data: newCourse };
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse };

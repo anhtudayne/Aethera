@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse } from '../services/courseService';
 
 export const handleGetCourses = async (req, res, next) => {
     try {
@@ -47,5 +47,12 @@ export const handleGetCategories = async (req, res, next) => {
     try {
         const result = await getCategories();
         return res.status(200).json({ status: 200, ...result });
+    } catch (err) { next(err); }
+};
+
+export const handleCreateCourse = async (req, res, next) => {
+    try {
+        const result = await createCourse(req.body);
+        return res.status(201).json({ status: 201, message: 'Tạo khóa học thành công', ...result });
     } catch (err) { next(err); }
 };
