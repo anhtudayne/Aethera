@@ -49,6 +49,13 @@ export default function RegisterPage() {
     if (!form.lastName) newErrors.lastName = 'Họ không được để trống';
     else if (form.lastName.length < 2) newErrors.lastName = 'Họ phải có ít nhất 2 ký tự';
 
+    if (form.phoneNumber) {
+      const phoneRegex = /^(03|05|07|08|09|\+84)[0-9]{8}$/;
+      if (!phoneRegex.test(form.phoneNumber)) {
+        newErrors.phoneNumber = 'Số điện thoại không hợp lệ';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -78,6 +85,12 @@ export default function RegisterPage() {
     if (registerUser.fulfilled.match(result)) {
       dispatch(setOtpEmail(form.email));
       navigate('/verify-otp');
+    } else if (result.payload?.errors) {
+      const serverErrors = {};
+      result.payload.errors.forEach(err => {
+        serverErrors[err.field] = err.message;
+      });
+      setErrors(serverErrors);
     }
   };
 

@@ -99,13 +99,18 @@ BaiTap02_Nhom08/
 │       │   ├── CourseCard.jsx   # Card khóa học
 │       │   ├── CategoryCard.jsx # Card danh mục
 │       │   ├── CourseSection.jsx# Section hiển thị khóa học
-│       │   └── Footer.jsx       # Footer
+│       │   ├── Footer.jsx       # Footer
+│       │   ├── FilterSidebar.jsx # Bộ lọc khóa học (BT04)
+│       │   ├── Pagination.jsx   # Phân trang kết quả (BT04)
+│       │   ├── EmptyState.jsx   # Giao diện trống khi không có kết quả (BT04)
+│       │   └── SkeletonCourseCard.jsx # Loading skeleton (BT04)
 │       ├── pages/               # Các trang
 │       │   ├── LoginPage.jsx
 │       │   ├── RegisterPage.jsx
 │       │   ├── EditProfilePage.jsx
 │       │   ├── ForgotPasswordPage.jsx
-│       │   └── HomePage.jsx     # Trang chủ E-Learning
+│       │   ├── HomePage.jsx     # Trang chủ E-Learning
+│       │   └── CoursesPage.jsx  # Trang danh sách khóa học + Lọc (BT04)
 │       ├── store/               # Redux Toolkit
 │       │   └── slices/          # authSlice, courseSlice
 │       └── services/            # API service layer

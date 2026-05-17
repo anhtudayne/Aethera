@@ -13,31 +13,51 @@ const slugify = require('slugify');
 
 // Lấy danh sách khóa học (filter, search, sort, pagination)
 const getCourses = async (params) => {
-    const { search, category, level, minPrice, maxPrice, sort = 'newest', page = 1, limit = 12 } = params;
+    const { search, categories, levels, min_price, max_price, sort = 'newest', page = 1, limit = 12 } = params;
     const where = {};
 
     if (search) where.name = { [Op.like]: `%${search}%` };
-    if (category) {
-        const cat = await Category.findOne({ where: { slug: category } });
-        if (cat) where.categoryId = cat.id;
+    
+    if (categories) {
+        const catArray = typeof categories === 'string' ? categories.split(',') : categories;
+        where.categoryId = { [Op.in]: catArray };
     }
-    if (level) where.level = level;
-    if (minPrice) where.price = { ...where.price, [Op.gte]: minPrice };
-    if (maxPrice) where.price = { ...where.price, [Op.lte]: maxPrice };
+    
+    if (levels) {
+        const levelArray = typeof levels === 'string' ? levels.split(',') : levels;
+        where.level = { [Op.in]: levelArray };
+    }
+    
+    if (min_price || max_price) {
+        where.price = {};
+        if (min_price) where.price[Op.gte] = Number(min_price);
+        if (max_price) where.price[Op.lte] = Number(max_price);
+    }
 
     const order = {
-        newest: [['createdAt', 'DESC']],
+        newest: [['isNewArrival', 'DESC'], ['createdAt', 'DESC']],
         price_asc: [['price', 'ASC']],
         price_desc: [['price', 'DESC']],
-        best_seller: [['totalStudents', 'DESC']],
-        rating: [['rating', 'DESC']],
+        rating_desc: [['rating', 'DESC']],
+        best_seller: [['isBestSeller', 'DESC'], ['totalStudents', 'DESC']],
     }[sort] || [['createdAt', 'DESC']];
 
-    const offset = (page - 1) * limit;
+    const parsedLimit = parseInt(limit);
+    const parsedPage = parseInt(page);
+    const offset = (parsedPage - 1) * parsedLimit;
+    
     const { count, rows } = await Course.findAndCountAll({
-        where, include: includeOptions, order, limit: parseInt(limit), offset, distinct: true,
+        where, include: includeOptions, order, limit: parsedLimit, offset, distinct: true,
     });
-    return { data: rows, pagination: { page: parseInt(page), limit: parseInt(limit), total: count, totalPages: Math.ceil(count / limit) } };
+    
+    return { 
+        data: rows, 
+        pagination: { 
+            currentPage: parsedPage, 
+            totalPages: Math.ceil(count / parsedLimit),
+            totalItems: count
+        } 
+    };
 };
 
 const getFeaturedCourses = async () => {
