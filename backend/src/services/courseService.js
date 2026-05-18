@@ -107,4 +107,27 @@ const createCourse = async (courseData) => {
     }
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse };
+// Khóa học theo danh mục (phân trang cho Infinite Scroll)
+const getCoursesByCategory = async (categorySlug, page = 1, limit = 6) => {
+    const category = await Category.findOne({ where: { slug: categorySlug } });
+    if (!category) return { status: 404, message: 'Không tìm thấy danh mục.' };
+
+    const offset = (Number(page) - 1) * Number(limit);
+    const { count, rows } = await Course.findAndCountAll({
+        where: { categoryId: category.id },
+        include: includeOptions,
+        order: [['createdAt', 'DESC']],
+        limit: Number(limit),
+        offset,
+        distinct: true,
+    });
+
+    return {
+        status: 200,
+        category: { id: category.id, name: category.name, slug: category.slug },
+        data: rows,
+        pagination: { total: count, page: Number(page), limit: Number(limit), totalPages: Math.ceil(count / Number(limit)) },
+    };
+};
+
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory };

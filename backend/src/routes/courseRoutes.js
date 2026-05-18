@@ -1,5 +1,9 @@
 import express from 'express';
-import { handleGetCourses, handleGetFeatured, handleGetNewArrivals, handleGetBestSellers, handleGetCourseBySlug, handleGetRelatedCourses, handleGetCategories, handleCreateCourse } from '../controllers/courseController';
+import {
+    handleGetCourses, handleGetFeatured, handleGetNewArrivals, handleGetBestSellers,
+    handleGetCourseBySlug, handleGetRelatedCourses, handleGetCategories, handleCreateCourse,
+    handleGetCoursesByCategory,
+} from '../controllers/courseController';
 
 let router = express.Router();
 
@@ -8,6 +12,7 @@ router.get('/courses', handleGetCourses);
 router.get('/courses/featured', handleGetFeatured);
 router.get('/courses/new-arrivals', handleGetNewArrivals);
 router.get('/courses/best-sellers', handleGetBestSellers);
+router.get('/courses/category/:slug', handleGetCoursesByCategory);
 router.get('/courses/:slug', handleGetCourseBySlug);
 router.get('/courses/:id/related', handleGetRelatedCourses);
 router.post('/courses', handleCreateCourse);
