@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount } from '../services/courseService';
 
 export const handleGetCourses = async (req, res, next) => {
     try {
@@ -64,5 +64,19 @@ export const handleGetCoursesByCategory = async (req, res, next) => {
         const { page = 1, limit = 6 } = req.query;
         const result = await getCoursesByCategory(slug, page, limit);
         return res.status(result.status || 200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleGetTopViewed = async (req, res, next) => {
+    try {
+        const result = await getTopViewedCourses();
+        return res.status(200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleIncrementView = async (req, res, next) => {
+    try {
+        const result = await incrementViewCount(req.params.id);
+        return res.status(200).json(result);
     } catch (err) { next(err); }
 };

@@ -1,20 +1,23 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeatured, fetchNewArrivals, fetchBestSellers, fetchCategories } from '../store/slices/courseSlice';
+import { fetchFeatured, fetchNewArrivals, fetchBestSellers, fetchCategories, fetchTopViewed } from '../store/slices/courseSlice';
 import Navbar from '../components/Navbar';
 import HeroBanner from '../components/HeroBanner';
 import CategoryCard from '../components/CategoryCard';
 import CourseSection from '../components/CourseSection';
+import Carousel from '../components/Carousel';
+import CourseCard from '../components/CourseCard';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
   const dispatch = useDispatch();
-  const { featuredCourses, newArrivals, bestSellers, categories, loading } = useSelector((state) => state.course);
+  const { featuredCourses, newArrivals, bestSellers, topViewed, categories, loading } = useSelector((state) => state.course);
 
   useEffect(() => {
     dispatch(fetchFeatured());
     dispatch(fetchNewArrivals());
     dispatch(fetchBestSellers());
+    dispatch(fetchTopViewed());
     dispatch(fetchCategories());
   }, [dispatch]);
 
@@ -58,6 +61,16 @@ export default function HomePage() {
         linkTo="/courses?sort=newest"
         linkText="Xem tất cả khóa học mới"
       />
+
+      {/* Top Viewed Courses */}
+      <div className="bg-gradient-to-b from-blue-50/50 to-gray-50">
+        <Carousel
+          title="Top 10 Khóa học xem nhiều nhất"
+          emoji="👀"
+          items={topViewed}
+          renderItem={(course) => <CourseCard course={course} />}
+        />
+      </div>
 
       {/* Best Sellers */}
       <div className="bg-gradient-to-b from-amber-50/50 to-gray-50">

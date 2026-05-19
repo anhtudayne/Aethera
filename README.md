@@ -3,7 +3,7 @@
 ### 👥 Nhóm 08:
 | MSSV | Họ và Tên | Nhiệm vụ BT02 | Nhiệm vụ BT03 | Nhiệm vụ BT04 | Nhiệm vụ BT05 |
 |------|-----------|---------------|---------------|---------------|---------------|
-| 23110285 | NGUYỄN THUẬN PHÚ | Chỉnh sửa Profile | UI Chỉnh sửa Profile | Tìm kiếm & Lọc dữ liệu | |
+| 23110285 | NGUYỄN THUẬN PHÚ | Chỉnh sửa Profile | UI Chỉnh sửa Profile | Tìm kiếm & Lọc dữ liệu | | Carousel phân trang ngang + hiển thị 10 SP có viewCount cao nhất
 | 23110296 | VŨ ANH QUỐC | Đăng nhập, Quên mật khẩu | UI Quên mật khẩu | Trang chi tiết khóa học | |
 | 23110359 | VÕ VĂN TÚ | Đăng ký | UI Đăng ký, Đăng nhập | Trang chủ bán khóa học | Khóa học theo danh mục + Infinite Scroll |
 

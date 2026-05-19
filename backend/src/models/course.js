@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 references: { model: 'Categories', key: 'id' },
             },
+            viewCount: { type: DataTypes.INTEGER, defaultValue: 0 },
         },
         { sequelize, modelName: 'Course' }
     );

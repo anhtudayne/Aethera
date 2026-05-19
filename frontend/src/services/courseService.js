@@ -8,4 +8,5 @@ export const getCourseBySlugService = (slug) => api.get(`/courses/${slug}`);
 export const getRelatedCoursesService = (id) => api.get(`/courses/${id}/related`);
 export const getCategoriesService = () => api.get('/categories');
 export const getCoursesByCategoryService = (slug, page = 1, limit = 6) => api.get(`/courses/category/${slug}`, { params: { page, limit } });
-
+export const getTopViewedCoursesService = () => api.get('/courses/top-viewed');
+export const incrementViewCountService = (id) => api.patch(`/courses/${id}/view`);

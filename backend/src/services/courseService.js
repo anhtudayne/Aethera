@@ -130,4 +130,19 @@ const getCoursesByCategory = async (categorySlug, page = 1, limit = 6) => {
     };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory };
+const getTopViewedCourses = async () => {
+    const data = await Course.findAll({
+        order: [['viewCount', 'DESC']],
+        limit: 10,
+        include: includeOptions
+    });
+    return { status: 200, data };
+};
+
+const incrementViewCount = async (id) => {
+    // Atomic increment
+    await Course.increment('viewCount', { by: 1, where: { id } });
+    return { status: 200, message: 'View count updated successfully' };
+};
+
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount };

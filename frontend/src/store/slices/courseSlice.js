@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getFeaturedService, getNewArrivalsService, getBestSellersService, getCategoriesService, getCoursesByCategoryService } from '../../services/courseService';
+import { getFeaturedService, getNewArrivalsService, getBestSellersService, getCategoriesService, getCoursesByCategoryService, getTopViewedCoursesService } from '../../services/courseService';
 
 export const fetchFeatured = createAsyncThunk('course/fetchFeatured', async (_, { rejectWithValue }) => {
   try { return (await getFeaturedService()).data; }
@@ -21,6 +21,11 @@ export const fetchCategories = createAsyncThunk('course/fetchCategories', async 
   catch (err) { return rejectWithValue(err.response?.data || { message: 'Lỗi tải danh mục' }); }
 });
 
+export const fetchTopViewed = createAsyncThunk('course/fetchTopViewed', async (_, { rejectWithValue }) => {
+  try { return (await getTopViewedCoursesService()).data; }
+  catch (err) { return rejectWithValue(err.response?.data || { message: 'Lỗi tải khóa học xem nhiều' }); }
+});
+
 // BT05: Khóa học theo danh mục (Infinite Scroll)
 export const fetchCategoryCourses = createAsyncThunk('course/fetchCategoryCourses', async ({ slug, page = 1, limit = 6 }, { rejectWithValue }) => {
   try {
@@ -37,6 +42,7 @@ const courseSlice = createSlice({
     featuredCourses: [],
     newArrivals: [],
     bestSellers: [],
+    topViewed: [],
     categories: [],
     // BT05: Category page state
     categoryCourses: [],
@@ -61,6 +67,7 @@ const courseSlice = createSlice({
       .addCase(fetchFeatured.rejected, (state, action) => { state.loading = false; state.error = action.payload?.message; })
       .addCase(fetchNewArrivals.fulfilled, (state, action) => { state.newArrivals = action.payload.data; })
       .addCase(fetchBestSellers.fulfilled, (state, action) => { state.bestSellers = action.payload.data; })
+      .addCase(fetchTopViewed.fulfilled, (state, action) => { state.topViewed = action.payload.data; })
       .addCase(fetchCategories.fulfilled, (state, action) => { state.categories = action.payload.data; })
       // BT05: Category courses (append mode for infinite scroll)
       .addCase(fetchCategoryCourses.pending, (state) => { state.categoryLoading = true; })

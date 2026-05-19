@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getCourseBySlugService, getRelatedCoursesService } from '../services/courseService';
+import { getCourseBySlugService, getRelatedCoursesService, incrementViewCountService } from '../services/courseService';
 
 export default function CourseDetailPage() {
   const { slug } = useParams();
@@ -19,6 +19,11 @@ export default function CourseDetailPage() {
         setCourse(courseData);
         
         if (courseData && courseData.id) {
+          try {
+            await incrementViewCountService(courseData.id);
+          } catch (e) {
+            console.error('Error incrementing view count:', e);
+          }
           const relatedResponse = await getRelatedCoursesService(courseData.id);
           setRelatedCourses(relatedResponse.data.data);
         }
