@@ -1,0 +1,181 @@
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { fetchCart, removeCartItem, clearCart } from '../store/slices/cartSlice';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+
+function formatPrice(price) {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+}
+
+export default function CartPage() {
+  const dispatch = useDispatch();
+  const { items, loading } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
+  const handleRemove = (cartId) => {
+    dispatch(removeCartItem(cartId)).then(() => dispatch(fetchCart()));
+  };
+
+  const handleClearCart = () => {
+    if (window.confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
+      dispatch(clearCart());
+    }
+  };
+
+  // Tính tổng tiền
+  const totalAmount = items.reduce((sum, item) => {
+    const course = item.course;
+    const price = course?.salePrice && course.salePrice < course.price ? course.salePrice : course?.price || 0;
+    return sum + Number(price);
+  }, 0);
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            🛒 Giỏ hàng
+            {items.length > 0 && <span className="text-lg text-gray-400 font-normal ml-2">({items.length} khóa học)</span>}
+          </h1>
+          {items.length > 0 && (
+            <button onClick={handleClearCart} className="text-sm text-red-400 hover:text-red-600 transition-colors flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">delete</span> Xóa tất cả
+            </button>
+          )}
+        </div>
+
+        {/* Loading */}
+        {loading && items.length === 0 && (
+          <div className="flex justify-center py-20">
+            <div className="w-10 h-10 border-4 border-gray-200 border-t-primary rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && items.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-6">
+              <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
+            </div>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">Giỏ hàng trống</h2>
+            <p className="text-gray-400 mb-6">Hãy thêm các khóa học yêu thích vào giỏ hàng nhé!</p>
+            <Link
+              to="/courses"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all"
+            >
+              Khám phá khóa học
+            </Link>
+          </div>
+        )}
+
+        {/* Cart content */}
+        {items.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+            {/* Course list */}
+            <div className="lg:col-span-2 space-y-4">
+              {items.map((item) => {
+                const course = item.course;
+                if (!course) return null;
+                const hasDiscount = course.salePrice && Number(course.salePrice) < Number(course.price);
+                const unitPrice = hasDiscount ? course.salePrice : course.price;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 flex gap-4 transition-all hover:shadow-md group"
+                  >
+                    {/* Thumbnail */}
+                    <Link to={`/course/${course.slug}`} className="flex-shrink-0">
+                      <img
+                        src={course.thumbnail || 'https://via.placeholder.com/160x100?text=Course'}
+                        alt={course.name}
+                        className="w-36 h-24 sm:w-44 sm:h-28 object-cover rounded-xl bg-gray-100"
+                      />
+                    </Link>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                      <div>
+                        <Link to={`/course/${course.slug}`} className="text-sm sm:text-base font-semibold text-gray-800 hover:text-primary transition-colors line-clamp-2">
+                          {course.name}
+                        </Link>
+                        <p className="text-xs text-gray-400 mt-1">Giảng viên: {course.instructor}</p>
+                        <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
+                          {course.category && (
+                            <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-medium">{course.category.name}</span>
+                          )}
+                          <span className="flex items-center gap-0.5">
+                            <span className="material-symbols-outlined fill-icon text-yellow-400 text-sm">star</span>
+                            {course.rating}
+                          </span>
+                          <span>{course.level}</span>
+                        </div>
+                      </div>
+
+                      {/* Price + Remove */}
+                      <div className="flex items-center justify-between mt-3 gap-2">
+                        <div>
+                          <span className="text-lg font-bold text-primary">{formatPrice(unitPrice)}</span>
+                          {hasDiscount && <span className="text-xs text-gray-400 line-through ml-2">{formatPrice(course.price)}</span>}
+                        </div>
+                        <button
+                          onClick={() => handleRemove(item.id)}
+                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Xóa khỏi giỏ"
+                        >
+                          <span className="material-symbols-outlined text-xl">delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Order Summary */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+                <h2 className="text-lg font-bold text-gray-800 mb-4">Tóm tắt đơn hàng</h2>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between text-gray-600">
+                    <span>{items.length} khóa học</span>
+                    <span className="font-medium">{formatPrice(totalAmount)}</span>
+                  </div>
+                  <hr className="border-gray-100" />
+                  <div className="flex justify-between text-gray-900 text-base">
+                    <span className="font-bold">Tổng cộng</span>
+                    <span className="font-bold text-primary text-xl">{formatPrice(totalAmount)}</span>
+                  </div>
+                </div>
+
+                <button
+                  disabled
+                  className="w-full mt-6 py-3.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-base opacity-50 cursor-not-allowed"
+                  title="Chức năng thanh toán sẽ được triển khai bởi thành viên khác"
+                >
+                  Tiến hành thanh toán
+                </button>
+                <p className="text-xs text-gray-400 text-center mt-2">Chức năng thanh toán đang được phát triển</p>
+
+                <Link to="/courses" className="flex items-center justify-center gap-1.5 mt-4 text-sm text-gray-500 hover:text-primary transition-colors">
+                  <span className="material-symbols-outlined text-sm">arrow_back</span> Tiếp tục mua sắm
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

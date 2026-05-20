@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Course.belongsTo(models.Category, { foreignKey: 'categoryId', as: 'category' });
             Course.hasMany(models.CourseImage, { foreignKey: 'courseId', as: 'images' });
+            Course.hasMany(models.Cart, { foreignKey: 'courseId', as: 'cartItems' });
         }
     }
     Course.init(

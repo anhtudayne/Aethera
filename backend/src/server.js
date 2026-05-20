@@ -8,6 +8,7 @@ import userRoutes from './routes/userRoutes';
 import adminRoutes from './routes/adminRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import courseRoutes from './routes/courseRoutes';
+import cartRoutes from './routes/cartRoutes';
 import errorHandler from './middlewares/errorHandler';
 import path from 'path';
 
@@ -40,6 +41,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api', courseRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));

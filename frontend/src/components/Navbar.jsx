@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../store/slices/authSlice';
+import { fetchCartCount } from '../store/slices/cartSlice';
+import CartIcon from './CartIcon';
 
 export default function Navbar() {
   const { user } = useSelector((state) => state.auth);
@@ -9,6 +11,13 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Fetch cart count khi user đăng nhập
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCartCount());
+    }
+  }, [dispatch, user]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -64,6 +73,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {user && (
               <div className="hidden sm:flex items-center gap-3">
+                <CartIcon />
                 <Link to="/user/profile" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">
                     {user.firstName?.charAt(0)}
@@ -99,6 +109,9 @@ export default function Navbar() {
             ))}
             {user && (
               <>
+                <Link to="/cart" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary">
+                  🛒 Giỏ hàng
+                </Link>
                 <Link to="/user/profile" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
                   👤 Hồ sơ ({user.firstName})
                 </Link>

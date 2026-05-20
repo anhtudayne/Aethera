@@ -10,6 +10,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import CoursesPage from './pages/CoursesPage';
 import CategoryPage from './pages/CategoryPage';
+import CartPage from './pages/CartPage';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/courses" element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />
       <Route path="/course/:slug" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
       <Route path="/category/:slug" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
+      <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { getCourseBySlugService, getRelatedCoursesService, incrementViewCountService } from '../services/courseService';
+import { addToCart, fetchCartCount } from '../store/slices/cartSlice';
 
 export default function CourseDetailPage() {
   const { slug } = useParams();
+  const dispatch = useDispatch();
   const [course, setCourse] = useState(null);
   const [relatedCourses, setRelatedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [cartError, setCartError] = useState(null);
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -117,9 +122,28 @@ export default function CourseDetailPage() {
               <button className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">
                 Đăng ký học ngay
               </button>
-              <button className="w-full py-3 px-4 bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-bold rounded-lg transition-colors">
-                Thêm vào giỏ hàng
+              <button
+                onClick={async () => {
+                  setCartError(null);
+                  const result = await dispatch(addToCart(course.id));
+                  if (result.meta.requestStatus === 'fulfilled') {
+                    setAddedToCart(true);
+                    dispatch(fetchCartCount());
+                    setTimeout(() => setAddedToCart(false), 2500);
+                  } else {
+                    setCartError(result.payload?.message || 'Lỗi thêm vào giỏ hàng');
+                  }
+                }}
+                disabled={addedToCart}
+                className={`w-full py-3 px-4 font-bold rounded-lg transition-colors shadow-md ${
+                  addedToCart
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
+                }`}
+              >
+                {addedToCart ? '✅ Đã thêm vào giỏ hàng' : 'Thêm vào giỏ hàng'}
               </button>
+              {cartError && <p className="text-xs text-red-500 text-center mt-1">{cartError}</p>}
               <p className="text-xs text-center text-gray-500">Hoàn tiền trong 30 ngày. Đảm bảo chất lượng.</p>
             </div>
             
