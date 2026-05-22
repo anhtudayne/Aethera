@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchCart, removeCartItem, clearCart } from '../store/slices/cartSlice';
+import * as orderService from '../services/orderService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import PaymentModal from '../components/common/PaymentModal';
 
 function formatPrice(price) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -11,7 +13,11 @@ function formatPrice(price) {
 
 export default function CartPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, loading } = useSelector((state) => state.cart);
+
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [qrData, setQrData] = useState(null);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -27,6 +33,29 @@ export default function CartPage() {
     }
   };
 
+  const handleCheckout = async () => {
+    try {
+      setIsCheckoutLoading(true);
+      const res = await orderService.createOrderFromCart();
+
+      // Backend trả về chuẩn: { success: true, data: {...}, message: "..." }
+      const payload = res;
+
+      if (payload.success || payload.statusCode === 201 || payload.statusCode === 200 || payload.status === 201 || payload.status === 200) {
+        // payload.data chứa { orderCode, totalAmount, qrUrl }
+        setQrData(payload.data || payload);
+        dispatch(fetchCart());
+      } else {
+        alert(payload.message || 'Lỗi khi tạo đơn hàng');
+      }
+    } catch (error) {
+      console.error('Lỗi thanh toán:', error);
+      alert('Đã xảy ra lỗi khi kết nối với máy chủ.');
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
+
   // Tính tổng tiền
   const totalAmount = items.reduce((sum, item) => {
     const course = item.course;
@@ -35,7 +64,7 @@ export default function CartPage() {
   }, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,7 +89,7 @@ export default function CartPage() {
         )}
 
         {/* Empty state */}
-        {!loading && items.length === 0 && (
+        {!loading && items.length === 0 && !qrData && (
           <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
             <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
@@ -158,13 +187,20 @@ export default function CartPage() {
                 </div>
 
                 <button
-                  disabled
-                  className="w-full mt-6 py-3.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-base opacity-50 cursor-not-allowed"
-                  title="Chức năng thanh toán sẽ được triển khai bởi thành viên khác"
+                  onClick={handleCheckout}
+                  disabled={isCheckoutLoading}
+                  className="w-full mt-6 py-3.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-base hover:shadow-lg hover:shadow-primary/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70"
                 >
-                  Tiến hành thanh toán
+                  {isCheckoutLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-xl">qr_code_scanner</span>
+                      Thanh toán mã QR
+                    </>
+                  )}
                 </button>
-                <p className="text-xs text-gray-400 text-center mt-2">Chức năng thanh toán đang được phát triển</p>
+                <p className="text-xs text-gray-400 text-center mt-2">Hỗ trợ đối soát tự động 24/7</p>
 
                 <Link to="/courses" className="flex items-center justify-center gap-1.5 mt-4 text-sm text-gray-500 hover:text-primary transition-colors">
                   <span className="material-symbols-outlined text-sm">arrow_back</span> Tiếp tục mua sắm
@@ -175,7 +211,11 @@ export default function CartPage() {
         )}
       </main>
 
+      {/* Modal QR Code Thanh Toán */}
+      <PaymentModal qrData={qrData} onClose={() => setQrData(null)} />
+
       <Footer />
     </div>
   );
 }
+

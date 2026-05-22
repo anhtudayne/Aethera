@@ -7,6 +7,8 @@ module.exports = (sequelize, DataTypes) => {
             Course.belongsTo(models.Category, { foreignKey: 'categoryId', as: 'category' });
             Course.hasMany(models.CourseImage, { foreignKey: 'courseId', as: 'images' });
             Course.hasMany(models.Cart, { foreignKey: 'courseId', as: 'cartItems' });
+            Course.hasMany(models.OrderItem, { foreignKey: 'courseId', as: 'orderItems' });
+            Course.hasMany(models.UserCourse, { foreignKey: 'courseId', as: 'userCourses' });
         }
     }
     Course.init(
