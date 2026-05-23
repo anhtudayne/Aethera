@@ -17,3 +17,23 @@ export const handleCheckOrderStatus = asyncHandler(async (req, res) => {
     const data = await orderService.checkOrderStatus(userId, orderCode);
     return res.status(200).json(new ApiResponse(200, data));
 });
+
+export const handleGetMyOrders = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const data = await orderService.getMyOrders(userId);
+    return res.status(200).json(new ApiResponse(200, data, 'Lấy danh sách đơn hàng thành công'));
+});
+
+export const handleGetOrderDetails = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const data = await orderService.getOrderDetails(userId, id);
+    return res.status(200).json(new ApiResponse(200, data, 'Lấy chi tiết đơn hàng thành công'));
+});
+
+export const handleCancelOrder = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const data = await orderService.cancelOrder(userId, id);
+    return res.status(200).json(new ApiResponse(200, data, 'Hủy đơn hàng thành công'));
+});

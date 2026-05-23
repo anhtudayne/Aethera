@@ -94,3 +94,89 @@ export const checkOrderStatus = async (userId, orderCode) => {
         throw error;
     }
 };
+
+export const getMyOrders = async (userId) => {
+    try {
+        const orders = await db.Order.findAll({
+            where: { userId },
+            include: [
+                {
+                    model: db.OrderItem,
+                    as: 'orderItems',
+                    include: [
+                        {
+                            model: db.Course,
+                            as: 'course',
+                            attributes: ['id', 'title', 'slug', 'thumbnail']
+                        }
+                    ]
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+        return orders;
+    } catch (error) {
+        console.error('Lỗi service getMyOrders:', error);
+        throw error;
+    }
+};
+
+export const getOrderDetails = async (userId, orderId) => {
+    try {
+        const order = await db.Order.findOne({
+            where: { id: orderId, userId },
+            include: [
+                {
+                    model: db.OrderItem,
+                    as: 'orderItems',
+                    include: [
+                        {
+                            model: db.Course,
+                            as: 'course',
+                            attributes: ['id', 'title', 'slug', 'thumbnail', 'price', 'salePrice']
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (!order) {
+            const error = new Error('Không tìm thấy đơn hàng');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        return order;
+    } catch (error) {
+        console.error('Lỗi service getOrderDetails:', error);
+        throw error;
+    }
+};
+
+export const cancelOrder = async (userId, orderId) => {
+    try {
+        const order = await db.Order.findOne({
+            where: { id: orderId, userId }
+        });
+
+        if (!order) {
+            const error = new Error('Không tìm thấy đơn hàng');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        if (order.status !== 'pending') {
+            const error = new Error('Chỉ có thể hủy đơn hàng đang chờ thanh toán');
+            error.statusCode = 400;
+            throw error;
+        }
+
+        order.status = 'cancelled';
+        await order.save();
+
+        return order;
+    } catch (error) {
+        console.error('Lỗi service cancelOrder:', error);
+        throw error;
+    }
+};
