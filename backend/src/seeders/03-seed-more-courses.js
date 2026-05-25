@@ -46,21 +46,54 @@ module.exports = {
         ];
         await queryInterface.bulkInsert('Courses', courses);
 
+        // Fetch the inserted courses to get dynamic IDs
+        const slugs = courses.map(c => `'${c.slug}'`).join(', ');
+        const [insertedCourses] = await queryInterface.sequelize.query(
+            `SELECT id, slug FROM Courses WHERE slug IN (${slugs});`
+        );
+
+        const slugToId = {};
+        insertedCourses.forEach(c => {
+            slugToId[c.slug] = c.id;
+        });
+
         // Thêm 3 ảnh cho mỗi khóa học mới
         const images = [];
         courses.forEach((course, idx) => {
-            const courseId = 19 + idx; // ID tiếp nối 18 KH đã có
-            images.push(
-                { imageUrl: course.thumbnail, isPrimary: true, sortOrder: 0, courseId, createdAt: now, updatedAt: now },
-                { imageUrl: `https://picsum.photos/seed/extra${idx}a/600/400`, isPrimary: false, sortOrder: 1, courseId, createdAt: now, updatedAt: now },
-                { imageUrl: `https://picsum.photos/seed/extra${idx}b/600/400`, isPrimary: false, sortOrder: 2, courseId, createdAt: now, updatedAt: now },
-            );
+            const courseId = slugToId[course.slug];
+            if (courseId) {
+                images.push(
+                    { imageUrl: course.thumbnail, isPrimary: true, sortOrder: 0, courseId, createdAt: now, updatedAt: now },
+                    { imageUrl: `https://picsum.photos/seed/extra${idx}a/600/400`, isPrimary: false, sortOrder: 1, courseId, createdAt: now, updatedAt: now },
+                    { imageUrl: `https://picsum.photos/seed/extra${idx}b/600/400`, isPrimary: false, sortOrder: 2, courseId, createdAt: now, updatedAt: now },
+                );
+            }
         });
         await queryInterface.bulkInsert('CourseImages', images);
     },
     async down(queryInterface) {
         const { Op } = require('sequelize');
-        await queryInterface.bulkDelete('CourseImages', { courseId: { [Op.gte]: 19 } }, {});
-        await queryInterface.bulkDelete('Courses', { id: { [Op.gte]: 19 } }, {});
+        const slugs = [
+            'angular-17-complete', 'php-laravel-framework', 'svelte-sveltekit-crash',
+            'graphql-apollo-server', 'wordpress-developer-mastery', 'tailwindcss-design-system',
+            'swiftui-ios-development', 'ionic-capacitor-hybrid', 'jetpack-compose-android',
+            'xamarin-cross-platform', 'app-testing-cicd-mobile', 'pwa-progressive-web-apps',
+            'r-programming-thong-ke', 'nlp-xu-ly-ngon-ngu', 'apache-spark-big-data',
+            'data-visualization-d3js', 'mlops-model-deployment', 'computer-vision-opencv',
+            'blender-3d-beginner', 'web-design-psychology', 'canva-design-professional',
+            'sketch-to-code-handoff', 'brand-identity-design', 'video-editing-davinci',
+            'google-ads-sem-masterclass', 'quan-ly-du-an-scrum-agile', 'facebook-tiktok-ads',
+            'content-marketing-strategy', 'ecommerce-business-a-z', 'financial-literacy-investment'
+        ];
+        
+        const [insertedCourses] = await queryInterface.sequelize.query(
+            `SELECT id FROM Courses WHERE slug IN (${slugs.map(s => `'${s}'`).join(', ')});`
+        );
+        const courseIds = insertedCourses.map(c => c.id);
+
+        if (courseIds.length > 0) {
+            await queryInterface.bulkDelete('CourseImages', { courseId: { [Op.in]: courseIds } }, {});
+            await queryInterface.bulkDelete('Courses', { id: { [Op.in]: courseIds } }, {});
+        }
     },
 };

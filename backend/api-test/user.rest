@@ -1,0 +1,17 @@
+### 1. Lấy thông tin cá nhân (User)
+GET http://localhost:8089/api/user/profile
+Authorization: Bearer [YOUR_USER_TOKEN_HERE]
+
+### 2. Cập nhật thông tin cá nhân (User)
+PUT http://localhost:8089/api/user/profile
+Authorization: Bearer [YOUR_USER_TOKEN_HERE]
+Content-Type: application/json
+
+{
+    "firstName": "Vũ",
+    "lastName": "Anh Quốc",
+    "phoneNumber": "0338997920",
+    "address": "Hà Nội",
+    "gender": true,
+    "image": "https://example.com/avatar.jpg"
+}

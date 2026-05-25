@@ -1,0 +1,24 @@
+### 1. Lấy thông tin giỏ hàng
+GET http://localhost:8089/api/cart/
+Authorization: Bearer [YOUR_TOKEN_HERE]
+
+### 2. Đếm số lượng item trong giỏ hàng
+GET http://localhost:8089/api/cart/count
+Authorization: Bearer [YOUR_TOKEN_HERE]
+
+### 3. Thêm khóa học vào giỏ hàng
+POST http://localhost:8089/api/cart/
+Authorization: Bearer [YOUR_TOKEN_HERE]
+Content-Type: application/json
+
+{
+    "courseId": 1
+}
+
+### 4. Xóa 1 khóa học khỏi giỏ hàng (truyền courseId vào URL)
+DELETE http://localhost:8089/api/cart/1
+Authorization: Bearer [YOUR_TOKEN_HERE]
+
+### 5. Xóa toàn bộ giỏ hàng
+DELETE http://localhost:8089/api/cart/
+Authorization: Bearer [YOUR_TOKEN_HERE]

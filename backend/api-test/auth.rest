@@ -1,0 +1,54 @@
+### 1. Đăng ký tài khoản
+POST http://localhost:8089/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "password": "password123",
+    "firstName": "Test",
+    "lastName": "User"
+}
+
+### 2. Xác thực OTP
+POST http://localhost:8089/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "otp": "123456"
+}
+
+### 3. Gửi lại mã OTP
+POST http://localhost:8089/api/auth/resend-otp
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com"
+}
+
+### 4. Đăng nhập
+POST http://localhost:8089/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "quoc1@gmail.com",
+    "password": "123456q"
+}
+
+### 5. Quên mật khẩu
+POST http://localhost:8089/api/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com"
+}
+
+### 6. Đặt lại mật khẩu
+POST http://localhost:8089/api/auth/reset-password
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "otp": "123456",
+    "newPassword": "newpassword123"
+}

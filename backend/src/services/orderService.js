@@ -107,7 +107,7 @@ export const getMyOrders = async (userId) => {
                         {
                             model: db.Course,
                             as: 'course',
-                            attributes: ['id', 'title', 'slug', 'thumbnail']
+                            attributes: ['id', 'name', 'slug', 'thumbnail']
                         }
                     ]
                 }
@@ -133,7 +133,7 @@ export const getOrderDetails = async (userId, orderId) => {
                         {
                             model: db.Course,
                             as: 'course',
-                            attributes: ['id', 'title', 'slug', 'thumbnail', 'price', 'salePrice']
+                            attributes: ['id', 'name', 'slug', 'thumbnail', 'price', 'salePrice']
                         }
                     ]
                 }

@@ -1,0 +1,24 @@
+### 1. Lấy danh sách đơn hàng của tôi
+GET http://localhost:8089/api/orders/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJlbWFpbCI6InF1b2MxQGdtYWlsLmNvbSIsImlhdCI6MTc3OTY3MzMxOCwiZXhwIjoxNzc5Njc2OTE4fQ.wDLJW8uomF2Ew7NMTqZclyikvFIS6JCRlVoADO4gMOM
+
+### 2. Tạo đơn hàng từ giỏ hàng
+POST http://localhost:8089/api/orders/create-from-cart
+Authorization: Bearer [YOUR_TOKEN_HERE]
+Content-Type: application/json
+
+{
+    "paymentMethod": "bank_transfer"
+}
+
+### 3. Lấy chi tiết một đơn hàng (truyền ID đơn hàng)
+GET http://localhost:8089/api/orders/1
+Authorization: Bearer [YOUR_TOKEN_HERE]
+
+### 4. Kiểm tra trạng thái đơn hàng (bằng mã đơn - orderCode)
+GET http://localhost:8089/api/orders/check-status/ORDER-CODE-123
+Authorization: Bearer [YOUR_TOKEN_HERE]
+
+### 5. Hủy đơn hàng (chưa thanh toán)
+PUT http://localhost:8089/api/orders/1/cancel
+Authorization: Bearer [YOUR_TOKEN_HERE]

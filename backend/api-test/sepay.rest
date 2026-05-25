@@ -1,0 +1,16 @@
+### 1. Webhook SePay (Endpoint để SePay gọi về khi có thanh toán)
+POST http://localhost:8089/api/sepay/webhook
+Content-Type: application/json
+Authorization: Bearer [SEPAY_API_TOKEN_HERE]
+
+{
+    "gateway": "sepay",
+    "transactionDate": "2023-10-27 10:00:00",
+    "accountNumber": "123456789",
+    "subAccount": "",
+    "transferAmount": 500000,
+    "transferType": "in",
+    "transferContent": "DH12345 Thanh toan don hang",
+    "referenceCode": "FT123456",
+    "description": "Nhan tien thanh toan"
+}

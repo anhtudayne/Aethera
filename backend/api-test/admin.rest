@@ -1,0 +1,17 @@
+### 1. Lấy thông tin cá nhân (Admin)
+GET http://localhost:8089/api/admin/profile
+Authorization: Bearer [YOUR_ADMIN_TOKEN_HERE]
+
+### 2. Cập nhật thông tin cá nhân (Admin)
+PUT http://localhost:8089/api/admin/profile
+Authorization: Bearer [YOUR_ADMIN_TOKEN_HERE]
+Content-Type: application/json
+
+{
+    "firstName": "Admin",
+    "lastName": "System",
+    "phoneNumber": "0987654321",
+    "address": "Hà Nội",
+    "gender": true,
+    "image": "https://example.com/admin.jpg"
+}

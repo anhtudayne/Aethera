@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getMyOrders, cancelOrder } from '../services/orderService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -112,17 +113,27 @@ export default function OrderHistoryPage() {
                                 <div className="p-6">
                                     <div className="space-y-4">
                                         {order.orderItems && order.orderItems.map((item) => (
-                                            <div key={item.id} className="flex items-center gap-4">
+                                            <div key={item.id} className="flex items-center gap-4 py-2 border-b border-gray-50 last:border-0 last:pb-0">
                                                 <img 
-                                                    src={item.course.thumbnail?.startsWith('http') ? item.course.thumbnail : `http://localhost:5000${item.course.thumbnail}`} 
-                                                    alt={item.course.title} 
+                                                    src={item.course.thumbnail?.startsWith('http') ? item.course.thumbnail : `http://localhost:8089${item.course.thumbnail}`} 
+                                                    alt={item.course.name} 
                                                     className="w-20 h-14 object-cover rounded-md"
                                                 />
                                                 <div className="flex-grow">
-                                                    <h3 className="font-medium text-gray-900">{item.course.title}</h3>
+                                                    <h3 className="font-medium text-gray-900">{item.course.name}</h3>
                                                 </div>
-                                                <div className="text-right font-medium text-primary">
-                                                    {formatCurrency(item.price)}
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-right font-medium text-primary">
+                                                        {formatCurrency(item.price)}
+                                                    </div>
+                                                    {item.course.slug && (
+                                                        <Link 
+                                                            to={`/course/${item.course.slug}`}
+                                                            className="px-3 py-1.5 text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100 rounded-md font-medium transition-colors whitespace-nowrap"
+                                                        >
+                                                            Xem khóa học
+                                                        </Link>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}

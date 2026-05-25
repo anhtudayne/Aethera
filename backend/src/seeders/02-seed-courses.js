@@ -23,16 +23,48 @@ module.exports = {
         ];
         await queryInterface.bulkInsert('Courses', courses.map(c => ({ ...c, createdAt: new Date(), updatedAt: new Date() })));
 
+        // Fetch the inserted courses to get their dynamic IDs
+        const slugs = courses.map(c => `'${c.slug}'`).join(', ');
+        const [insertedCourses] = await queryInterface.sequelize.query(
+            `SELECT id, slug FROM Courses WHERE slug IN (${slugs});`
+        );
+
+        // Map slugs to generated IDs
+        const slugToId = {};
+        insertedCourses.forEach(c => {
+            slugToId[c.slug] = c.id;
+        });
+
         const images = [];
         courses.forEach((course, idx) => {
-            images.push({ imageUrl: course.thumbnail, isPrimary: true, sortOrder: 0, courseId: idx + 1, createdAt: new Date(), updatedAt: new Date() });
-            images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}a/600/400`, isPrimary: false, sortOrder: 1, courseId: idx + 1, createdAt: new Date(), updatedAt: new Date() });
-            images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}b/600/400`, isPrimary: false, sortOrder: 2, courseId: idx + 1, createdAt: new Date(), updatedAt: new Date() });
+            const courseId = slugToId[course.slug];
+            if (courseId) {
+                images.push({ imageUrl: course.thumbnail, isPrimary: true, sortOrder: 0, courseId, createdAt: new Date(), updatedAt: new Date() });
+                images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}a/600/400`, isPrimary: false, sortOrder: 1, courseId, createdAt: new Date(), updatedAt: new Date() });
+                images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}b/600/400`, isPrimary: false, sortOrder: 2, courseId, createdAt: new Date(), updatedAt: new Date() });
+            }
         });
         await queryInterface.bulkInsert('CourseImages', images);
     },
     async down(queryInterface) {
-        await queryInterface.bulkDelete('CourseImages', null, {});
-        await queryInterface.bulkDelete('Courses', null, {});
+        const { Op } = require('sequelize');
+        const slugs = [
+            'reactjs-nextjs-zero-to-hero', 'nodejs-backend-master-class', 'html-css-javascript-co-ban',
+            'typescript-nestjs-api', 'flutter-dart-complete-guide', 'react-native-mobile',
+            'kotlin-android-a-z', 'python-data-science-ai', 'deep-learning-tensorflow',
+            'sql-database-design', 'uiux-design-figma', 'photoshop-illustrator',
+            'motion-design-after-effects', 'digital-marketing-toan-dien', 'khoi-nghiep-business-model',
+            'vuejs-3-nuxtjs', 'docker-kubernetes-devops', 'excel-power-bi-business'
+        ];
+        
+        const [insertedCourses] = await queryInterface.sequelize.query(
+            `SELECT id FROM Courses WHERE slug IN (${slugs.map(s => `'${s}'`).join(', ')});`
+        );
+        const courseIds = insertedCourses.map(c => c.id);
+
+        if (courseIds.length > 0) {
+            await queryInterface.bulkDelete('CourseImages', { courseId: { [Op.in]: courseIds } }, {});
+            await queryInterface.bulkDelete('Courses', { id: { [Op.in]: courseIds } }, {});
+        }
     },
 };

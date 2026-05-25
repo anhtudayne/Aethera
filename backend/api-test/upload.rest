@@ -1,0 +1,11 @@
+### 1. Tải ảnh đại diện (avatar)
+# Lưu ý: Yêu cầu định dạng multipart/form-data. Bạn có thể cần dùng Postman nếu VS Code REST Client bị lỗi boundary.
+POST http://localhost:8089/api/upload/avatar
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ./path-to-your-local-image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
     "email": "quoc1@gmail.com",
-    "otp": "917466"
+    "otp": "801410"
 }
 
 ### 3. Gửi lại mã OTP

@@ -1,0 +1,45 @@
+### 1. Lấy danh sách danh mục khóa học
+GET http://localhost:8089/api/categories
+
+### 2. Lấy danh sách tất cả khóa học (có phân trang/lọc)
+GET http://localhost:8089/api/courses?page=1&limit=10
+
+### 3. Lấy khóa học nổi bật
+GET http://localhost:8089/api/courses/featured
+
+### 4. Lấy khóa học mới ra mắt
+GET http://localhost:8089/api/courses/new-arrivals
+
+### 5. Lấy khóa học bán chạy nhất
+GET http://localhost:8089/api/courses/best-sellers
+
+### 6. Lấy khóa học xem nhiều nhất
+GET http://localhost:8089/api/courses/top-viewed
+
+### 7. Lấy khóa học theo danh mục (slug)
+GET http://localhost:8089/api/courses/category/web-development
+
+### 8. Lấy chi tiết khóa học (bằng slug)
+GET http://localhost:8089/api/courses/reactjs-nextjs-zero-to-hero
+
+### 9. Lấy các khóa học liên quan
+GET http://localhost:8089/api/courses/1/related
+
+### 10. Tăng lượt xem cho khóa học
+PATCH http://localhost:8089/api/courses/1/view
+
+### 11. Tạo khóa học mới
+POST http://localhost:8089/api/courses
+Content-Type: application/json
+
+{
+    "name": "Khóa học Python nâng cao",
+    "description": "Học Python từ cơ bản đến nâng cao",
+    "thumbnail": "https://example.com/thumb.jpg",
+    "price": 500000,
+    "salePrice": 300000,
+    "instructor": "Nguyen Van A",
+    "duration": "10h",
+    "level": "intermediate",
+    "categoryId": 1
+}

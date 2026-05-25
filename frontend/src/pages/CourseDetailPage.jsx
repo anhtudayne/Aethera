@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getCourseBySlugService, getRelatedCoursesService, incrementViewCountService } from '../services/courseService';
 import { addToCart, fetchCartCount } from '../store/slices/cartSlice';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 export default function CourseDetailPage() {
   const { slug } = useParams();
@@ -64,7 +66,8 @@ export default function CourseDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
       {/* Hero Section */}
       <div className="bg-slate-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-10">
@@ -203,6 +206,7 @@ export default function CourseDetailPage() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }
