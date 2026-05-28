@@ -1,0 +1,41 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.YOUR_TOKEN_HERE
+
+### Tạo đánh giá
+POST http://localhost:8089/api/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "courseId": 1,
+    "rating": 5,
+    "comment": "Khóa học rất hay và bổ ích! Giảng viên dạy rất dễ hiểu."
+}
+
+### Lấy danh sách đánh giá theo khóa học
+GET http://localhost:8089/api/reviews/course/1?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Kiểm tra có thể đánh giá khóa học
+GET http://localhost:8089/api/reviews/can-review/1
+Authorization: Bearer {{token}}
+
+### Lấy đánh giá của tôi
+GET http://localhost:8089/api/reviews/my-reviews
+Authorization: Bearer {{token}}
+
+### Lấy điểm tích lũy + lịch sử
+GET http://localhost:8089/api/rewards/loyalty-points
+Authorization: Bearer {{token}}
+
+### Lấy tổng hợp thưởng
+GET http://localhost:8089/api/rewards/summary
+Authorization: Bearer {{token}}
+
+### Tạo đơn hàng có sử dụng điểm tích lũy
+POST http://localhost:8089/api/orders/create-from-cart
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "usePoints": 10
+}

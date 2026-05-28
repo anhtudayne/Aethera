@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             Course.hasMany(models.Cart, { foreignKey: 'courseId', as: 'cartItems' });
             Course.hasMany(models.OrderItem, { foreignKey: 'courseId', as: 'orderItems' });
             Course.hasMany(models.UserCourse, { foreignKey: 'courseId', as: 'userCourses' });
+            Course.hasMany(models.Review, { foreignKey: 'courseId', as: 'reviews' });
         }
     }
     Course.init(

@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyOrders, cancelOrder } from '../services/orderService';
+import { checkCanReview } from '../services/reviewService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Alert from '../components/Alert';
+import ReviewModal from '../components/common/ReviewModal';
 
 export default function OrderHistoryPage() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [alertConfig, setAlertConfig] = useState({ type: '', message: '' });
+    const [reviewModalCourse, setReviewModalCourse] = useState(null);
+    const [reviewedCourses, setReviewedCourses] = useState(new Set());
 
     const fetchOrders = async () => {
         try {
@@ -22,9 +26,49 @@ export default function OrderHistoryPage() {
         }
     };
 
+    // Kiểm tra trạng thái đã review cho các khóa học đã mua
+    const checkReviewedCourses = async (ordersData) => {
+        const paidOrders = ordersData.filter(o => o.status === 'paid');
+        const courseIds = new Set();
+        paidOrders.forEach(order => {
+            order.orderItems?.forEach(item => courseIds.add(item.courseId));
+        });
+
+        const reviewed = new Set();
+        for (const courseId of courseIds) {
+            try {
+                const res = await checkCanReview(courseId);
+                if (!res.data.canReview && res.data.existingReview) {
+                    reviewed.add(courseId);
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+        setReviewedCourses(reviewed);
+    };
+
     useEffect(() => {
-        fetchOrders();
+        const init = async () => {
+            await fetchOrders();
+        };
+        init();
     }, []);
+
+    // Sau khi orders load xong, check reviewed courses
+    useEffect(() => {
+        if (orders.length > 0) {
+            checkReviewedCourses(orders);
+        }
+    }, [orders]);
+
+    const handleReviewSuccess = (data) => {
+        // Đánh dấu khóa học đã review
+        if (reviewModalCourse) {
+            setReviewedCourses(prev => new Set([...prev, reviewModalCourse.id]));
+        }
+        setAlertConfig({ type: 'success', message: `Đánh giá thành công! Bạn nhận được ${data.pointsEarned} điểm tích lũy.` });
+    };
 
     const handleCancelOrder = async (orderId) => {
         if (!window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
@@ -134,6 +178,20 @@ export default function OrderHistoryPage() {
                                                             Xem khóa học
                                                         </Link>
                                                     )}
+                                                    {order.status === 'paid' && (
+                                                        reviewedCourses.has(item.courseId) ? (
+                                                            <span className="px-3 py-1.5 text-sm bg-gray-50 text-gray-400 border border-gray-100 rounded-md font-medium whitespace-nowrap">
+                                                                ✅ Đã đánh giá
+                                                            </span>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => setReviewModalCourse(item.course)}
+                                                                className="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200 rounded-md font-medium transition-colors whitespace-nowrap"
+                                                            >
+                                                                ⭐ Đánh giá
+                                                            </button>
+                                                        )
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -151,6 +209,15 @@ export default function OrderHistoryPage() {
                     </div>
                 )}
             </main>
+
+            {/* Review Modal */}
+            {reviewModalCourse && (
+                <ReviewModal 
+                    course={reviewModalCourse}
+                    onClose={() => setReviewModalCourse(null)}
+                    onSuccess={handleReviewSuccess}
+                />
+            )}
             
             <Footer />
         </div>

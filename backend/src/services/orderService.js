@@ -1,6 +1,7 @@
 import db from '../models';
 
-export const createOrderFromCart = async (userId, bankAccount, bankName) => {
+export const createOrderFromCart = async (userId, bankAccount, bankName, usePoints = 0) => {
+    const POINT_TO_VND = 1000;
     const transaction = await db.sequelize.transaction();
     try {
         // 1. Lấy giỏ hàng của user
@@ -29,8 +30,36 @@ export const createOrderFromCart = async (userId, bankAccount, bankName) => {
             });
         }
 
-        // 3. Tạo Order
-        // Tạo mã đơn hàng độc nhất, ví dụ: DH + userId + Date.now()
+        // 3. Áp dụng điểm tích lũy
+        let pointsUsed = 0;
+        let discountFromPoints = 0;
+        if (usePoints && usePoints > 0) {
+            const user = await db.User.findByPk(userId, { transaction });
+            if (user.loyaltyPoints < usePoints) {
+                const error = new Error(`Bạn không đủ điểm tích lũy. Hiện có: ${user.loyaltyPoints} điểm.`);
+                error.statusCode = 400;
+                throw error;
+            }
+            
+            discountFromPoints = usePoints * POINT_TO_VND;
+            // Không cho giảm quá tổng tiền
+            if (discountFromPoints > totalAmount) {
+                discountFromPoints = totalAmount;
+                pointsUsed = Math.ceil(totalAmount / POINT_TO_VND);
+            } else {
+                pointsUsed = usePoints;
+            }
+            totalAmount -= discountFromPoints;
+
+            // Trừ điểm
+            await db.User.decrement('loyaltyPoints', {
+                by: pointsUsed,
+                where: { id: userId },
+                transaction,
+            });
+        }
+
+        // 4. Tạo Order
         const orderCode = `DH${userId}${Date.now()}`;
         
         const order = await db.Order.create({
@@ -41,21 +70,30 @@ export const createOrderFromCart = async (userId, bankAccount, bankName) => {
             paymentMethod: 'bank_transfer'
         }, { transaction });
 
-        // 4. Tạo Order Items
+        // 5. Tạo Order Items
         const itemsToCreate = orderItemsData.map(item => ({
             ...item,
             orderId: order.id
         }));
         await db.OrderItem.bulkCreate(itemsToCreate, { transaction });
 
-        // 5. Xóa giỏ hàng sau khi đặt (Tùy chọn, ở đây mình xóa luôn để tránh đặt trùng)
+        // 6. Ghi log nếu dùng điểm
+        if (pointsUsed > 0) {
+            await db.LoyaltyPoint.create({
+                userId,
+                points: -pointsUsed,
+                type: 'spend',
+                description: `Thanh toán đơn hàng ${orderCode} (-${discountFromPoints.toLocaleString('vi-VN')}đ)`,
+                referenceId: order.id,
+            }, { transaction });
+        }
+
+        // 7. Xóa giỏ hàng
         await db.Cart.destroy({ where: { userId }, transaction });
 
         await transaction.commit();
 
-        // 6. Tạo link VietQR
-        // https://qr.sepay.vn/img?acc={STK_NGAN_HANG}&bank={TEN_NGAN_HANG}&amount={TONG_TIEN}&des={MA_DON_HANG}
-        // Giả sử STK và bankName được cung cấp từ config hoặc body
+        // 8. Tạo link VietQR
         const finalBankAccount = bankAccount || process.env.BANK_ACCOUNT || '0000000000';
         const finalBankName = bankName || process.env.BANK_NAME || 'MBBank';
         const qrUrl = `https://qr.sepay.vn/img?acc=${finalBankAccount}&bank=${finalBankName}&amount=${totalAmount}&des=${orderCode}`;
@@ -63,6 +101,8 @@ export const createOrderFromCart = async (userId, bankAccount, bankName) => {
         return {
             orderCode,
             totalAmount,
+            pointsUsed,
+            discountFromPoints,
             qrUrl
         };
 

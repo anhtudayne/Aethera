@@ -7,6 +7,8 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Cart, { foreignKey: 'userId', as: 'cartItems' });
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             User.hasMany(models.UserCourse, { foreignKey: 'userId', as: 'userCourses' });
+            User.hasMany(models.Review, { foreignKey: 'userId', as: 'reviews' });
+            User.hasMany(models.LoyaltyPoint, { foreignKey: 'userId', as: 'loyaltyPointHistory' });
         }
     }
     User.init(
@@ -50,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             otpExpires: {
                 type: DataTypes.DATE,
                 allowNull: true,
+            },
+            loyaltyPoints: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+                // Tổng điểm tích lũy hiện tại
             },
         },
         {

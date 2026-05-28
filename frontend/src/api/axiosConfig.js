@@ -15,11 +15,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 responses globally
+// Handle 401 and 403 (token expired) responses globally
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 ||
+      (error.response?.status === 403 &&
+        (error.response?.data?.message?.toLowerCase().includes('token') ||
+          error.response?.data?.message?.toLowerCase().includes('hết hạn') ||
+          error.response?.data?.message?.toLowerCase().includes('xác thực')))
+    ) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

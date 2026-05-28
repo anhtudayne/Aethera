@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchCart, removeCartItem, clearCart } from '../store/slices/cartSlice';
 import * as orderService from '../services/orderService';
+import { getRewardSummary } from '../services/rewardService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PaymentModal from '../components/common/PaymentModal';
@@ -19,8 +20,18 @@ export default function CartPage() {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [qrData, setQrData] = useState(null);
 
+  // Loyalty points
+  const [rewardData, setRewardData] = useState(null);
+  const [usePoints, setUsePoints] = useState(false);
+  const [pointsToUse, setPointsToUse] = useState(0);
+  const POINT_TO_VND = 1000;
+
   useEffect(() => {
     dispatch(fetchCart());
+    // Lấy thông tin điểm tích lũy
+    getRewardSummary().then(res => {
+      setRewardData(res.data);
+    }).catch(() => {});
   }, [dispatch]);
 
   const handleRemove = (cartId) => {
@@ -36,7 +47,8 @@ export default function CartPage() {
   const handleCheckout = async () => {
     try {
       setIsCheckoutLoading(true);
-      const res = await orderService.createOrderFromCart();
+      const pointsForCheckout = usePoints ? pointsToUse : 0;
+      const res = await orderService.createOrderFromCart(pointsForCheckout);
 
       // Backend trả về chuẩn: { success: true, data: {...}, message: "..." }
       const payload = res;
@@ -179,10 +191,72 @@ export default function CartPage() {
                     <span>{items.length} khóa học</span>
                     <span className="font-medium">{formatPrice(totalAmount)}</span>
                   </div>
+
+                  {/* Loyalty Points Section */}
+                  {rewardData && rewardData.totalPoints > 0 && (
+                    <div className="border border-indigo-100 bg-indigo-50/50 rounded-xl p-3 space-y-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={usePoints}
+                          onChange={(e) => {
+                            setUsePoints(e.target.checked);
+                            if (e.target.checked) {
+                              // Mặc định dùng hết điểm hoặc tối đa bằng tổng tiền
+                              const maxPointsCanUse = Math.min(
+                                rewardData.totalPoints,
+                                Math.floor(totalAmount / POINT_TO_VND)
+                              );
+                              setPointsToUse(maxPointsCanUse);
+                            } else {
+                              setPointsToUse(0);
+                            }
+                          }}
+                          className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Dùng điểm tích lũy</span>
+                      </label>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>Hiện có: <strong className="text-indigo-600">{rewardData.totalPoints} điểm</strong></span>
+                        <span>= {formatPrice(rewardData.totalPoints * POINT_TO_VND)}</span>
+                      </div>
+                      {usePoints && (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            max={Math.min(rewardData.totalPoints, Math.floor(totalAmount / POINT_TO_VND))}
+                            value={pointsToUse}
+                            onChange={(e) => {
+                              const val = Math.max(0, Math.min(
+                                parseInt(e.target.value) || 0,
+                                rewardData.totalPoints,
+                                Math.floor(totalAmount / POINT_TO_VND)
+                              ));
+                              setPointsToUse(val);
+                            }}
+                            className="w-20 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                          <span className="text-xs text-gray-500">điểm = -{formatPrice(pointsToUse * POINT_TO_VND)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <hr className="border-gray-100" />
+
+                  {usePoints && pointsToUse > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Giảm từ điểm</span>
+                      <span className="font-medium">-{formatPrice(pointsToUse * POINT_TO_VND)}</span>
+                    </div>
+                  )}
+
                   <div className="flex justify-between text-gray-900 text-base">
                     <span className="font-bold">Tổng cộng</span>
-                    <span className="font-bold text-primary text-xl">{formatPrice(totalAmount)}</span>
+                    <span className="font-bold text-primary text-xl">
+                      {formatPrice(Math.max(0, totalAmount - (usePoints ? pointsToUse * POINT_TO_VND : 0)))}
+                    </span>
                   </div>
                 </div>
 

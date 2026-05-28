@@ -6,6 +6,8 @@ import { addToCart, fetchCartCount } from '../store/slices/cartSlice';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+import ReviewSection from '../components/ReviewSection';
+
 export default function CourseDetailPage() {
   const { slug } = useParams();
   const dispatch = useDispatch();
@@ -180,6 +182,11 @@ export default function CourseDetailPage() {
         <div className="hidden md:block md:w-1/3"></div>
       </div>
       
+      {/* Review Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <ReviewSection courseId={course.id} />
+      </div>
+
       {/* Related Courses Section */}
       {relatedCourses.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">

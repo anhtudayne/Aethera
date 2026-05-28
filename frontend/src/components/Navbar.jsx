@@ -77,6 +77,10 @@ export default function Navbar() {
                 <Link to="/user/orders" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
                   Đơn hàng
                 </Link>
+                <Link to="/user/rewards" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm text-yellow-500" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
+                  Thưởng
+                </Link>
                 <Link to="/user/profile" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">
                     {user.firstName?.charAt(0)}
@@ -117,6 +121,9 @@ export default function Navbar() {
                 </Link>
                 <Link to="/user/orders" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary">
                   📦 Lịch sử mua hàng
+                </Link>
+                <Link to="/user/rewards" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary">
+                  ⭐ Phần thưởng
                 </Link>
                 <Link to="/user/profile" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
                   👤 Hồ sơ ({user.firstName})

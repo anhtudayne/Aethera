@@ -1,28 +1,24 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/slices/authSlice';
 
 const ManagementLayout = ({ children, role: propRole = 'user' }) => {
     const location = useLocation();
-    const [userData, setUserData] = React.useState(null);
-
-    React.useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUserData(JSON.parse(storedUser));
-        }
-
-        // Listen for storage changes (for same-page updates)
-        const handleStorageChange = () => {
-            const updatedUser = localStorage.getItem('user');
-            if (updatedUser) setUserData(JSON.parse(updatedUser));
-        };
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
-    }, []);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    // Get user from Redux store for real-time synchronization
+    const { user: reduxUser } = useSelector((state) => state.auth);
+    const userData = reduxUser || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
 
     const role = userData?.role || propRole;
     const userImage = userData?.image || userData?.avatarUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAKpzZNaITytRFyq1U1RoCLoxYekbNpl3Vsk7g9Z2sRFOFcJ98xaaDBTB64JW4mAs0RLLfEQc68WhjYbpjT0ZtVYq75aQ9_dOGqwsIt_BqUXw9lOOUVokgvVJ-eWJutsrjfjhjOOGox4qTbYbHjJyTZEIZ00HIxJ_21wHhLlRyfbmWZctVz_fL_JXUxhX_THS74cjDy9CefBz3GgpAyx3EyXaduBci-8a7HnNKQhH5OKxRKEpWOAf2nk5GC_3OEhDHwtTAdiiEFTA";
     const userName = userData ? `${userData.firstName} ${userData.lastName}` : (role === 'admin' ? 'System Admin' : 'User');
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/login');
+    };
 
     // Helper to generate breadcrumb based on current path
     const getBreadcrumb = () => {
@@ -51,7 +47,7 @@ const ManagementLayout = ({ children, role: propRole = 'user' }) => {
                         </div>
                     </div>
 
-                    {/* Right: Utilities (Gom nhóm các icon gần nhau hơn) */}
+                    {/* Right: Utilities */}
                     <div className="flex items-center gap-x-4">
                         <button className="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low active:opacity-70 flex items-center justify-center">
                             <span className="material-symbols-outlined">notifications</span>
@@ -62,6 +58,14 @@ const ManagementLayout = ({ children, role: propRole = 'user' }) => {
                         <Link to={`/${role}/profile`} className="w-9 h-9 rounded-full overflow-hidden border-2 border-outline-variant cursor-pointer hover:border-primary transition-colors">
                             <img alt="User profile" className="w-full h-full object-cover" src={userImage} />
                         </Link>
+                        {/* Logout button in Header - vital for mobile and very convenient for desktop */}
+                        <button 
+                            onClick={handleLogout} 
+                            className="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-surface-container-low active:opacity-70 flex items-center justify-center"
+                            title="Đăng xuất"
+                        >
+                            <span className="material-symbols-outlined">logout</span>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -84,7 +88,7 @@ const ManagementLayout = ({ children, role: propRole = 'user' }) => {
                             <span className="material-symbols-outlined">person</span>
                             Profile
                         </Link>
-                        <button onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/login'; }} className="w-full flex items-center gap-4 px-4 py-2 font-label-caps text-label-caps text-error hover:bg-error-container transition-all scale-95 active:scale-90 duration-150 rounded-lg">
+                        <button onClick={handleLogout} className="w-full flex items-center gap-4 px-4 py-2 font-label-caps text-label-caps text-error hover:bg-error-container transition-all scale-95 active:scale-90 duration-150 rounded-lg">
                             <span className="material-symbols-outlined">logout</span>
                             Logout
                         </button>

@@ -93,6 +93,10 @@ const authSlice = createSlice({
     setOtpEmail(state, action) {
       state.otpEmail = action.payload;
     },
+    updateUser(state, action) {
+      state.user = { ...state.user, ...action.payload };
+      localStorage.setItem('user', JSON.stringify(state.user));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -189,5 +193,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError, clearMessage, setOtpEmail } = authSlice.actions;
+export const { logout, clearError, clearMessage, setOtpEmail, updateUser } = authSlice.actions;
 export default authSlice.reducer;

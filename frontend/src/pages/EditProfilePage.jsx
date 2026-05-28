@@ -1,12 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../store/slices/authSlice';
 import ManagementLayout from '../components/layout/ManagementLayout';
 import Toast from '../components/ui/Toast';
 import { getProfileByRole, updateProfileByRole, uploadAvatar } from '../services/userService';
 
 const EditProfilePage = () => {
+    const dispatch = useDispatch();
     // Basic state setup
     const fileInputRef = useRef(null);
-    const [userRole, setUserRole] = useState('user');
+    
+    // Lazy initialization of userRole to avoid setState in useEffect lint warnings
+    const [userRole] = useState(() => {
+        const storedUserStr = localStorage.getItem('user');
+        if (storedUserStr) {
+            try {
+                const storedUser = JSON.parse(storedUserStr);
+                return storedUser.role || 'user';
+            } catch {
+                console.error("Error parsing user from localStorage");
+            }
+        }
+        return 'user';
+    });
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -22,25 +39,11 @@ const EditProfilePage = () => {
     const [errors, setErrors] = useState({});
     const [toast, setToast] = useState({ show: false, type: 'success', title: '', message: '' });
 
-    useEffect(() => {
-        // Assume user info is stored in localStorage after login
-        const storedUserStr = localStorage.getItem('user');
-        let role = 'user';
-        if (storedUserStr) {
-            try {
-                const storedUser = JSON.parse(storedUserStr);
-                role = storedUser.role || 'user';
-                setUserRole(role);
-            } catch (e) {
-                console.error("Error parsing user from localStorage");
-            }
-        }
-
-        fetchUserProfile(role);
+    const showToast = useCallback((type, title, message) => {
+        setToast({ show: true, type, title, message });
     }, []);
 
-    const fetchUserProfile = async (role) => {
-        setIsFetching(true);
+    const fetchUserProfile = useCallback(async (role) => {
         try {
             const response = await getProfileByRole(role);
             const userData = response.data.user || response.data;
@@ -61,7 +64,11 @@ const EditProfilePage = () => {
         } finally {
             setIsFetching(false);
         }
-    };
+    }, [showToast]);
+
+    useEffect(() => {
+        fetchUserProfile(userRole);
+    }, [fetchUserProfile, userRole]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -90,10 +97,12 @@ const EditProfilePage = () => {
             const imageUrl = res.data.imageUrl;
             setFormData(prev => ({ ...prev, avatarUrl: imageUrl }));
             
-            // Cập nhật localStorage ngay lập tức để đồng bộ Sidebar/Header
+            // Cập nhật localStorage và Redux store ngay lập tức để đồng bộ Sidebar/Header
             const storedUser = JSON.parse(localStorage.getItem('user'));
             if (storedUser) {
-                localStorage.setItem('user', JSON.stringify({ ...storedUser, image: imageUrl }));
+                const updated = { ...storedUser, image: imageUrl };
+                localStorage.setItem('user', JSON.stringify(updated));
+                dispatch(updateUser({ image: imageUrl }));
                 window.dispatchEvent(new Event('storage'));
             }
 
@@ -104,10 +113,6 @@ const EditProfilePage = () => {
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const showToast = (type, title, message) => {
-        setToast({ show: true, type, title, message });
     };
 
     const validateForm = () => {
@@ -146,10 +151,12 @@ const EditProfilePage = () => {
 
             showToast('success', 'Thành công', 'Cập nhật hồ sơ thành công!');
 
-            // Optionally update localStorage if needed
+            // Cập nhật localStorage và Redux store ngay lập tức để đồng bộ Sidebar/Header
             const storedUser = JSON.parse(localStorage.getItem('user'));
             if (storedUser) {
-                localStorage.setItem('user', JSON.stringify({ ...storedUser, ...updateData }));
+                const updated = { ...storedUser, ...updateData };
+                localStorage.setItem('user', JSON.stringify(updated));
+                dispatch(updateUser(updateData));
                 window.dispatchEvent(new Event('storage'));
             }
 
@@ -306,7 +313,7 @@ const EditProfilePage = () => {
                             <button
                                 className="px-8 py-2 bg-surface-container-lowest border border-outline-variant text-on-surface font-label-caps text-label-caps rounded-lg hover:bg-surface-container-low transition-colors"
                                 type="button"
-                                onClick={() => fetchUserProfile(userRole)} // Reset form to server state
+                                onClick={() => { setIsFetching(true); fetchUserProfile(userRole); }} // Reset form to server state
                                 disabled={isLoading}
                             >
                                 Hủy
