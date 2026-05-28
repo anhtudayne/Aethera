@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../store/slices/authSlice';
 import { fetchCartCount } from '../store/slices/cartSlice';
+import { fetchFavorites } from '../store/slices/favoriteSlice';
 import CartIcon from './CartIcon';
 
 export default function Navbar() {
@@ -12,10 +13,11 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch cart count khi user đăng nhập
+  // Fetch cart count & favorites khi user đăng nhập
   useEffect(() => {
     if (user) {
       dispatch(fetchCartCount());
+      dispatch(fetchFavorites());
     }
   }, [dispatch, user]);
 
@@ -77,6 +79,10 @@ export default function Navbar() {
                 <Link to="/user/orders" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
                   Đơn hàng
                 </Link>
+                <Link to="/user/favorites" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm text-red-500" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                  Yêu thích
+                </Link>
                 <Link to="/user/rewards" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm text-yellow-500" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
                   Thưởng
@@ -124,6 +130,9 @@ export default function Navbar() {
                 </Link>
                 <Link to="/user/rewards" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary">
                   ⭐ Phần thưởng
+                </Link>
+                <Link to="/user/favorites" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary">
+                  ❤️ Khóa học yêu thích
                 </Link>
                 <Link to="/user/profile" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
                   👤 Hồ sơ ({user.firstName})

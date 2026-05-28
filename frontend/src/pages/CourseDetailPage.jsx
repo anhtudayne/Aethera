@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCourseBySlugService, getRelatedCoursesService, incrementViewCountService } from '../services/courseService';
+import { addViewedCourseService } from '../services/viewedService';
+import { toggleFavorite } from '../store/slices/favoriteSlice';
 import { addToCart, fetchCartCount } from '../store/slices/cartSlice';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -11,12 +13,15 @@ import ReviewSection from '../components/ReviewSection';
 export default function CourseDetailPage() {
   const { slug } = useParams();
   const dispatch = useDispatch();
+  const { favoriteIds } = useSelector((state) => state.favorite);
   const [course, setCourse] = useState(null);
   const [relatedCourses, setRelatedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
   const [cartError, setCartError] = useState(null);
+
+  const isFavorite = course ? favoriteIds.includes(course.id) : false;
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -30,8 +35,9 @@ export default function CourseDetailPage() {
         if (courseData && courseData.id) {
           try {
             await incrementViewCountService(courseData.id);
+            await addViewedCourseService(courseData.id);
           } catch (e) {
-            console.error('Error incrementing view count:', e);
+            console.error('Error handling course view logs:', e);
           }
           const relatedResponse = await getRelatedCoursesService(courseData.id);
           setRelatedCourses(relatedResponse.data.data);
@@ -87,7 +93,11 @@ export default function CourseDetailPage() {
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-yellow-400 text-lg">star</span>
                 <span className="font-semibold text-white">{course.rating}</span>
-                <span>({course.totalStudents} học viên)</span>
+                <span>({course.reviewsCount || 0} đánh giá)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
+                <span><span className="text-white font-semibold">{course.buyersCount || 0}</span> học viên đã mua</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-lg">person</span>
@@ -127,27 +137,42 @@ export default function CourseDetailPage() {
               <button className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">
                 Đăng ký học ngay
               </button>
-              <button
-                onClick={async () => {
-                  setCartError(null);
-                  const result = await dispatch(addToCart(course.id));
-                  if (result.meta.requestStatus === 'fulfilled') {
-                    setAddedToCart(true);
-                    dispatch(fetchCartCount());
-                    setTimeout(() => setAddedToCart(false), 2500);
-                  } else {
-                    setCartError(result.payload?.message || 'Lỗi thêm vào giỏ hàng');
-                  }
-                }}
-                disabled={addedToCart}
-                className={`w-full py-3 px-4 font-bold rounded-lg transition-colors shadow-md ${
-                  addedToCart
-                    ? 'bg-green-500 text-white'
-                    : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
-                }`}
-              >
-                {addedToCart ? '✅ Đã thêm vào giỏ hàng' : 'Thêm vào giỏ hàng'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={async () => {
+                    setCartError(null);
+                    const result = await dispatch(addToCart(course.id));
+                    if (result.meta.requestStatus === 'fulfilled') {
+                      setAddedToCart(true);
+                      dispatch(fetchCartCount());
+                      setTimeout(() => setAddedToCart(false), 2500);
+                    } else {
+                      setCartError(result.payload?.message || 'Lỗi thêm vào giỏ hàng');
+                    }
+                  }}
+                  disabled={addedToCart}
+                  className={`flex-1 py-3 px-4 font-bold rounded-lg transition-colors shadow-md ${
+                    addedToCart
+                      ? 'bg-green-500 text-white'
+                      : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
+                  }`}
+                >
+                  {addedToCart ? '✅ Đã thêm vào giỏ hàng' : 'Thêm vào giỏ hàng'}
+                </button>
+                <button
+                  onClick={() => dispatch(toggleFavorite(course.id))}
+                  className={`px-4 rounded-lg border-2 transition-all flex items-center justify-center ${
+                    isFavorite
+                      ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
+                      : 'border-gray-300 bg-white text-gray-500 hover:text-red-500 hover:border-red-300'
+                  }`}
+                  title={isFavorite ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
+                >
+                  <span className="material-symbols-outlined" style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>
+                    favorite
+                  </span>
+                </button>
+              </div>
               {cartError && <p className="text-xs text-red-500 text-center mt-1">{cartError}</p>}
               <p className="text-xs text-center text-gray-500">Hoàn tiền trong 30 ngày. Đảm bảo chất lượng.</p>
             </div>

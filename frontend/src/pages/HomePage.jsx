@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeatured, fetchNewArrivals, fetchBestSellers, fetchCategories, fetchTopViewed } from '../store/slices/courseSlice';
+import { getViewedCoursesService } from '../services/viewedService';
 import Navbar from '../components/Navbar';
 import HeroBanner from '../components/HeroBanner';
 import CategoryCard from '../components/CategoryCard';
@@ -12,13 +13,24 @@ import Footer from '../components/Footer';
 export default function HomePage() {
   const dispatch = useDispatch();
   const { featuredCourses, newArrivals, bestSellers, topViewed, categories, loading } = useSelector((state) => state.course);
-
+  const [viewedCourses, setViewedCourses] = useState([]);
+ 
   useEffect(() => {
     dispatch(fetchFeatured());
     dispatch(fetchNewArrivals());
     dispatch(fetchBestSellers());
     dispatch(fetchTopViewed());
     dispatch(fetchCategories());
+
+    const fetchViewed = async () => {
+      try {
+        const response = await getViewedCoursesService();
+        setViewedCourses(response.data.data || []);
+      } catch (e) {
+        console.error('Error fetching viewed courses:', e);
+      }
+    };
+    fetchViewed();
   }, [dispatch]);
 
   return (
@@ -82,6 +94,17 @@ export default function HomePage() {
           linkText="Xem tất cả bán chạy"
         />
       </div>
+ 
+      {/* Recently Viewed Courses */}
+      {viewedCourses.length > 0 && (
+        <div className="bg-gradient-to-b from-gray-50 to-white py-4">
+          <CourseSection
+            title="Khóa học đã xem gần đây"
+            emoji="⏳"
+            courses={viewedCourses}
+          />
+        </div>
+      )}
 
       {loading && (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">

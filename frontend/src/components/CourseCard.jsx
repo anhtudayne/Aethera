@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleFavorite } from '../store/slices/favoriteSlice';
 
 function formatPrice(price) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -20,6 +22,9 @@ function StarRating({ rating }) {
 }
 
 export default function CourseCard({ course }) {
+  const dispatch = useDispatch();
+  const { favoriteIds } = useSelector((state) => state.favorite);
+  const isFavorite = favoriteIds.includes(course.id);
   const hasDiscount = course.salePrice && course.salePrice < course.price;
   const discountPercent = hasDiscount ? Math.round((1 - course.salePrice / course.price) * 100) : 0;
 
@@ -55,6 +60,19 @@ export default function CourseCard({ course }) {
               {course.duration}
             </span>
           </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(toggleFavorite(course.id));
+            }}
+            className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all backdrop-blur-sm z-10 ${
+              isFavorite ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-white/80 hover:bg-white text-gray-500 hover:text-red-500'
+            }`}
+          >
+            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>
+              favorite
+            </span>
+          </button>
         </div>
 
         {/* Info */}

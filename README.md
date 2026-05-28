@@ -4,7 +4,7 @@
 | MSSV | Họ và Tên | Nhiệm vụ BT02 | Nhiệm vụ BT03 | Nhiệm vụ BT04 | Nhiệm vụ BT05 | Nhiệm vụ BT06 | Nhiệm vụ BT07 |
 |------|-----------|---------------|---------------|---------------|---------------|---------------|---------------|
 | 23110285 | NGUYỄN THUẬN PHÚ | Chỉnh sửa Profile | UI Chỉnh sửa Profile | Tìm kiếm & Lọc dữ liệu | Carousel phân trang ngang + hiển thị 10 SP có viewCount cao nhất | | Mã giảm giá (Coupon), Thanh toán bằng Điểm tích lũy & Luồng tự động duyệt đơn 0đ |
-| 23110296 | VŨ ANH QUỐC | Đăng nhập, Quên mật khẩu | UI Quên mật khẩu | Trang chi tiết khóa học | Danh mục sản phẩm | Lịch sử mua hàng | |
+| 23110296 | VŨ ANH QUỐC | Đăng nhập, Quên mật khẩu | UI Quên mật khẩu | Trang chi tiết khóa học | Danh mục sản phẩm | Lịch sử mua hàng | Yêu thích, SP tương tự |
 | 23110359 | VÕ VĂN TÚ | Đăng ký | UI Đăng ký, Đăng nhập | Trang chủ bán khóa học | Khóa học theo danh mục + Infinite Scroll | Giỏ hàng (API + UI) | Đánh giá & Loyalty Points (API + UI) + Tự động Đăng xuất & Đồng bộ Profile |
 
 Dự án xây dựng nền tảng E-Learning bán khóa học trực tuyến kiểu Udemy, bao gồm Backend API bảo mật và Frontend giao diện hiện đại.

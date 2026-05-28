@@ -1,5 +1,5 @@
 require('dotenv').config();
-const db = require('./models/index');
+const db = require('../models/index');
 
 async function seedData() {
     try {

@@ -13,6 +13,7 @@ import CategoryPage from './pages/CategoryPage';
 import CartPage from './pages/CartPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import MyRewardsPage from './pages/MyRewardsPage';
+import FavoritesPage from './pages/FavoritesPage';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/user/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
       <Route path="/user/orders" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} />
       <Route path="/user/rewards" element={<ProtectedRoute><MyRewardsPage /></ProtectedRoute>} />
+      <Route path="/user/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
       <Route path="/admin/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
       <Route path="/courses" element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />

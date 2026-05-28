@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.UserCourse, { foreignKey: 'userId', as: 'userCourses' });
             User.hasMany(models.Review, { foreignKey: 'userId', as: 'reviews' });
             User.hasMany(models.LoyaltyPoint, { foreignKey: 'userId', as: 'loyaltyPointHistory' });
+            User.hasMany(models.FavoriteCourse, { foreignKey: 'userId', as: 'favoriteCourses' });
+            User.hasMany(models.ViewedCourse, { foreignKey: 'userId', as: 'viewedCourses' });
         }
     }
     User.init(

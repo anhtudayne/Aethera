@@ -76,7 +76,13 @@ const getBestSellers = async () => {
 };
 
 const getCourseBySlug = async (slug) => {
-    const data = await Course.findOne({ where: { slug }, include: includeOptions });
+    const course = await Course.findOne({ where: { slug }, include: includeOptions });
+    if (!course) return { data: null };
+    
+    const data = course.toJSON();
+    data.buyersCount = await db.UserCourse.count({ where: { courseId: course.id } });
+    data.reviewsCount = await db.Review.count({ where: { courseId: course.id } });
+    
     return { data };
 };
 

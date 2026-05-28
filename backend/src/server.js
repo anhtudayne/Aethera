@@ -14,6 +14,8 @@ import cartRoutes from './routes/cartRoutes';
 import reviewRoutes from './routes/reviewRoutes';
 import rewardRoutes from './routes/rewardRoutes';
 import couponRoutes from './routes/couponRoutes';
+import favoriteRoutes from './routes/favoriteRoutes';
+import viewedRoutes from './routes/viewedRoutes';
 import errorHandler from './middlewares/errorHandler';
 import path from 'path';
 
@@ -52,6 +54,8 @@ app.use('/api/sepay', sepayRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/viewed', viewedRoutes);
 
 // Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
@@ -74,3 +78,5 @@ let port = process.env.PORT || 8089;
 app.listen(port, () => {
     console.log(`Server đang chạy tại: http://localhost:${port}`);
 });
+
+
