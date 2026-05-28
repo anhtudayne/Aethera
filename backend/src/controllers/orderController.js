@@ -4,10 +4,10 @@ import ApiResponse from '../utils/ApiResponse';
 
 export const handleCreateOrder = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    // Lấy thông tin tài khoản ngân hàng và điểm tích lũy từ body
-    const { bankAccount, bankName, usePoints } = req.body;
+    // Lấy thông tin tài khoản ngân hàng, điểm tích lũy, mã giảm giá từ body
+    const { bankAccount, bankName, usePoints, couponCode } = req.body;
 
-    const data = await orderService.createOrderFromCart(userId, bankAccount, bankName, usePoints || 0);
+    const data = await orderService.createOrderFromCart(userId, bankAccount, bankName, usePoints || 0, couponCode || null);
     return res.status(201).json(new ApiResponse(201, data, 'Tạo đơn hàng thành công'));
 });
 

@@ -33,6 +33,18 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 defaultValue: 'bank_transfer', // Hoặc 'sepay', 'cod'
             },
+            couponCode: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            discountFromCoupon: {
+                type: DataTypes.DECIMAL(12, 0),
+                defaultValue: 0,
+            },
+            discountFromPoints: {
+                type: DataTypes.DECIMAL(12, 0),
+                defaultValue: 0,
+            },
         },
         {
             sequelize,

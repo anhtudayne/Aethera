@@ -22,3 +22,15 @@ export const verifyToken = (req, res, next) => {
         });
     }
 };
+
+export const verifyAdmin = (req, res, next) => {
+    // req.user được gán từ verifyToken
+    if (req.user && req.user.roleId === 'admin') {
+        next();
+    } else {
+        return res.status(403).json({
+            status: 403,
+            message: 'Không có quyền truy cập. Yêu cầu quyền quản trị.',
+        });
+    }
+};

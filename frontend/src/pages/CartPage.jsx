@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchCart, removeCartItem, clearCart } from '../store/slices/cartSlice';
 import * as orderService from '../services/orderService';
 import { getRewardSummary } from '../services/rewardService';
+import { validateCoupon } from '../services/couponService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PaymentModal from '../components/common/PaymentModal';
@@ -20,11 +21,27 @@ export default function CartPage() {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [qrData, setQrData] = useState(null);
 
+  // Coupon
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discountFromCoupon, setDiscountFromCoupon] = useState(0);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState('');
+
   // Loyalty points
   const [rewardData, setRewardData] = useState(null);
   const [usePoints, setUsePoints] = useState(false);
   const [pointsToUse, setPointsToUse] = useState(0);
   const POINT_TO_VND = 1000;
+
+  // Tính tổng tiền ban đầu
+  const totalAmount = items.reduce((sum, item) => {
+    const course = item.course;
+    const price = course?.salePrice && course.salePrice < course.price ? course.salePrice : course?.price || 0;
+    return sum + Number(price);
+  }, 0);
+
+  const subTotal = Math.max(0, totalAmount - discountFromCoupon);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -44,19 +61,58 @@ export default function CartPage() {
     }
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    try {
+      setIsApplyingCoupon(true);
+      setCouponError('');
+      const res = await validateCoupon(couponCode, totalAmount);
+      if (res.data) {
+        setAppliedCoupon(res.data.coupon);
+        setDiscountFromCoupon(res.data.discountAmount);
+        // Reset points if applying coupon
+        setUsePoints(false);
+        setPointsToUse(0);
+      }
+    } catch (err) {
+      setCouponError(err.message || 'Mã giảm giá không hợp lệ');
+      setAppliedCoupon(null);
+      setDiscountFromCoupon(0);
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setAppliedCoupon(null);
+    setDiscountFromCoupon(0);
+    setCouponError('');
+    // Reset points when total changes
+    setUsePoints(false);
+    setPointsToUse(0);
+  };
+
   const handleCheckout = async () => {
     try {
       setIsCheckoutLoading(true);
       const pointsForCheckout = usePoints ? pointsToUse : 0;
-      const res = await orderService.createOrderFromCart(pointsForCheckout);
+      const res = await orderService.createOrderFromCart(pointsForCheckout, appliedCoupon?.code || null);
 
       // Backend trả về chuẩn: { success: true, data: {...}, message: "..." }
       const payload = res;
 
       if (payload.success || payload.statusCode === 201 || payload.statusCode === 200 || payload.status === 201 || payload.status === 200) {
-        // payload.data chứa { orderCode, totalAmount, qrUrl }
-        setQrData(payload.data || payload);
-        dispatch(fetchCart());
+        const orderData = payload.data || payload;
+        if (orderData.isFullyPaid) {
+          alert('Thanh toán thành công! Bạn đã được cấp quyền truy cập khóa học.');
+          dispatch(fetchCart());
+          // Có thể navigate tới trang khóa học của tôi
+          // navigate('/my-courses');
+        } else {
+          setQrData(orderData);
+          dispatch(fetchCart());
+        }
       } else {
         alert(payload.message || 'Lỗi khi tạo đơn hàng');
       }
@@ -67,13 +123,6 @@ export default function CartPage() {
       setIsCheckoutLoading(false);
     }
   };
-
-  // Tính tổng tiền
-  const totalAmount = items.reduce((sum, item) => {
-    const course = item.course;
-    const price = course?.salePrice && course.salePrice < course.price ? course.salePrice : course?.price || 0;
-    return sum + Number(price);
-  }, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
@@ -188,8 +237,45 @@ export default function CartPage() {
 
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-600">
-                    <span>{items.length} khóa học</span>
+                    <span>Tạm tính ({items.length} khóa học)</span>
                     <span className="font-medium">{formatPrice(totalAmount)}</span>
+                  </div>
+
+                  {/* Coupon Section */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="flex gap-2 mb-1">
+                      <input 
+                        type="text" 
+                        placeholder="Mã giảm giá..." 
+                        value={couponCode} 
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        disabled={!!appliedCoupon}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary uppercase"
+                      />
+                      {!appliedCoupon ? (
+                        <button 
+                          onClick={handleApplyCoupon} 
+                          disabled={isApplyingCoupon || !couponCode.trim()}
+                          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          {isApplyingCoupon ? 'Đang áp...' : 'Áp dụng'}
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={handleRemoveCoupon} 
+                          className="px-4 py-2 bg-red-100 text-red-600 text-sm font-medium rounded-lg hover:bg-red-200"
+                        >
+                          Xóa
+                        </button>
+                      )}
+                    </div>
+                    {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
+                    {appliedCoupon && (
+                      <div className="flex justify-between text-green-600 mt-2">
+                        <span>Mã giảm giá ({appliedCoupon.code})</span>
+                        <span className="font-medium">-{formatPrice(discountFromCoupon)}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Loyalty Points Section */}
@@ -202,10 +288,10 @@ export default function CartPage() {
                           onChange={(e) => {
                             setUsePoints(e.target.checked);
                             if (e.target.checked) {
-                              // Mặc định dùng hết điểm hoặc tối đa bằng tổng tiền
+                              // Mặc định dùng hết điểm hoặc tối đa bằng số tiền sau khi giảm giá (subTotal)
                               const maxPointsCanUse = Math.min(
                                 rewardData.totalPoints,
-                                Math.floor(totalAmount / POINT_TO_VND)
+                                Math.ceil(subTotal / POINT_TO_VND)
                               );
                               setPointsToUse(maxPointsCanUse);
                             } else {
@@ -225,14 +311,14 @@ export default function CartPage() {
                           <input
                             type="number"
                             min={1}
-                            max={Math.min(rewardData.totalPoints, Math.floor(totalAmount / POINT_TO_VND))}
-                            value={pointsToUse}
-                            onChange={(e) => {
-                              const val = Math.max(0, Math.min(
-                                parseInt(e.target.value) || 0,
-                                rewardData.totalPoints,
-                                Math.floor(totalAmount / POINT_TO_VND)
-                              ));
+                              max={Math.min(rewardData.totalPoints, Math.ceil(subTotal / POINT_TO_VND))}
+                              value={pointsToUse}
+                              onChange={(e) => {
+                                const val = Math.max(0, Math.min(
+                                  parseInt(e.target.value) || 0,
+                                  rewardData.totalPoints,
+                                  Math.ceil(subTotal / POINT_TO_VND)
+                                ));
                               setPointsToUse(val);
                             }}
                             className="w-20 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -252,10 +338,10 @@ export default function CartPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-between text-gray-900 text-base">
+                  <div className="flex justify-between text-gray-900 text-base mt-4">
                     <span className="font-bold">Tổng cộng</span>
                     <span className="font-bold text-primary text-xl">
-                      {formatPrice(Math.max(0, totalAmount - (usePoints ? pointsToUse * POINT_TO_VND : 0)))}
+                      {formatPrice(Math.max(0, subTotal - (usePoints ? pointsToUse * POINT_TO_VND : 0)))}
                     </span>
                   </div>
                 </div>

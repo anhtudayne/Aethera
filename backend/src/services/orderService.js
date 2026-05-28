@@ -1,6 +1,7 @@
 import db from '../models';
+import * as couponService from './couponService';
 
-export const createOrderFromCart = async (userId, bankAccount, bankName, usePoints = 0) => {
+export const createOrderFromCart = async (userId, bankAccount, bankName, usePoints = 0, couponCode = null) => {
     const POINT_TO_VND = 1000;
     const transaction = await db.sequelize.transaction();
     try {
@@ -16,13 +17,13 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
             throw error;
         }
 
-        // 2. Tính tổng tiền
-        let totalAmount = 0;
+        // 2. Tính tổng tiền ban đầu (cartTotal)
+        let cartTotal = 0;
         const orderItemsData = [];
         
         for (const item of cartItems) {
             const price = item.course.salePrice ? item.course.salePrice : item.course.price;
-            totalAmount += Number(price);
+            cartTotal += Number(price);
             
             orderItemsData.push({
                 courseId: item.courseId,
@@ -30,9 +31,20 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
             });
         }
 
-        // 3. Áp dụng điểm tích lũy
+        // 3. Áp dụng mã giảm giá (Coupon)
+        let discountFromCoupon = 0;
+        let subTotal = cartTotal;
+        if (couponCode) {
+            const validateResult = await couponService.validateCoupon(couponCode, cartTotal);
+            discountFromCoupon = validateResult.discountAmount;
+            subTotal = validateResult.finalTotal;
+        }
+
+        // 4. Áp dụng điểm tích lũy (Points)
         let pointsUsed = 0;
         let discountFromPoints = 0;
+        let finalTotal = subTotal;
+        
         if (usePoints && usePoints > 0) {
             const user = await db.User.findByPk(userId, { transaction });
             if (user.loyaltyPoints < usePoints) {
@@ -42,42 +54,60 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
             }
             
             discountFromPoints = usePoints * POINT_TO_VND;
-            // Không cho giảm quá tổng tiền
-            if (discountFromPoints > totalAmount) {
-                discountFromPoints = totalAmount;
-                pointsUsed = Math.ceil(totalAmount / POINT_TO_VND);
+            // Không cho giảm quá số tiền còn lại (subTotal)
+            if (discountFromPoints > subTotal) {
+                discountFromPoints = subTotal;
+                pointsUsed = Math.ceil(subTotal / POINT_TO_VND);
             } else {
                 pointsUsed = usePoints;
             }
-            totalAmount -= discountFromPoints;
+            finalTotal -= discountFromPoints;
 
             // Trừ điểm
-            await db.User.decrement('loyaltyPoints', {
-                by: pointsUsed,
-                where: { id: userId },
-                transaction,
-            });
+            if (pointsUsed > 0) {
+                await db.User.decrement('loyaltyPoints', {
+                    by: pointsUsed,
+                    where: { id: userId },
+                    transaction,
+                });
+            }
         }
 
-        // 4. Tạo Order
+        // 5. Kiểm tra nếu thanh toán toàn bộ bằng mã/điểm
+        const isFullyPaid = finalTotal <= 0;
+        
+        // 6. Tạo Order
         const orderCode = `DH${userId}${Date.now()}`;
         
         const order = await db.Order.create({
             code: orderCode,
             userId: userId,
-            totalAmount: totalAmount,
-            status: 'pending',
-            paymentMethod: 'bank_transfer'
+            totalAmount: finalTotal,
+            status: isFullyPaid ? 'paid' : 'pending',
+            paymentMethod: isFullyPaid ? 'points_coupon' : 'bank_transfer',
+            couponCode: couponCode || null,
+            discountFromCoupon,
+            discountFromPoints
         }, { transaction });
 
-        // 5. Tạo Order Items
+        // 7. Tạo Order Items
         const itemsToCreate = orderItemsData.map(item => ({
             ...item,
             orderId: order.id
         }));
         await db.OrderItem.bulkCreate(itemsToCreate, { transaction });
 
-        // 6. Ghi log nếu dùng điểm
+        // 8. Cấp quyền truy cập ngay nếu isFullyPaid
+        if (isFullyPaid) {
+            const courseAccessData = itemsToCreate.map(item => ({
+                userId,
+                courseId: item.courseId,
+                status: 'active'
+            }));
+            await db.UserCourse.bulkCreate(courseAccessData, { transaction });
+        }
+
+        // 9. Ghi log nếu dùng điểm
         if (pointsUsed > 0) {
             await db.LoyaltyPoint.create({
                 userId,
@@ -88,22 +118,42 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
             }, { transaction });
         }
 
-        // 7. Xóa giỏ hàng
+        // 10. Tăng số lượt dùng của coupon
+        if (couponCode && discountFromCoupon > 0) {
+            await couponService.incrementCouponUsage(couponCode, transaction);
+        }
+
+        // 11. Xóa giỏ hàng
         await db.Cart.destroy({ where: { userId }, transaction });
 
         await transaction.commit();
 
-        // 8. Tạo link VietQR
+        // 12. Xử lý trả về
+        if (isFullyPaid) {
+            return {
+                orderCode,
+                totalAmount: finalTotal,
+                pointsUsed,
+                discountFromPoints,
+                discountFromCoupon,
+                qrUrl: null,
+                isFullyPaid: true
+            };
+        }
+
+        // Tạo link VietQR
         const finalBankAccount = bankAccount || process.env.BANK_ACCOUNT || '0000000000';
         const finalBankName = bankName || process.env.BANK_NAME || 'MBBank';
-        const qrUrl = `https://qr.sepay.vn/img?acc=${finalBankAccount}&bank=${finalBankName}&amount=${totalAmount}&des=${orderCode}`;
+        const qrUrl = `https://qr.sepay.vn/img?acc=${finalBankAccount}&bank=${finalBankName}&amount=${finalTotal}&des=${orderCode}`;
 
         return {
             orderCode,
-            totalAmount,
+            totalAmount: finalTotal,
             pointsUsed,
             discountFromPoints,
-            qrUrl
+            discountFromCoupon,
+            qrUrl,
+            isFullyPaid: false
         };
 
     } catch (error) {

@@ -1,7 +1,7 @@
 import axiosClient from '../api/axiosConfig';
 
-export const createOrderFromCart = async (usePoints = 0) => {
-    const response = await axiosClient.post('/orders/create-from-cart', { usePoints });
+export const createOrderFromCart = async (usePoints = 0, couponCode = null) => {
+    const response = await axiosClient.post('/orders/create-from-cart', { usePoints, couponCode });
     return response.data;
 };
 
