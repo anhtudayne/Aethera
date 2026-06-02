@@ -5,6 +5,7 @@ import { logout } from '../store/slices/authSlice';
 import { fetchCartCount } from '../store/slices/cartSlice';
 import { fetchFavorites } from '../store/slices/favoriteSlice';
 import CartIcon from './CartIcon';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { user } = useSelector((state) => state.auth);
@@ -76,6 +77,7 @@ export default function Navbar() {
             {user && (
               <div className="hidden sm:flex items-center gap-3">
                 <CartIcon />
+                <NotificationBell />
                 <Link to="/user/orders" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
                   Đơn hàng
                 </Link>

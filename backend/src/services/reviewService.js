@@ -1,4 +1,5 @@
 import db from '../models';
+import * as notificationService from './notificationService';
 
 const POINTS_PER_REVIEW = 10;
 
@@ -84,6 +85,19 @@ export const createReview = async (userId, courseId, rating, comment) => {
         }, { transaction });
 
         await transaction.commit();
+
+        // === NOTIFICATION: Review created + points earned ===
+        try {
+            await notificationService.createNotification(
+                userId,
+                'new_review',
+                '⭐ Đánh giá thành công!',
+                `Bạn đã đánh giá khóa học "${courseName?.name || 'Khóa học'}" và nhận được +${POINTS_PER_REVIEW} điểm tích lũy!`,
+                { courseId, courseName: courseName?.name, pointsEarned: POINTS_PER_REVIEW, reviewId: review.id }
+            );
+        } catch (notifErr) {
+            console.error('Lỗi gửi notification review (không ảnh hưởng review):', notifErr);
+        }
 
         return {
             review,

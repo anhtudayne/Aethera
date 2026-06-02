@@ -1,4 +1,6 @@
 import db from '../models';
+import * as notificationService from './notificationService';
+import { sendOrderPaidEmail } from './emailService';
 
 export const processWebhook = async (webhookData) => {
     const {
@@ -84,6 +86,36 @@ export const processWebhook = async (webhookData) => {
             await db.UserCourse.bulkCreate(courseAccessData, { transaction });
 
             await transaction.commit();
+
+            // === NOTIFICATION: Order paid ===
+            try {
+                const user = await db.User.findByPk(order.userId, { attributes: ['id', 'email', 'firstName'] });
+                const courseNames = [];
+                for (const item of order.orderItems) {
+                    const course = await db.Course.findByPk(item.courseId, { attributes: ['name'] });
+                    if (course) courseNames.push(course.name);
+                }
+
+                await notificationService.createNotification(
+                    order.userId,
+                    'order_paid',
+                    '✅ Thanh toán thành công!',
+                    `Đơn hàng ${orderCode} đã được thanh toán thành công. Bạn có thể truy cập khóa học ngay!`,
+                    { orderId: order.id, orderCode, courseNames }
+                );
+
+                // Send email
+                if (user?.email) {
+                    await sendOrderPaidEmail(user.email, user.firstName, orderCode, order.totalAmount, courseNames);
+                    await db.Notification.update(
+                        { isEmailSent: true },
+                        { where: { userId: order.userId, type: 'order_paid', data: { orderId: order.id } }, order: [['createdAt', 'DESC']], limit: 1 }
+                    );
+                }
+            } catch (notifErr) {
+                console.error('Lỗi gửi notification/email (không ảnh hưởng thanh toán):', notifErr);
+            }
+
             return { success: true, message: 'Order paid and access granted successfully' };
         } catch (err) {
             await transaction.rollback();

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.LoyaltyPoint, { foreignKey: 'userId', as: 'loyaltyPointHistory' });
             User.hasMany(models.FavoriteCourse, { foreignKey: 'userId', as: 'favoriteCourses' });
             User.hasMany(models.ViewedCourse, { foreignKey: 'userId', as: 'viewedCourses' });
+            User.hasMany(models.Notification, { foreignKey: 'userId', as: 'notifications' });
         }
     }
     User.init(

@@ -1,5 +1,6 @@
 import db from '../models';
 import * as couponService from './couponService';
+import * as notificationService from './notificationService';
 
 export const createOrderFromCart = async (userId, bankAccount, bankName, usePoints = 0, couponCode = null) => {
     const POINT_TO_VND = 1000;
@@ -130,6 +131,20 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
 
         // 12. Xử lý trả về
         if (isFullyPaid) {
+            // === NOTIFICATION: Order fully paid by points/coupon ===
+            try {
+                const courseNames = cartItems.map(item => item.course?.name || 'Khóa học');
+                await notificationService.createNotification(
+                    userId,
+                    'order_paid',
+                    '✅ Thanh toán thành công!',
+                    `Đơn hàng ${orderCode} đã thanh toán hoàn toàn bằng điểm/mã giảm giá.`,
+                    { orderId: order.id, orderCode, courseNames }
+                );
+            } catch (notifErr) {
+                console.error('Lỗi gửi notification (không ảnh hưởng đơn hàng):', notifErr);
+            }
+
             return {
                 orderCode,
                 totalAmount: finalTotal,
@@ -145,6 +160,23 @@ export const createOrderFromCart = async (userId, bankAccount, bankName, usePoin
         const finalBankAccount = bankAccount || process.env.BANK_ACCOUNT || '0000000000';
         const finalBankName = bankName || process.env.BANK_NAME || 'MBBank';
         const qrUrl = `https://qr.sepay.vn/img?acc=${finalBankAccount}&bank=${finalBankName}&amount=${finalTotal}&des=${orderCode}`;
+
+        // === NOTIFICATION: Order created (pending payment) ===
+        try {
+            const courseNames = [];
+            for (const item of cartItems) {
+                courseNames.push(item.course?.name || 'Khóa học');
+            }
+            await notificationService.createNotification(
+                userId,
+                'order_created',
+                '📦 Đơn hàng mới đã tạo',
+                `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${finalTotal.toLocaleString('vi-VN')}đ`,
+                { orderId: order.id, orderCode, totalAmount: finalTotal, courseNames }
+            );
+        } catch (notifErr) {
+            console.error('Lỗi gửi notification (không ảnh hưởng đơn hàng):', notifErr);
+        }
 
         return {
             orderCode,

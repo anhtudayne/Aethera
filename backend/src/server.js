@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/configdb';
@@ -16,7 +17,9 @@ import rewardRoutes from './routes/rewardRoutes';
 import couponRoutes from './routes/couponRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
 import viewedRoutes from './routes/viewedRoutes';
+import notificationRoutes from './routes/notificationRoutes';
 import errorHandler from './middlewares/errorHandler';
+import { initSocket } from './socketManager';
 import path from 'path';
 
 let app = express();
@@ -56,6 +59,7 @@ app.use('/api/rewards', rewardRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/viewed', viewedRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
@@ -75,8 +79,11 @@ db.sequelize.sync()
     });
 
 let port = process.env.PORT || 8089;
-app.listen(port, () => {
+
+// Create HTTP server and attach Socket.IO
+const server = http.createServer(app);
+initSocket(server);
+
+server.listen(port, () => {
     console.log(`Server đang chạy tại: http://localhost:${port}`);
 });
-
-
