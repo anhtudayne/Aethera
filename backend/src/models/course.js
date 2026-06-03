@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             Course.hasMany(models.Review, { foreignKey: 'courseId', as: 'reviews' });
             Course.hasMany(models.FavoriteCourse, { foreignKey: 'courseId', as: 'favoriteCourses' });
             Course.hasMany(models.ViewedCourse, { foreignKey: 'courseId', as: 'viewedCourses' });
+            Course.hasMany(models.Section, { foreignKey: 'courseId', as: 'sections' });
         }
     }
     Course.init(
@@ -35,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             categoryId: {
                 type: DataTypes.INTEGER,
                 references: { model: 'Categories', key: 'id' },
+            },
+            status: {
+                type: DataTypes.ENUM('draft', 'published'),
+                defaultValue: 'draft'
             },
             viewCount: { type: DataTypes.INTEGER, defaultValue: 0 },
         },

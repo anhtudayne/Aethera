@@ -60,6 +60,11 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/viewed', viewedRoutes);
 app.use('/api/notifications', notificationRoutes);
+import sectionRoutes from './routes/sectionRoutes';
+import lessonRoutes from './routes/lessonRoutes';
+
+app.use('/api/sections', sectionRoutes);
+app.use('/api/lessons', lessonRoutes);
 
 // Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));

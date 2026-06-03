@@ -3,18 +3,36 @@ const { Op } = require('sequelize');
 const Course = db.Course;
 const Category = db.Category;
 const CourseImage = db.CourseImage;
+const Section = db.Section;
+const Lesson = db.Lesson;
 
 const includeOptions = [
     { model: Category, as: 'category', attributes: ['id', 'name', 'slug'] },
     { model: CourseImage, as: 'images', attributes: ['id', 'imageUrl', 'isPrimary', 'sortOrder'] },
 ];
 
+const courseDetailIncludeOptions = [
+    ...includeOptions,
+    {
+        model: Section,
+        as: 'sections',
+        include: [{
+            model: Lesson,
+            as: 'lessons'
+        }]
+    }
+];
+
 const slugify = require('slugify');
 
 // Lấy danh sách khóa học (filter, search, sort, pagination)
 const getCourses = async (params) => {
-    const { search, categories, levels, min_price, max_price, sort = 'newest', page = 1, limit = 12 } = params;
+    const { search, categories, levels, min_price, max_price, sort = 'newest', page = 1, limit = 12, status = 'published' } = params;
     const where = {};
+
+    if (status !== 'all') {
+        where.status = status;
+    }
 
     if (search) where.name = { [Op.like]: `%${search}%` };
     
@@ -61,22 +79,29 @@ const getCourses = async (params) => {
 };
 
 const getFeaturedCourses = async () => {
-    const data = await Course.findAll({ where: { isFeatured: true }, include: includeOptions, limit: 8 });
+    const data = await Course.findAll({ where: { isFeatured: true, status: 'published' }, include: includeOptions, limit: 8 });
     return { data };
 };
 
 const getNewArrivals = async () => {
-    const data = await Course.findAll({ include: includeOptions, order: [['createdAt', 'DESC']], limit: 8 });
+    const data = await Course.findAll({ where: { status: 'published' }, include: includeOptions, order: [['createdAt', 'DESC']], limit: 8 });
     return { data };
 };
 
 const getBestSellers = async () => {
-    const data = await Course.findAll({ where: { isBestSeller: true }, include: includeOptions, order: [['totalStudents', 'DESC']], limit: 8 });
+    const data = await Course.findAll({ where: { isBestSeller: true, status: 'published' }, include: includeOptions, order: [['totalStudents', 'DESC']], limit: 8 });
     return { data };
 };
 
 const getCourseBySlug = async (slug) => {
-    const course = await Course.findOne({ where: { slug }, include: includeOptions });
+    const course = await Course.findOne({ 
+        where: { slug }, 
+        include: courseDetailIncludeOptions,
+        order: [
+            [{ model: Section, as: 'sections' }, 'order', 'ASC'],
+            [{ model: Section, as: 'sections' }, { model: Lesson, as: 'lessons' }, 'order', 'ASC']
+        ]
+    });
     if (!course) return { data: null };
     
     const data = course.toJSON();
@@ -90,7 +115,7 @@ const getRelatedCourses = async (id) => {
     const course = await Course.findByPk(id);
     if (!course) return { data: [] };
     const data = await Course.findAll({
-        where: { categoryId: course.categoryId, id: { [Op.ne]: id } },
+        where: { categoryId: course.categoryId, id: { [Op.ne]: id }, status: 'published' },
         include: includeOptions, limit: 4,
     });
     return { data };
@@ -106,11 +131,20 @@ const createCourse = async (courseData) => {
         if (!courseData.slug && courseData.name) {
             courseData.slug = slugify(courseData.name, { lower: true, strict: true }) + '-' + Date.now();
         }
+        courseData.status = 'draft';
         const newCourse = await Course.create(courseData);
         return { data: newCourse };
     } catch (error) {
         throw error;
     }
+};
+
+const publishCourse = async (id) => {
+    const course = await Course.findByPk(id);
+    if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
+    course.status = 'published';
+    await course.save();
+    return { status: 200, message: 'Đã xuất bản khóa học!', data: course };
 };
 
 // Khóa học theo danh mục (phân trang cho Infinite Scroll)
@@ -120,7 +154,7 @@ const getCoursesByCategory = async (categorySlug, page = 1, limit = 6) => {
 
     const offset = (Number(page) - 1) * Number(limit);
     const { count, rows } = await Course.findAndCountAll({
-        where: { categoryId: category.id },
+        where: { categoryId: category.id, status: 'published' },
         include: includeOptions,
         order: [['createdAt', 'DESC']],
         limit: Number(limit),
@@ -138,6 +172,7 @@ const getCoursesByCategory = async (categorySlug, page = 1, limit = 6) => {
 
 const getTopViewedCourses = async () => {
     const data = await Course.findAll({
+        where: { status: 'published' },
         order: [['viewCount', 'DESC']],
         limit: 10,
         include: includeOptions
@@ -151,4 +186,11 @@ const incrementViewCount = async (id) => {
     return { status: 200, message: 'View count updated successfully' };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount };
+const checkEnrollmentService = async (userId, slug) => {
+    const course = await db.Course.findOne({ where: { slug } });
+    if (!course) return { enrolled: false };
+    const enrollment = await db.UserCourse.findOne({ where: { userId, courseId: course.id } });
+    return { enrolled: !!enrollment, courseId: course.id };
+};
+
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };

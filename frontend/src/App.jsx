@@ -16,6 +16,11 @@ import MyRewardsPage from './pages/MyRewardsPage';
 import FavoritesPage from './pages/FavoritesPage';
 import NotificationsPage from './pages/NotificationsPage';
 
+import LearningPage from './pages/LearningPage';
+
+import AdminCoursesPage from './pages/admin/AdminCoursesPage';
+import CourseEditorPage from './pages/admin/CourseEditorPage';
+
 export default function App() {
   return (
     <Routes>
@@ -31,10 +36,20 @@ export default function App() {
       <Route path="/user/rewards" element={<ProtectedRoute><MyRewardsPage /></ProtectedRoute>} />
       <Route path="/user/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
       <Route path="/user/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+      
+      {/* Admin routes */}
       <Route path="/admin/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+      <Route path="/admin/courses" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/courses/:slug/edit" element={<ProtectedRoute><CourseEditorPage /></ProtectedRoute>} />
+      {/* Fallback admin routes to admin courses page for now */}
+      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/students" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/revenue" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/settings" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
 
       <Route path="/courses" element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />
       <Route path="/course/:slug" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
+      <Route path="/course/:slug/learn" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
       <Route path="/category/:slug" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
       <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
 

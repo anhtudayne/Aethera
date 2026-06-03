@@ -2,8 +2,10 @@ import express from 'express';
 import {
     handleGetCourses, handleGetFeatured, handleGetNewArrivals, handleGetBestSellers,
     handleGetCourseBySlug, handleGetRelatedCourses, handleGetCategories, handleCreateCourse,
-    handleGetCoursesByCategory, handleGetTopViewed, handleIncrementView
+    handlePublishCourse, handleGetCoursesByCategory, handleGetTopViewed, handleIncrementView,
+    handleCheckEnrollment
 } from '../controllers/courseController';
+import { verifyToken } from '../middlewares/authMiddleware';
 
 let router = express.Router();
 
@@ -15,8 +17,10 @@ router.get('/courses/best-sellers', handleGetBestSellers);
 router.get('/courses/top-viewed', handleGetTopViewed);
 router.get('/courses/category/:slug', handleGetCoursesByCategory);
 router.get('/courses/:slug', handleGetCourseBySlug);
+router.get('/courses/:slug/check-enrollment', verifyToken, handleCheckEnrollment);
 router.patch('/courses/:id/view', handleIncrementView);
 router.get('/courses/:id/related', handleGetRelatedCourses);
 router.post('/courses', handleCreateCourse);
+router.put('/courses/:id/publish', handlePublishCourse);
 
 export default router;

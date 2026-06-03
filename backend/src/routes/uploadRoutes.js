@@ -4,6 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 const router = express.Router();
+import { uploadVideo } from '../middlewares/uploadMiddleware.js';
+import { handleUploadVideo } from '../controllers/uploadController.js';
 
 // Tạo thư mục nếu chưa có
 const uploadDir = path.join(__dirname, '../../public/uploads/avatars');
@@ -51,5 +53,7 @@ router.post('/avatar', upload.single('avatar'), (req, res) => {
         return res.status(500).json({ status: 500, message: error.message || 'Lỗi khi tải ảnh lên.' });
     }
 });
+
+router.post('/video', uploadVideo.single('video'), handleUploadVideo);
 
 export default router;

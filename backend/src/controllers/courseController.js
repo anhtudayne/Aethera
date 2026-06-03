@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
 
 export const handleGetCourses = async (req, res, next) => {
     try {
@@ -57,6 +57,13 @@ export const handleCreateCourse = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
+export const handlePublishCourse = async (req, res, next) => {
+    try {
+        const result = await publishCourse(req.params.id);
+        return res.status(result.status || 200).json(result);
+    } catch (err) { next(err); }
+};
+
 // BT05 — Võ Văn Tú: Khóa học theo danh mục (Infinite Scroll)
 export const handleGetCoursesByCategory = async (req, res, next) => {
     try {
@@ -78,5 +85,14 @@ export const handleIncrementView = async (req, res, next) => {
     try {
         const result = await incrementViewCount(req.params.id);
         return res.status(200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleCheckEnrollment = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const { slug } = req.params;
+        const result = await checkEnrollmentService(userId, slug);
+        return res.status(200).json({ status: 200, data: result });
     } catch (err) { next(err); }
 };

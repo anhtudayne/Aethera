@@ -31,7 +31,7 @@ export default function CourseDetailPage() {
         const response = await getCourseBySlugService(slug);
         const courseData = response.data.data;
         setCourse(courseData);
-        
+
         if (courseData && courseData.id) {
           try {
             await incrementViewCountService(courseData.id);
@@ -112,8 +112,8 @@ export default function CourseDetailPage() {
 
           <div className="w-full md:w-1/3 bg-white rounded-xl shadow-2xl p-6 text-gray-900 sticky top-10">
             <div className="aspect-video bg-gray-200 rounded-lg mb-6 overflow-hidden relative">
-              <img 
-                src={course.thumbnail || 'https://via.placeholder.com/600x400?text=Course+Thumbnail'} 
+              <img
+                src={course.thumbnail || 'https://via.placeholder.com/600x400?text=Course+Thumbnail'}
                 alt={course.name}
                 className="w-full h-full object-cover"
               />
@@ -134,8 +134,11 @@ export default function CourseDetailPage() {
                   </span>
                 )}
               </div>
-              <button className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">
-                Đăng ký học ngay
+              <button 
+                onClick={() => window.location.href = `/course/${course.slug}/learn`}
+                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md flex justify-center items-center gap-2">
+                <span className="material-symbols-outlined">play_circle</span>
+                Vào học ngay
               </button>
               <div className="flex gap-3">
                 <button
@@ -151,21 +154,19 @@ export default function CourseDetailPage() {
                     }
                   }}
                   disabled={addedToCart}
-                  className={`flex-1 py-3 px-4 font-bold rounded-lg transition-colors shadow-md ${
-                    addedToCart
-                      ? 'bg-green-500 text-white'
-                      : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
-                  }`}
+                  className={`flex-1 py-3 px-4 font-bold rounded-lg transition-colors shadow-md ${addedToCart
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
+                    }`}
                 >
                   {addedToCart ? '✅ Đã thêm vào giỏ hàng' : 'Thêm vào giỏ hàng'}
                 </button>
                 <button
                   onClick={() => dispatch(toggleFavorite(course.id))}
-                  className={`px-4 rounded-lg border-2 transition-all flex items-center justify-center ${
-                    isFavorite
-                      ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
-                      : 'border-gray-300 bg-white text-gray-500 hover:text-red-500 hover:border-red-300'
-                  }`}
+                  className={`px-4 rounded-lg border-2 transition-all flex items-center justify-center ${isFavorite
+                    ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
+                    : 'border-gray-300 bg-white text-gray-500 hover:text-red-500 hover:border-red-300'
+                    }`}
                   title={isFavorite ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
                 >
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>
@@ -176,7 +177,7 @@ export default function CourseDetailPage() {
               {cartError && <p className="text-xs text-red-500 text-center mt-1">{cartError}</p>}
               <p className="text-xs text-center text-gray-500">Hoàn tiền trong 30 ngày. Đảm bảo chất lượng.</p>
             </div>
-            
+
             <div className="mt-6 pt-6 border-t border-gray-100">
               <h3 className="font-semibold text-gray-800 mb-3">Khóa học này bao gồm:</h3>
               <ul className="space-y-2 text-sm text-gray-600">
@@ -202,11 +203,11 @@ export default function CourseDetailPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Empty space to align with the sticky sidebar on desktop */}
         <div className="hidden md:block md:w-1/3"></div>
       </div>
-      
+
       {/* Review Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <ReviewSection courseId={course.id} />

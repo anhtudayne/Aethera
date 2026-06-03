@@ -52,7 +52,12 @@ export default function LoginPage() {
 
     const result = await dispatch(loginUser(form));
     if (loginUser.fulfilled.match(result)) {
-      navigate('/');
+      const user = result.payload.data.user;
+      if (user.role === 'admin' || user.role === 'instructor') {
+          navigate('/admin/courses');
+      } else {
+          navigate('/');
+      }
     }
   };
 

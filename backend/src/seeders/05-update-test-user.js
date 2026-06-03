@@ -13,6 +13,7 @@ async function updateTestUser() {
             user.password = hashedPassword;
             user.loyaltyPoints = 500000;
             user.isActive = true; // Bật active để đăng nhập được ngay
+            user.roleId = 'admin'; // Đảm bảo test user là Admin/Giảng viên để test Admin page
             await user.save();
             console.log(`✅ Đã cập nhật tài khoản test: ${email} | Mật khẩu: ${rawPassword}`);
         } else {
@@ -22,7 +23,8 @@ async function updateTestUser() {
                 firstName: 'Test',
                 lastName: 'User',
                 isActive: true,
-                loyaltyPoints: 500000
+                loyaltyPoints: 500000,
+                roleId: 'admin'
             });
             console.log(`✅ Đã tạo mới tài khoản test: ${email} | Mật khẩu: ${rawPassword}`);
         }
