@@ -20,6 +20,7 @@ import LearningPage from './pages/LearningPage';
 
 import AdminCoursesPage from './pages/admin/AdminCoursesPage';
 import CourseEditorPage from './pages/admin/CourseEditorPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 
 export default function App() {
   return (
@@ -42,9 +43,9 @@ export default function App() {
       <Route path="/admin/courses" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
       <Route path="/admin/courses/:slug/edit" element={<ProtectedRoute><CourseEditorPage /></ProtectedRoute>} />
       {/* Fallback admin routes to admin courses page for now */}
-      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
       <Route path="/admin/students" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
-      <Route path="/admin/revenue" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      <Route path="/admin/revenue" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
 
       <Route path="/courses" element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />

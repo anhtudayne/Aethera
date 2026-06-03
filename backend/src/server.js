@@ -18,6 +18,7 @@ import couponRoutes from './routes/couponRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
 import viewedRoutes from './routes/viewedRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import statsRoutes from './routes/statsRoutes';
 import errorHandler from './middlewares/errorHandler';
 import { initSocket } from './socketManager';
 import path from 'path';
@@ -60,6 +61,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/viewed', viewedRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/stats', statsRoutes);
 import sectionRoutes from './routes/sectionRoutes';
 import lessonRoutes from './routes/lessonRoutes';
 
