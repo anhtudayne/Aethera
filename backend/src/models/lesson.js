@@ -1,29 +1,29 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class Lesson extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      Lesson.belongsTo(models.Section, { foreignKey: 'sectionId', as: 'section' });
+    class Lesson extends Model {
+        static associate(models) {
+            Lesson.belongsTo(models.Section, { foreignKey: 'sectionId', as: 'section' });
+            Lesson.hasMany(models.LessonProgress, { foreignKey: 'lessonId', as: 'progresses' });
+        }
     }
-  }
-  Lesson.init({
-    sectionId: DataTypes.INTEGER,
-    title: DataTypes.STRING,
-    type: DataTypes.STRING,
-    content: DataTypes.TEXT,
-    videoUrl: DataTypes.STRING,
-    duration: DataTypes.STRING,
-    order: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Lesson',
-  });
-  return Lesson;
+    Lesson.init(
+        {
+            sectionId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: { model: 'Sections', key: 'id' },
+            },
+            title: { type: DataTypes.STRING, allowNull: false },
+            type: { type: DataTypes.ENUM('video', 'text'), defaultValue: 'video' },
+            content: DataTypes.TEXT,
+            videoUrl: DataTypes.STRING,
+            duration: DataTypes.STRING,
+            order: { type: DataTypes.INTEGER, defaultValue: 0 },
+            isFreePreview: { type: DataTypes.BOOLEAN, defaultValue: false },
+        },
+        { sequelize, modelName: 'Lesson' }
+    );
+    return Lesson;
 };

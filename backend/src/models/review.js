@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Review.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
             Review.belongsTo(models.Course, { foreignKey: 'courseId', as: 'course' });
-            Review.belongsTo(models.Order, { foreignKey: 'orderId', as: 'order' });
         }
     }
     Review.init(
@@ -20,11 +19,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: { model: 'Courses', key: 'id' },
-            },
-            orderId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                references: { model: 'Orders', key: 'id' },
             },
             rating: {
                 type: DataTypes.INTEGER,
@@ -40,11 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: 'Review',
             indexes: [
-                {
-                    unique: true,
-                    fields: ['userId', 'courseId'],
-                    name: 'unique_user_course_review',
-                },
+                { unique: true, fields: ['userId', 'courseId'], name: 'reviews_user_course_unique' },
             ],
         }
     );

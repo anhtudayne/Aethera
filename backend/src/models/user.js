@@ -7,10 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Cart, { foreignKey: 'userId', as: 'cartItems' });
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             User.hasMany(models.UserCourse, { foreignKey: 'userId', as: 'userCourses' });
+            User.hasMany(models.LessonProgress, { foreignKey: 'userId', as: 'lessonProgresses' });
+            User.hasMany(models.Certificate, { foreignKey: 'userId', as: 'certificates' });
             User.hasMany(models.Review, { foreignKey: 'userId', as: 'reviews' });
-            User.hasMany(models.LoyaltyPoint, { foreignKey: 'userId', as: 'loyaltyPointHistory' });
             User.hasMany(models.FavoriteCourse, { foreignKey: 'userId', as: 'favoriteCourses' });
-            User.hasMany(models.ViewedCourse, { foreignKey: 'userId', as: 'viewedCourses' });
             User.hasMany(models.Notification, { foreignKey: 'userId', as: 'notifications' });
         }
     }
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             password: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true, // null cho Google OAuth users
             },
             firstName: {
                 type: DataTypes.STRING,
@@ -56,10 +56,14 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
-            loyaltyPoints: {
-                type: DataTypes.INTEGER,
-                defaultValue: 0,
-                // Tổng điểm tích lũy hiện tại
+            googleId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                unique: true,
+            },
+            provider: {
+                type: DataTypes.ENUM('local', 'google'),
+                defaultValue: 'local',
             },
         },
         {

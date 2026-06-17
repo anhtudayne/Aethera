@@ -21,13 +21,32 @@ module.exports = (sequelize, DataTypes) => {
                 references: { model: 'Courses', key: 'id' },
             },
             status: {
-                type: DataTypes.ENUM('active', 'suspended'),
-                defaultValue: 'active', // Trạng thái để sau này bạn có thể khóa quyền truy cập nếu cần
+                type: DataTypes.ENUM('active', 'suspended', 'completed'),
+                defaultValue: 'active',
+            },
+            progressPercent: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+            },
+            enrolledAt: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+            },
+            completedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+            lastAccessedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
             },
         },
         {
             sequelize,
             modelName: 'UserCourse',
+            indexes: [
+                { unique: true, fields: ['userId', 'courseId'], name: 'usercourses_user_course_unique' },
+            ],
         }
     );
     return UserCourse;

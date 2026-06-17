@@ -1,7 +1,8 @@
 import express from 'express';
-import { handleRegister, handleVerifyOTP, handleResendOTP, handleLogin, handleForgotPassword, handleResetPassword } from '../controllers/authController';
+import { handleRegister, handleVerifyOTP, handleResendOTP, handleLogin, handleForgotPassword, handleResetPassword, handleGoogleLogin, handleChangePassword } from '../controllers/authController';
 import { registerLimiter, resendOtpLimiter, loginLimiter, forgotPasswordLimiter } from '../middlewares/rateLimiter';
-import { registerValidation, handleValidationErrors, loginValidation, forgotPasswordValidation, resetPasswordValidation } from '../middlewares/validators/authValidator';
+import { registerValidation, handleValidationErrors, loginValidation, forgotPasswordValidation, resetPasswordValidation, changePasswordValidation, googleLoginValidation } from '../middlewares/validators/authValidator';
+import { verifyToken } from '../middlewares/authMiddleware';
 
 let router = express.Router();
 
@@ -31,6 +32,23 @@ router.post(
     loginValidation,
     handleValidationErrors,
     handleLogin
+);
+
+// Google OAuth login
+router.post(
+    '/google',
+    googleLoginValidation,
+    handleValidationErrors,
+    handleGoogleLogin
+);
+
+// Change Password (cần đăng nhập)
+router.put(
+    '/change-password',
+    verifyToken,
+    changePasswordValidation,
+    handleValidationErrors,
+    handleChangePassword
 );
 
 // Forgot Password route with rate limit and validation

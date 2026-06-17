@@ -68,6 +68,24 @@ export const resetPasswordValidation = [
         .matches(/[a-zA-Z]/).withMessage('Mật khẩu mới phải chứa ít nhất 1 chữ cái'),
 ];
 
+// Validation rules for Change Password
+export const changePasswordValidation = [
+    body('oldPassword')
+        .notEmpty().withMessage('Vui lòng nhập mật khẩu hiện tại'),
+
+    body('newPassword')
+        .notEmpty().withMessage('Mật khẩu mới không được để trống')
+        .isLength({ min: 6 }).withMessage('Mật khẩu mới phải có ít nhất 6 ký tự')
+        .matches(/\d/).withMessage('Mật khẩu mới phải chứa ít nhất 1 chữ số')
+        .matches(/[a-zA-Z]/).withMessage('Mật khẩu mới phải chứa ít nhất 1 chữ cái'),
+];
+
+// Validation rules for Google Login
+export const googleLoginValidation = [
+    body('idToken')
+        .notEmpty().withMessage('idToken is required'),
+];
+
 // Handle validation results
 export const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);

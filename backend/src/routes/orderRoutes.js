@@ -9,5 +9,6 @@ router.get('/check-status/:orderCode', verifyToken, orderController.handleCheckO
 router.get('/', verifyToken, orderController.handleGetMyOrders);
 router.get('/:id', verifyToken, orderController.handleGetOrderDetails);
 router.put('/:id/cancel', verifyToken, orderController.handleCancelOrder);
+router.put('/:id/fulfill', verifyToken, orderController.handleFulfillOrder);
 
 export default router;

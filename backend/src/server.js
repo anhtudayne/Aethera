@@ -3,94 +3,85 @@ import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import path from 'path';
 import connectDB from './config/configdb';
+import { initSocket } from './socketManager';
+import errorHandler from './middlewares/errorHandler';
+
+// Routes
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
-import adminRoutes from './routes/adminRoutes';
-import uploadRoutes from './routes/uploadRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 import courseRoutes from './routes/courseRoutes';
-import orderRoutes from './routes/orderRoutes';
-import sepayRoutes from './routes/sepayRoutes';
 import cartRoutes from './routes/cartRoutes';
+import orderRoutes from './routes/orderRoutes';
+import learningRoutes from './routes/learningRoutes';
+import certificateRoutes from './routes/certificateRoutes';
+import noteRoutes from './routes/noteRoutes';
 import reviewRoutes from './routes/reviewRoutes';
-import rewardRoutes from './routes/rewardRoutes';
-import couponRoutes from './routes/couponRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
-import viewedRoutes from './routes/viewedRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import sectionRoutes from './routes/sectionRoutes';
+import lessonRoutes from './routes/lessonRoutes';
+import uploadRoutes from './routes/uploadRoutes';
+import adminRoutes from './routes/adminRoutes';
 import statsRoutes from './routes/statsRoutes';
-import errorHandler from './middlewares/errorHandler';
-import { initSocket } from './socketManager';
-import path from 'path';
 
-let app = express();
+const app = express();
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Default route
-app.get('/', (req, res) => {
-    return res.status(200).json({
-        status: 200,
-        message: 'E-Learning API Server đang hoạt động!',
-        endpoints: {
-            register: 'POST /api/auth/register',
-            verifyOtp: 'POST /api/auth/verify-otp',
-            resendOtp: 'POST /api/auth/resend-otp',
-        },
-    });
-});
-
-app.use('/api/auth', authRoutes);
-
-
-// Placeholder for other functions
-// app.use('/api/auth', loginRoutes);
-// app.use('/api/auth', passwordRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api', courseRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/sepay', sepayRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/rewards', rewardRoutes);
-app.use('/api/coupons', couponRoutes);
-app.use('/api/favorites', favoriteRoutes);
-app.use('/api/viewed', viewedRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/stats', statsRoutes);
-import sectionRoutes from './routes/sectionRoutes';
-import lessonRoutes from './routes/lessonRoutes';
-
-app.use('/api/sections', sectionRoutes);
-app.use('/api/lessons', lessonRoutes);
-
-// Phục vụ các file tĩnh (ảnh avatar) từ thư mục public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
+// Default route
+app.get('/', (req, res) => res.json({
+    status: 200,
+    message: 'E-Learning Platform API',
+}));
+
+// ===== PUBLIC & AUTH ROUTES =====
+app.use('/api/auth', authRoutes);
+
+// ===== USER ROUTES =====
+app.use('/api/user', userRoutes);
+app.use('/api/user', dashboardRoutes);
+
+// ===== COURSE BROWSING =====
+app.use('/api', courseRoutes);         // /api/courses, /api/categories
+
+// ===== CART & ORDERS =====
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+
+// ===== LEARNING EXPERIENCE =====
+app.use('/api/learning', learningRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/notes', noteRoutes);
+
+// ===== SOCIAL =====
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+// ===== CONTENT MANAGEMENT (Teacher/Admin) =====
+app.use('/api/sections', sectionRoutes);
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/stats', statsRoutes);
+
+// Error handler
 app.use(errorHandler);
 
+// Database
 connectDB();
-
-// Sync database
 const db = require('./models/index');
-db.sequelize.sync()
-    .then(() => {
-        console.log('Đồng bộ database thành công.');
-    })
-    .catch((err) => {
-        console.error('Lỗi đồng bộ database:', err);
-    });
+db.sequelize.sync().then(() => console.log('DB synced')).catch(console.error);
 
-let port = process.env.PORT || 8089;
-
-// Create HTTP server and attach Socket.IO
+// Server
+const port = process.env.PORT || 8089;
 const server = http.createServer(app);
 initSocket(server);
-
-server.listen(port, () => {
-    console.log(`Server đang chạy tại: http://localhost:${port}`);
-});
+server.listen(port, () => console.log(`Server: http://localhost:${port}`));

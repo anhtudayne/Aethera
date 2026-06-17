@@ -1,0 +1,30 @@
+export const ROUTES = {
+  HOME: '/',
+  COURSES: '/courses',
+  COURSE_DETAIL: '/courses/:slug',
+  CATEGORY: '/courses/category/:slug',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  VERIFY_OTP: '/verify-otp',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  CART: '/cart',
+  CHECKOUT: '/checkout',
+  ORDER_SUCCESS: '/order-success',
+  DASHBOARD: '/dashboard',
+  MY_COURSES: '/dashboard/my-courses',
+  COURSE_PLAYER: '/learn/:slug',
+  WISHLIST: '/dashboard/wishlist',
+  ORDERS: '/dashboard/orders',
+  ORDER_DETAIL: '/dashboard/orders/:id',
+  CERTIFICATES: '/dashboard/certificates',
+  CERTIFICATE_VERIFY: '/verify-certificate',
+  MY_REVIEWS: '/dashboard/reviews',
+  NOTIFICATIONS: '/dashboard/notifications',
+  SETTINGS: '/dashboard/settings',
+};
+
+export const STORAGE_KEYS = {
+  TOKEN: 'aethera_token',
+  USER: 'aethera_user',
+};

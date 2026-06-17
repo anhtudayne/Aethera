@@ -34,6 +34,10 @@ export const addToCart = async (userId, courseId) => {
         const course = await Course.findByPk(courseId);
         if (!course) return { status: 404, message: 'Khóa học không tồn tại' };
 
+        // Kiểm tra đã sở hữu (enrolled)
+        const enrollment = await db.UserCourse.findOne({ where: { userId, courseId } });
+        if (enrollment) return { status: 400, message: 'Bạn đã sở hữu khóa học này.' };
+
         // Kiểm tra đã có trong giỏ chưa
         const existing = await Cart.findOne({ where: { userId, courseId } });
         if (existing) return { status: 400, message: 'Khóa học đã có trong giỏ hàng' };

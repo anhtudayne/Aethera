@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
                 references: { model: 'Users', key: 'id' },
             },
             type: {
-                type: DataTypes.ENUM('order_created', 'order_paid', 'new_review', 'points_earned'),
+                type: DataTypes.ENUM('order_created', 'order_paid', 'new_review', 'course_completed', 'certificate_issued'),
                 allowNull: false,
             },
             title: {
@@ -29,13 +29,8 @@ module.exports = (sequelize, DataTypes) => {
             data: {
                 type: DataTypes.JSON,
                 allowNull: true,
-                // Extra metadata: { orderId, courseId, orderCode, points, etc. }
             },
             isRead: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-            },
-            isEmailSent: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },

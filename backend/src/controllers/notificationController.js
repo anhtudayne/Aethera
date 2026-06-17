@@ -73,3 +73,22 @@ export const markAllAsRead = async (req, res) => {
         });
     }
 };
+
+export const handleDeleteNotification = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { id } = req.params;
+
+        await notificationService.deleteNotification(userId, id);
+        return res.status(200).json({
+            status: 200,
+            message: 'Đã xóa thông báo.',
+        });
+    } catch (error) {
+        console.error('Lỗi handleDeleteNotification:', error);
+        return res.status(error.statusCode || 500).json({
+            status: error.statusCode || 500,
+            message: error.message || 'Lỗi server',
+        });
+    }
+};

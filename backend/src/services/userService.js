@@ -10,7 +10,18 @@ export const getUserProfile = async (userId) => {
         if (!user) {
             return { status: 404, message: 'Không tìm thấy người dùng.' };
         }
-        return { status: 200, data: user };
+
+        // Summary counts
+        const enrolledCoursesCount = await db.UserCourse.count({ where: { userId } });
+        const completedCoursesCount = await db.UserCourse.count({ where: { userId, status: 'completed' } });
+        const certificatesCount = await db.Certificate.count({ where: { userId } });
+
+        const userData = user.toJSON();
+        userData.enrolledCoursesCount = enrolledCoursesCount;
+        userData.completedCoursesCount = completedCoursesCount;
+        userData.certificatesCount = certificatesCount;
+
+        return { status: 200, data: userData };
     } catch (error) {
         console.error('Lỗi lấy hồ sơ:', error);
         throw error;

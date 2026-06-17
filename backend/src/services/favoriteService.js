@@ -23,8 +23,12 @@ const toggleFavoriteCourse = async (userId, courseId) => {
     }
 };
 
-const getFavoriteCourses = async (userId) => {
-    const favorites = await FavoriteCourse.findAll({
+const getFavoriteCourses = async (userId, page = 1, limit = 12) => {
+    const parsedPage = parseInt(page);
+    const parsedLimit = parseInt(limit);
+    const offset = (parsedPage - 1) * parsedLimit;
+
+    const { count, rows } = await FavoriteCourse.findAndCountAll({
         where: { userId },
         include: [
             {
@@ -33,15 +37,31 @@ const getFavoriteCourses = async (userId) => {
                 include: includeOptions
             }
         ],
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
+        limit: parsedLimit,
+        offset,
     });
 
     // Extract courses and filter out nulls
-    const data = favorites.map(fav => fav.course).filter(course => course !== null);
-    return { data };
+    const data = rows.map(fav => fav.course).filter(course => course !== null);
+    
+    return {
+        data,
+        pagination: {
+            currentPage: parsedPage,
+            totalPages: Math.ceil(count / parsedLimit),
+            totalItems: count,
+        }
+    };
+};
+
+const checkIsFavorite = async (userId, courseId) => {
+    const fav = await FavoriteCourse.findOne({ where: { userId, courseId } });
+    return { isFavorite: !!fav };
 };
 
 module.exports = {
     toggleFavoriteCourse,
-    getFavoriteCourses
+    getFavoriteCourses,
+    checkIsFavorite
 };

@@ -15,7 +15,7 @@ export const handleCreateReview = asyncHandler(async (req, res) => {
     }
 
     const data = await reviewService.createReview(userId, courseId, parseInt(rating), comment);
-    return res.status(201).json(new ApiResponse(201, data, 'Đánh giá thành công! Bạn đã nhận được điểm thưởng.'));
+    return res.status(201).json(new ApiResponse(201, data, 'Đánh giá thành công!'));
 });
 
 export const handleGetCourseReviews = asyncHandler(async (req, res) => {

@@ -1,5 +1,6 @@
 import db from '../models';
 import { emitToUser } from '../socketManager';
+import { createError } from '../utils/helpers';
 
 /**
  * Create a notification, save to DB, and push via WebSocket.
@@ -104,4 +105,16 @@ export const getUnreadCount = async (userId) => {
         where: { userId, isRead: false },
     });
     return count;
+};
+
+/**
+ * Delete a notification.
+ */
+export const deleteNotification = async (userId, notificationId) => {
+    const notification = await db.Notification.findOne({
+        where: { id: notificationId, userId },
+    });
+    if (!notification) throw createError(404, 'Không tìm thấy thông báo.');
+    await notification.destroy();
+    return { success: true };
 };

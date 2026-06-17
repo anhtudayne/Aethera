@@ -23,13 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             price: {
                 type: DataTypes.DECIMAL(12, 0),
                 allowNull: false,
-                // Lưu lại giá tại thời điểm mua, đề phòng sau này khóa học đổi giá
             },
         },
-        {
-            sequelize,
-            modelName: 'OrderItem',
-        }
+        { sequelize, modelName: 'OrderItem' }
     );
     return OrderItem;
 };

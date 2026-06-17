@@ -1,0 +1,122 @@
+# ==============================================================================
+# STAGE 4: LEARNING EXPERIENCE - API VERIFICATION
+# ==============================================================================
+# Hướng dẫn sử dụng:
+# 1. Bấm "Send Request" ở Request số 1 để đăng nhập và lưu token tự động.
+# 2. Thực hiện kiểm tra các API phía dưới.
+
+@baseUrl = http://localhost:8089/api
+@email = student@elearning.com
+@password = Student@123
+@courseSlug = nodejs-express-backend-mastery
+@courseId = 2
+@lessonId = 9
+
+# ==============================================================================
+# 1. ĐĂNG NHẬP (Lấy Token)
+# ==============================================================================
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Lưu token tự động vào biến {{authToken}}
+@authToken = {{login.response.body.data.token}}
+
+
+# ==============================================================================
+# 2. TIẾN TRÌNH HỌC TẬP (Learning Progress)
+# ==============================================================================
+
+### 2.1 Lấy danh sách khóa học đã đăng ký (My Enrolled Courses)
+# Lọc theo status: 'all', 'in-progress', 'completed', 'not-started'
+# Sắp xếp theo sort: 'recent', 'enrolled', 'a-z', 'progress'
+GET {{baseUrl}}/learning/my-courses?status=all&sort=recent&page=1&limit=12
+Authorization: Bearer {{authToken}}
+
+### 2.2 Xem toàn bộ nội dung học tập (Full Curriculum Content)
+# Kiểm tra:
+# - Trả về đầy đủ các chương (sections) và bài học (lessons) kèm videoUrl/content.
+# - Chứa tiến độ cụ thể của từng bài học (isCompleted, lastWatchedPosition).
+GET {{baseUrl}}/learning/courses/{{courseSlug}}/content
+Authorization: Bearer {{authToken}}
+
+### 2.3 Cập nhật vị trí đang xem video (Update Watch Position)
+# Lưu vị trí giây thứ 350 của bài học
+PUT {{baseUrl}}/learning/lessons/{{lessonId}}/position
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "position": 350
+}
+
+### 2.4 Đánh dấu hoàn thành bài học (Mark Lesson Complete)
+# Tự động tính toán lại tiến độ tổng quan (%) của khóa học. 
+# Nếu đạt 100%, tự động cấp chứng chỉ và gửi thông báo.
+POST {{baseUrl}}/learning/lessons/{{lessonId}}/complete
+Authorization: Bearer {{authToken}}
+
+### 2.5 Lấy bài học tiếp theo (Get Next Lesson)
+GET {{baseUrl}}/learning/courses/{{courseId}}/next-lesson?currentLessonId={{lessonId}}
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 3. CHỨNG CHỈ (Certificates)
+# ==============================================================================
+
+### 3.1 Xem danh sách chứng chỉ cá nhân của tôi
+GET {{baseUrl}}/certificates
+Authorization: Bearer {{authToken}}
+
+### 3.2 Xác thực chứng chỉ công khai (Verify Certificate - Public)
+# Thay mã chứng chỉ nhận được từ API 3.1 hoặc sau khi hoàn thành 100% khóa học.
+# Ví dụ: GET /api/certificates/verify/CERT-2025-000001
+GET {{baseUrl}}/certificates/verify/CERT-2025-000001
+
+
+# ==============================================================================
+# 4. GHI CHÚ BÀI HỌC (Lesson Notes - CRUD)
+# ==============================================================================
+
+### 4.1 Tạo ghi chú mới cho bài học
+# @name createNote
+POST {{baseUrl}}/notes
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "content": "Đây là ghi chú thử nghiệm tại giây thứ 45",
+    "timestamp": 45
+}
+
+### Lưu ID của ghi chú vừa tạo để sửa/xóa
+@noteId = {{createNote.response.body.data.id}}
+
+### 4.2 Lấy tất cả ghi chú của tôi trong bài học hiện tại
+GET {{baseUrl}}/notes/lesson/{{lessonId}}
+Authorization: Bearer {{authToken}}
+
+### 4.3 Lấy tất cả ghi chú của tôi trong toàn bộ khóa học
+GET {{baseUrl}}/notes/course/{{courseId}}
+Authorization: Bearer {{authToken}}
+
+### 4.4 Chỉnh sửa ghi chú
+PUT {{baseUrl}}/notes/{{noteId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "content": "Ghi chú đã được chỉnh sửa nội dung thành công."
+}
+
+### 4.5 Xóa ghi chú
+DELETE {{baseUrl}}/notes/{{noteId}}
+Authorization: Bearer {{authToken}}

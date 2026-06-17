@@ -13,25 +13,20 @@ module.exports = (sequelize, DataTypes) => {
             userId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                references: { model: 'Users', key: 'id' }
+                references: { model: 'Users', key: 'id' },
             },
             courseId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                references: { model: 'Courses', key: 'id' }
-            }
+                references: { model: 'Courses', key: 'id' },
+            },
         },
         {
             sequelize,
             modelName: 'FavoriteCourse',
-            tableName: 'FavoriteCourses',
             indexes: [
-                {
-                    unique: true,
-                    fields: ['userId', 'courseId'],
-                    name: 'unique_user_course_favorite'
-                }
-            ]
+                { unique: true, fields: ['userId', 'courseId'], name: 'favoritecourses_user_course_unique' },
+            ],
         }
     );
     return FavoriteCourse;

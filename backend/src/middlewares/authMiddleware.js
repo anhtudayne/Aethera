@@ -24,8 +24,8 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const verifyAdmin = (req, res, next) => {
-    // req.user được gán từ verifyToken
-    if (req.user && req.user.roleId === 'admin') {
+    // req.user được gán từ verifyToken — JWT payload chứa { id, role, email }
+    if (req.user && req.user.role === 'admin') {
         next();
     } else {
         return res.status(403).json({

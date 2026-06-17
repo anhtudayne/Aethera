@@ -1,0 +1,127 @@
+# ==============================================================================
+# STAGE 2: AUTHENTICATION & USER PROFILE - API VERIFICATION
+# ==============================================================================
+# File này chứa các request kiểm tra tính đúng đắn của Stage 2.
+# Hướng dẫn sử dụng:
+# 1. Cài đặt extension "REST Client" trên VS Code.
+# 2. Bấm "Send Request" tại Request số 1 để đăng nhập và tự động lưu token.
+# 3. Chạy các request tiếp theo. Token sẽ tự động được sử dụng thông qua biến {{authToken}}.
+
+@baseUrl = http://localhost:8089/api
+@email = student@elearning.com
+@password = Student@123
+
+# ==============================================================================
+# 1. ĐĂNG NHẬP (Login)
+# ==============================================================================
+# Kiểm tra:
+# - Trả về token và thông tin user.
+# - Response chứa: image, provider: "local".
+# - Response KHÔNG chứa redirectUrl (FE tự điều hướng).
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Trích xuất token tự động sau khi đăng nhập thành công
+@authToken = {{login.response.body.data.token}}
+
+
+# ==============================================================================
+# 2. LẤY HỒ SƠ CÁ NHÂN MỞ RỘNG (Get Profile)
+# ==============================================================================
+# Kiểm tra:
+# - Trả về thông tin cá nhân.
+# - Chứa các trường thống kê bổ sung: enrolledCoursesCount, completedCoursesCount, certificatesCount.
+GET {{baseUrl}}/user/profile
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 3. LẤY DASHBOARD NGƯỜI DÙNG (Get User Dashboard)
+# ==============================================================================
+# Kiểm tra:
+# - Trả về thống kê stats: totalEnrolled, completedCourses, inProgressCourses, totalCertificates, totalReviews.
+# - Trả về danh sách coursesInProgress (tối đa 4 khóa học gần nhất đang học).
+# - Trả về danh sách recentCertificates (tối đa 3 chứng chỉ gần nhất).
+GET {{baseUrl}}/user/dashboard
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 4. ĐỔI MẬT KHẨU (Change Password)
+# ==============================================================================
+
+### 4.1 Thử đổi mật khẩu - Lỗi Validation (Mật khẩu mới ngắn hơn 6 ký tự)
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "oldPassword": "{{password}}",
+    "newPassword": "123"
+}
+
+### 4.2 Thử đổi mật khẩu - Lỗi Sai mật khẩu hiện tại (oldPassword sai)
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "oldPassword": "WrongOldPassword@123",
+    "newPassword": "NewStudentPassword@123"
+}
+
+### 4.3 Thử đổi mật khẩu - Thành công
+# (Lưu ý: Sau khi đổi thành công, bạn cần dùng mật khẩu mới "NewStudentPassword@123" để đăng nhập lại)
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "oldPassword": "{{password}}",
+    "newPassword": "NewStudentPassword@123"
+}
+
+### 4.4 Khôi phục lại mật khẩu cũ để thuận tiện cho việc test tiếp theo
+# Đăng nhập bằng mật khẩu mới trước để lấy token mới
+# @name loginNew
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "NewStudentPassword@123"
+}
+
+### Lấy token mới
+@newAuthToken = {{loginNew.response.body.data.token}}
+
+### Tiến hành khôi phục lại mật khẩu cũ
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{newAuthToken}}
+Content-Type: application/json
+
+{
+    "oldPassword": "NewStudentPassword@123",
+    "newPassword": "{{password}}"
+}
+
+
+# ==============================================================================
+# 5. ĐĂNG NHẬP BẰNG GOOGLE (Google OAuth)
+# ==============================================================================
+# Flow kiểm tra (ở môi trường phát triển):
+# - Gửi Google idToken nhận được từ frontend lên backend.
+# - Backend verify với Google và tự động đăng nhập hoặc tạo tài khoản mới nếu chưa tồn tại.
+# Lưu ý: Cần cấu hình GOOGLE_CLIENT_ID hợp lệ trong file .env và thay thế [YOUR_GOOGLE_ID_TOKEN] dưới đây.
+POST {{baseUrl}}/auth/google
+Content-Type: application/json
+
+{
+    "idToken": "YOUR_GOOGLE_ID_TOKEN_HERE"
+}

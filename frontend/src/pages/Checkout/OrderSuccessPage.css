@@ -1,0 +1,192 @@
+/* ==========================================
+   AETHERA ORDER SUCCESS — Stylesheet
+   ========================================== */
+
+.success-page-viewport {
+  background-color: var(--color-bg-primary);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.success-page-card {
+  background-color: var(--color-bg-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-lg);
+  padding: 48px 40px;
+  max-width: 540px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Confetti Simulation (CSS-based) ── */
+.success-page-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6, #EC4899);
+}
+
+/* ── Animated Checkmark ── */
+.checkmark-bounce-wrapper {
+  color: var(--color-success);
+  margin-bottom: 24px;
+  animation: scale-up-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scale-up-bounce {
+  0% { transform: scale(0.3); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.checkmark-success-icon {
+  filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.25));
+}
+
+.success-heading {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.success-subheading {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  max-width: 440px;
+  margin-bottom: 32px;
+}
+
+/* ── Receipt Box ── */
+.order-receipt-box {
+  width: 100%;
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  padding: 24px;
+  margin-bottom: 36px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.9rem;
+  border-bottom: 1px dashed var(--color-border-light);
+  padding-bottom: 12px;
+}
+
+.receipt-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.receipt-label {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.receipt-val {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-align: right;
+  max-width: 65%;
+}
+
+.price-highlight {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.receipt-course-title {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.order-receipt-missing {
+  padding: 20px;
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: 0.85rem;
+  margin-bottom: 32px;
+}
+
+/* ── Action Buttons ── */
+.success-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.success-btn-cta {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  height: 48px;
+}
+
+.success-btn-sec {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  height: 48px;
+}
+
+/* ── Loading Spinner ── */
+.success-loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  gap: 16px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.success-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-accent-light);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: success-spin 1s infinite linear;
+}
+
+@keyframes success-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 576px) {
+  .success-page-card {
+    padding: 36px 20px;
+  }
+  
+  .success-heading {
+    font-size: 1.75rem;
+  }
+}

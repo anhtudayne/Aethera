@@ -1,0 +1,9 @@
+/* LoginPage Specific CSS Overrides */
+.login-extra-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: -8px;
+  margin-bottom: 20px;
+}

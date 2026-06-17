@@ -13,15 +13,20 @@ module.exports = (sequelize, DataTypes) => {
             userId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
+                references: { model: 'Users', key: 'id' },
             },
             courseId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
+                references: { model: 'Courses', key: 'id' },
             },
         },
         {
             sequelize,
             modelName: 'Cart',
+            indexes: [
+                { unique: true, fields: ['userId', 'courseId'], name: 'carts_user_course_unique' },
+            ],
         }
     );
     return Cart;

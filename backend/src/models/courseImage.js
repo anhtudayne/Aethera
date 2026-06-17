@@ -9,13 +9,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     CourseImage.init(
         {
+            courseId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: { model: 'Courses', key: 'id' },
+            },
             imageUrl: { type: DataTypes.STRING, allowNull: false },
             isPrimary: { type: DataTypes.BOOLEAN, defaultValue: false },
             sortOrder: { type: DataTypes.INTEGER, defaultValue: 0 },
-            courseId: {
-                type: DataTypes.INTEGER,
-                references: { model: 'Courses', key: 'id' },
-            },
         },
         { sequelize, modelName: 'CourseImage' }
     );

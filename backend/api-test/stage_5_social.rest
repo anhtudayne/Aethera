@@ -1,0 +1,163 @@
+# ==============================================================================
+# STAGE 5: SOCIAL FEATURES, CART & CLEANUP - API VERIFICATION
+# ==============================================================================
+# Hướng dẫn sử dụng:
+# 1. Bấm "Send Request" ở Request số 1 để đăng nhập và lưu token tự động.
+# 2. Thực hiện kiểm tra các API phía dưới theo thứ tự.
+
+@baseUrl = http://localhost:8089/api
+@email = student@elearning.com
+@password = Student@123
+@courseId = 4
+
+# ==============================================================================
+# 1. ĐĂNG NHẬP (Lấy Token)
+# ==============================================================================
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Lưu token tự động vào biến {{authToken}}
+@authToken = {{login.response.body.data.token}}
+
+
+# ==============================================================================
+# 2. GIỎ HÀNG (Cart)
+# ==============================================================================
+
+### 2.1 Thêm khóa học vào giỏ hàng
+# @name addToCart
+POST {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}}
+}
+
+### 2.2 Thêm lại khóa học vào giỏ hàng (Sẽ lỗi 400 vì đã có trong giỏ hàng)
+POST {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}}
+}
+
+### 2.3 Xem giỏ hàng hiện tại
+GET {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 3. ĐƠN HÀNG & THANH TOÁN (Orders & Checkout - Simplified)
+# ==============================================================================
+
+### 3.1 Tạo đơn hàng từ giỏ hàng (Checkout)
+# Trả về mã đơn hàng (orderCode) và orderId với trạng thái là "pending".
+# @name createOrder
+POST {{baseUrl}}/orders/create-from-cart
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{}
+
+### Lưu orderId từ kết quả tạo đơn hàng
+@orderId = {{createOrder.response.body.data.orderId}}
+
+### 3.2 Lấy danh sách đơn hàng cá nhân (Có phân trang)
+GET {{baseUrl}}/orders?page=1&limit=5
+Authorization: Bearer {{authToken}}
+
+### 3.3 Xem chi tiết đơn hàng
+GET {{baseUrl}}/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+### 3.4 Thực hiện fulfill đơn hàng (Simulate Payment System - Helper endpoint)
+# Endpoint này thay đổi status của order thành 'paid', tự động enroll khóa học cho user,
+# và khởi tạo LessonProgress (isCompleted: false) cho tất cả bài học trong khóa học.
+PUT {{baseUrl}}/orders/{{orderId}}/fulfill
+Authorization: Bearer {{authToken}}
+
+### 3.5 Kiểm tra lại chi tiết đơn hàng sau khi fulfill (Status phải là 'paid')
+GET {{baseUrl}}/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 4. CHẶN THÊM VÀO GIỎ HÀNG NẾU ĐÃ SỞ HỮU (Enrolled Course Cart Block)
+# ==============================================================================
+
+### 4.1 Thử thêm khóa học đã sở hữu vào giỏ (Sẽ báo lỗi 400: Bạn đã sở hữu khóa học này.)
+POST {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}}
+}
+
+
+# ==============================================================================
+# 5. REVIEW KHÓA HỌC (Enrolled reviews only)
+# ==============================================================================
+
+### 5.1 Kiểm tra xem user đã có quyền đánh giá khóa học chưa
+GET {{baseUrl}}/reviews/can-review/{{courseId}}
+Authorization: Bearer {{authToken}}
+
+### 5.2 Tạo đánh giá cho khóa học
+# @name createReview
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "rating": 5,
+    "comment": "Khóa học rất tuyệt vời, nội dung chuẩn chỉ!"
+}
+
+### 5.3 Thử đánh giá lại khóa học lần nữa (Sẽ báo lỗi 400 vì đã đánh giá rồi)
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "rating": 4,
+    "comment": "Đánh giá lại"
+}
+
+### 5.4 Lấy danh sách đánh giá của khóa học (Public)
+GET {{baseUrl}}/reviews/course/{{courseId}}?page=1&limit=10
+
+### 5.5 Xem danh sách các đánh giá cá nhân của tôi
+GET {{baseUrl}}/reviews/my-reviews
+Authorization: Bearer {{authToken}}
+
+
+# ==============================================================================
+# 6. THÔNG BÁO (Notifications - Expanded & Deletable)
+# ==============================================================================
+
+### 6.1 Lấy danh sách thông báo (Kiểm tra xem có order_created, order_paid, new_review không)
+# @name getNotifications
+GET {{baseUrl}}/notifications?page=1&limit=20
+Authorization: Bearer {{authToken}}
+
+### Lưu notification ID đầu tiên để xóa thử nghiệm
+@notificationId = {{getNotifications.response.body.data.notifications[0].id}}
+
+### 6.2 Xóa một thông báo cụ thể
+DELETE {{baseUrl}}/notifications/{{notificationId}}
+Authorization: Bearer {{authToken}}
+
+### 6.3 Lấy lại danh sách thông báo sau khi xóa
+GET {{baseUrl}}/notifications?page=1&limit=20
+Authorization: Bearer {{authToken}}

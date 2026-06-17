@@ -1,0 +1,225 @@
+/* ==========================================
+   AETHERA SECURE CHECKOUT — Stylesheet
+   ========================================== */
+
+.checkout-page-viewport {
+  background-color: var(--color-bg-primary);
+  min-height: calc(100vh - 80px);
+  padding: 60px 24px;
+}
+
+.checkout-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.checkout-page-title {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 16px;
+}
+
+/* ── Checkout Grid ── */
+.checkout-layout-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.checkout-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.checkout-section-card {
+  background-color: var(--color-bg-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  padding: 30px;
+}
+
+.checkout-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Billing Info ── */
+.checkout-billing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.billing-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.billing-info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.billing-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.billing-val {
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ── Order Review Item ── */
+.order-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-review-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.order-review-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.review-item-thumbnail {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+}
+
+.review-item-details {
+  flex-grow: 1;
+}
+
+.review-item-name {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.review-item-instructor {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.review-item-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Payment Summary Card ── */
+.checkout-payment-card {
+  background-color: var(--color-bg-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  padding: 30px;
+  position: sticky;
+  top: 110px;
+}
+
+.payment-summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.payment-divider {
+  height: 1px;
+  background-color: var(--color-border-light);
+  margin: 10px 0;
+}
+
+.payment-total-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+.checkout-terms-note {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.checkout-pay-btn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* ── Loader & Spinner ── */
+.checkout-loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  gap: 16px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.checkout-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-accent-light);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: checkout-spin 1s infinite linear;
+}
+
+@keyframes checkout-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Responsiveness ── */
+@media (max-width: 992px) {
+  .checkout-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .checkout-payment-card {
+    position: static;
+  }
+}

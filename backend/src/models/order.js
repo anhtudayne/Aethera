@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
-                // Mã này sẽ dùng làm nội dung chuyển khoản, VD: DH17163812
             },
             userId: {
                 type: DataTypes.INTEGER,
@@ -31,19 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             paymentMethod: {
                 type: DataTypes.STRING,
-                defaultValue: 'bank_transfer', // Hoặc 'sepay', 'cod'
-            },
-            couponCode: {
-                type: DataTypes.STRING,
                 allowNull: true,
-            },
-            discountFromCoupon: {
-                type: DataTypes.DECIMAL(12, 0),
-                defaultValue: 0,
-            },
-            discountFromPoints: {
-                type: DataTypes.DECIMAL(12, 0),
-                defaultValue: 0,
             },
         },
         {

@@ -1,196 +1,87 @@
 import db from '../models';
-import * as couponService from './couponService';
 import * as notificationService from './notificationService';
+import { createError } from '../utils/helpers';
 
-export const createOrderFromCart = async (userId, bankAccount, bankName, usePoints = 0, couponCode = null) => {
-    const POINT_TO_VND = 1000;
+export const createOrderFromCart = async (userId) => {
     const transaction = await db.sequelize.transaction();
     try {
-        // 1. Lấy giỏ hàng của user
+        // 1. Lấy giỏ hàng
         const cartItems = await db.Cart.findAll({
             where: { userId },
             include: [{ model: db.Course, as: 'course' }],
         });
-
         if (!cartItems || cartItems.length === 0) {
-            const error = new Error('Giỏ hàng trống.');
-            error.statusCode = 400;
-            throw error;
+            throw createError(400, 'Giỏ hàng trống.');
         }
 
-        // 2. Tính tổng tiền ban đầu (cartTotal)
-        let cartTotal = 0;
+        // 2. Kiểm tra các khóa đã sở hữu → loại ra
+        const ownedCourses = await db.UserCourse.findAll({
+            where: { userId, courseId: cartItems.map(i => i.courseId) },
+            attributes: ['courseId'],
+        });
+        const ownedIds = new Set(ownedCourses.map(uc => uc.courseId));
+        const validItems = cartItems.filter(item => !ownedIds.has(item.courseId));
+
+        if (validItems.length === 0) {
+            throw createError(400, 'Tất cả khóa học trong giỏ bạn đã sở hữu.');
+        }
+
+        // 3. Tính tổng tiền
+        let totalAmount = 0;
         const orderItemsData = [];
-        
-        for (const item of cartItems) {
-            const price = item.course.salePrice ? item.course.salePrice : item.course.price;
-            cartTotal += Number(price);
-            
-            orderItemsData.push({
-                courseId: item.courseId,
-                price: price
-            });
+        for (const item of validItems) {
+            const price = item.course.salePrice ? Number(item.course.salePrice) : Number(item.course.price);
+            totalAmount += price;
+            orderItemsData.push({ courseId: item.courseId, price });
         }
 
-        // 3. Áp dụng mã giảm giá (Coupon)
-        let discountFromCoupon = 0;
-        let subTotal = cartTotal;
-        if (couponCode) {
-            const validateResult = await couponService.validateCoupon(couponCode, cartTotal);
-            discountFromCoupon = validateResult.discountAmount;
-            subTotal = validateResult.finalTotal;
-        }
-
-        // 4. Áp dụng điểm tích lũy (Points)
-        let pointsUsed = 0;
-        let discountFromPoints = 0;
-        let finalTotal = subTotal;
-        
-        if (usePoints && usePoints > 0) {
-            const user = await db.User.findByPk(userId, { transaction });
-            if (user.loyaltyPoints < usePoints) {
-                const error = new Error(`Bạn không đủ điểm tích lũy. Hiện có: ${user.loyaltyPoints} điểm.`);
-                error.statusCode = 400;
-                throw error;
-            }
-            
-            discountFromPoints = usePoints * POINT_TO_VND;
-            // Không cho giảm quá số tiền còn lại (subTotal)
-            if (discountFromPoints > subTotal) {
-                discountFromPoints = subTotal;
-                pointsUsed = Math.ceil(subTotal / POINT_TO_VND);
-            } else {
-                pointsUsed = usePoints;
-            }
-            finalTotal -= discountFromPoints;
-
-            // Trừ điểm
-            if (pointsUsed > 0) {
-                await db.User.decrement('loyaltyPoints', {
-                    by: pointsUsed,
-                    where: { id: userId },
-                    transaction,
-                });
-            }
-        }
-
-        // 5. Kiểm tra nếu thanh toán toàn bộ bằng mã/điểm
-        const isFullyPaid = finalTotal <= 0;
-        
-        // 6. Tạo Order
+        // 4. Tạo Order
         const orderCode = `DH${userId}${Date.now()}`;
-        
         const order = await db.Order.create({
             code: orderCode,
-            userId: userId,
-            totalAmount: finalTotal,
-            status: isFullyPaid ? 'paid' : 'pending',
-            paymentMethod: isFullyPaid ? 'points_coupon' : 'bank_transfer',
-            couponCode: couponCode || null,
-            discountFromCoupon,
-            discountFromPoints
+            userId,
+            totalAmount,
+            status: 'pending',  // Luôn pending, thanh toán do bên khác hoặc tay xử lý
         }, { transaction });
 
-        // 7. Tạo Order Items
-        const itemsToCreate = orderItemsData.map(item => ({
-            ...item,
-            orderId: order.id
-        }));
-        await db.OrderItem.bulkCreate(itemsToCreate, { transaction });
+        // 5. Tạo OrderItems
+        const items = orderItemsData.map(item => ({ ...item, orderId: order.id }));
+        await db.OrderItem.bulkCreate(items, { transaction });
 
-        // 8. Cấp quyền truy cập ngay nếu isFullyPaid
-        if (isFullyPaid) {
-            const courseAccessData = itemsToCreate.map(item => ({
-                userId,
-                courseId: item.courseId,
-                status: 'active'
-            }));
-            await db.UserCourse.bulkCreate(courseAccessData, { transaction });
-        }
-
-        // 9. Ghi log nếu dùng điểm
-        if (pointsUsed > 0) {
-            await db.LoyaltyPoint.create({
-                userId,
-                points: -pointsUsed,
-                type: 'spend',
-                description: `Thanh toán đơn hàng ${orderCode} (-${discountFromPoints.toLocaleString('vi-VN')}đ)`,
-                referenceId: order.id,
-            }, { transaction });
-        }
-
-        // 10. Tăng số lượt dùng của coupon
-        if (couponCode && discountFromCoupon > 0) {
-            await couponService.incrementCouponUsage(couponCode, transaction);
-        }
-
-        // 11. Xóa giỏ hàng
-        await db.Cart.destroy({ where: { userId }, transaction });
+        // 6. Xóa giỏ hàng (chỉ xóa các items hợp lệ)
+        await db.Cart.destroy({
+            where: { userId, courseId: validItems.map(i => i.courseId) },
+            transaction,
+        });
 
         await transaction.commit();
 
-        // 12. Xử lý trả về
-        if (isFullyPaid) {
-            // === NOTIFICATION: Order fully paid by points/coupon ===
-            try {
-                const courseNames = cartItems.map(item => item.course?.name || 'Khóa học');
-                await notificationService.createNotification(
-                    userId,
-                    'order_paid',
-                    '✅ Thanh toán thành công!',
-                    `Đơn hàng ${orderCode} đã thanh toán hoàn toàn bằng điểm/mã giảm giá.`,
-                    { orderId: order.id, orderCode, courseNames }
-                );
-            } catch (notifErr) {
-                console.error('Lỗi gửi notification (không ảnh hưởng đơn hàng):', notifErr);
-            }
-
-            return {
-                orderCode,
-                totalAmount: finalTotal,
-                pointsUsed,
-                discountFromPoints,
-                discountFromCoupon,
-                qrUrl: null,
-                isFullyPaid: true
-            };
-        }
-
-        // Tạo link VietQR
-        const finalBankAccount = bankAccount || process.env.BANK_ACCOUNT || '0000000000';
-        const finalBankName = bankName || process.env.BANK_NAME || 'MBBank';
-        const qrUrl = `https://qr.sepay.vn/img?acc=${finalBankAccount}&bank=${finalBankName}&amount=${finalTotal}&des=${orderCode}`;
-
-        // === NOTIFICATION: Order created (pending payment) ===
+        // 7. Notification
         try {
-            const courseNames = [];
-            for (const item of cartItems) {
-                courseNames.push(item.course?.name || 'Khóa học');
-            }
+            const courseNames = validItems.map(item => item.course?.name || 'Khóa học');
             await notificationService.createNotification(
                 userId,
                 'order_created',
                 '📦 Đơn hàng mới đã tạo',
-                `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${finalTotal.toLocaleString('vi-VN')}đ`,
-                { orderId: order.id, orderCode, totalAmount: finalTotal, courseNames }
+                `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${totalAmount.toLocaleString('vi-VN')}đ`,
+                { orderId: order.id, orderCode, totalAmount, courseNames }
             );
-        } catch (notifErr) {
-            console.error('Lỗi gửi notification (không ảnh hưởng đơn hàng):', notifErr);
+        } catch (e) {
+            console.error('Notification error:', e);
         }
 
         return {
             orderCode,
-            totalAmount: finalTotal,
-            pointsUsed,
-            discountFromPoints,
-            discountFromCoupon,
-            qrUrl,
-            isFullyPaid: false
+            orderId: order.id,
+            totalAmount,
+            itemCount: items.length,
+            items: items.map(i => ({
+                courseId: i.courseId,
+                price: i.price,
+            })),
         };
-
     } catch (error) {
         await transaction.rollback();
-        console.error('Lỗi service createOrder:', error);
         throw error;
     }
 };
@@ -202,9 +93,7 @@ export const checkOrderStatus = async (userId, orderCode) => {
         });
 
         if (!order) {
-            const error = new Error('Không tìm thấy đơn hàng');
-            error.statusCode = 404;
-            throw error;
+            throw createError(404, 'Không tìm thấy đơn hàng');
         }
 
         return {
@@ -212,33 +101,32 @@ export const checkOrderStatus = async (userId, orderCode) => {
             isPaid: order.status === 'paid'
         };
     } catch (error) {
-        console.error('Lỗi service checkOrderStatus:', error);
         throw error;
     }
 };
 
-export const getMyOrders = async (userId) => {
+export const getMyOrders = async (userId, page = 1, limit = 10) => {
     try {
-        const orders = await db.Order.findAll({
+        const offset = (page - 1) * limit;
+        const { count, rows } = await db.Order.findAndCountAll({
             where: { userId },
-            include: [
-                {
-                    model: db.OrderItem,
-                    as: 'orderItems',
-                    include: [
-                        {
-                            model: db.Course,
-                            as: 'course',
-                            attributes: ['id', 'name', 'slug', 'thumbnail']
-                        }
-                    ]
-                }
-            ],
-            order: [['createdAt', 'DESC']]
+            include: [{
+                model: db.OrderItem, as: 'orderItems',
+                include: [{ model: db.Course, as: 'course', attributes: ['id', 'name', 'slug', 'thumbnail'] }],
+            }],
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(limit),
+            offset,
         });
-        return orders;
+        return {
+            orders: rows,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages: Math.ceil(count / limit),
+                totalItems: count,
+            },
+        };
     } catch (error) {
-        console.error('Lỗi service getMyOrders:', error);
         throw error;
     }
 };
@@ -263,14 +151,11 @@ export const getOrderDetails = async (userId, orderId) => {
         });
 
         if (!order) {
-            const error = new Error('Không tìm thấy đơn hàng');
-            error.statusCode = 404;
-            throw error;
+            throw createError(404, 'Không tìm thấy đơn hàng');
         }
 
         return order;
     } catch (error) {
-        console.error('Lỗi service getOrderDetails:', error);
         throw error;
     }
 };
@@ -282,15 +167,11 @@ export const cancelOrder = async (userId, orderId) => {
         });
 
         if (!order) {
-            const error = new Error('Không tìm thấy đơn hàng');
-            error.statusCode = 404;
-            throw error;
+            throw createError(404, 'Không tìm thấy đơn hàng');
         }
 
         if (order.status !== 'pending') {
-            const error = new Error('Chỉ có thể hủy đơn hàng đang chờ thanh toán');
-            error.statusCode = 400;
-            throw error;
+            throw createError(400, 'Chỉ có thể hủy đơn hàng đang chờ thanh toán');
         }
 
         order.status = 'cancelled';
@@ -298,7 +179,87 @@ export const cancelOrder = async (userId, orderId) => {
 
         return order;
     } catch (error) {
-        console.error('Lỗi service cancelOrder:', error);
+        throw error;
+    }
+};
+
+/**
+ * Called when an order is paid. Grants access, creates enrollment progress records.
+ */
+export const fulfillOrder = async (orderId) => {
+    const transaction = await db.sequelize.transaction();
+    try {
+        const order = await db.Order.findByPk(orderId, {
+            include: [{ model: db.OrderItem, as: 'orderItems' }],
+            transaction,
+        });
+        if (!order) throw createError(404, 'Không tìm thấy đơn hàng');
+        if (order.status === 'paid') return { message: 'Đơn hàng đã được thanh toán trước đó.' };
+
+        // 1. Cập nhật trạng thái
+        await order.update({ status: 'paid' }, { transaction });
+
+        // 2. Đăng ký các khóa học trong đơn hàng
+        for (const item of order.orderItems) {
+            const [enrollment, created] = await db.UserCourse.findOrCreate({
+                where: { userId: order.userId, courseId: item.courseId },
+                defaults: {
+                    userId: order.userId,
+                    courseId: item.courseId,
+                    status: 'active',
+                    progressPercent: 0,
+                    enrolledAt: new Date(),
+                },
+                transaction,
+            });
+
+            if (created) {
+                // 3. Khởi tạo LessonProgress cho tất cả lessons trong khóa học này
+                const lessons = await db.Lesson.findAll({
+                    include: [{
+                        model: db.Section,
+                        as: 'section',
+                        where: { courseId: item.courseId },
+                        attributes: []
+                    }],
+                    attributes: ['id'],
+                    transaction,
+                });
+
+                if (lessons.length > 0) {
+                    const progressData = lessons.map(l => ({
+                        userId: order.userId,
+                        lessonId: l.id,
+                        courseId: item.courseId,
+                        isCompleted: false,
+                    }));
+                    await db.LessonProgress.bulkCreate(progressData, { transaction, ignoreDuplicates: true });
+                }
+
+                // 4. Tăng student count cho khóa học
+                await db.Course.increment('totalStudents', { by: 1, where: { id: item.courseId }, transaction });
+            }
+        }
+
+        await transaction.commit();
+
+        // 5. Gửi thông báo thành công
+        const courseNames = [];
+        for (const item of order.orderItems) {
+            const course = await db.Course.findByPk(item.courseId, { attributes: ['name'] });
+            if (course) courseNames.push(course.name);
+        }
+        await notificationService.createNotification(
+            order.userId,
+            'order_paid',
+            '✅ Thanh toán thành công!',
+            `Đơn hàng ${order.code} đã thanh toán thành công. Bạn có thể học ngay!`,
+            { orderId: order.id, orderCode: order.code, courseNames }
+        );
+
+        return { message: 'Thanh toán đơn hàng thành công, đã kích hoạt khóa học.' };
+    } catch (error) {
+        await transaction.rollback();
         throw error;
     }
 };

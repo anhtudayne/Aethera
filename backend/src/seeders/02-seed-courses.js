@@ -1,70 +1,289 @@
 'use strict';
+
 module.exports = {
     async up(queryInterface) {
-        const courses = [
-            { name: 'React.js & Next.js từ Zero đến Hero', slug: 'reactjs-nextjs-zero-to-hero', description: 'Khóa học toàn diện về React.js và Next.js, từ cơ bản đến nâng cao. Học cách xây dựng ứng dụng web hiện đại với Server-Side Rendering.', thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80', price: 1499000, salePrice: 799000, instructor: 'Nguyễn Văn An', duration: '42 giờ', level: 'intermediate', totalLessons: 180, totalStudents: 12500, rating: 4.8, isFeatured: true, isBestSeller: true, isNewArrival: false, categoryId: 1 },
-            { name: 'Node.js Backend Master Class', slug: 'nodejs-backend-master-class', description: 'Xây dựng REST API chuyên nghiệp với Node.js, Express, MongoDB và MySQL. Bao gồm Authentication, Authorization, Testing.', thumbnail: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=600&q=80', price: 1299000, salePrice: 649000, instructor: 'Trần Minh Đức', duration: '38 giờ', level: 'intermediate', totalLessons: 150, totalStudents: 8900, rating: 4.7, isFeatured: true, isBestSeller: false, isNewArrival: false, categoryId: 1 },
-            { name: 'HTML, CSS & JavaScript cho người mới', slug: 'html-css-javascript-co-ban', description: 'Bước đầu tiên để trở thành lập trình viên web. Học HTML5, CSS3, JavaScript ES6+ từ cơ bản nhất.', thumbnail: 'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=600&q=80', price: 599000, salePrice: null, instructor: 'Lê Thị Hương', duration: '24 giờ', level: 'beginner', totalLessons: 100, totalStudents: 25000, rating: 4.9, isFeatured: false, isBestSeller: true, isNewArrival: false, categoryId: 1 },
-            { name: 'TypeScript & NestJS API Development', slug: 'typescript-nestjs-api', description: 'Xây dựng API enterprise-grade với TypeScript và NestJS framework. Microservices, GraphQL, WebSocket.', thumbnail: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=600&q=80', price: 1799000, salePrice: 999000, instructor: 'Phạm Quốc Bảo', duration: '48 giờ', level: 'advanced', totalLessons: 200, totalStudents: 4200, rating: 4.6, isFeatured: true, isBestSeller: false, isNewArrival: true, categoryId: 1 },
-            { name: 'Flutter & Dart Complete Guide', slug: 'flutter-dart-complete-guide', description: 'Phát triển ứng dụng iOS & Android với Flutter. UI đẹp, state management, Firebase integration.', thumbnail: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80', price: 1399000, salePrice: 699000, instructor: 'Hoàng Đình Nam', duration: '36 giờ', level: 'intermediate', totalLessons: 160, totalStudents: 7800, rating: 4.7, isFeatured: true, isBestSeller: true, isNewArrival: false, categoryId: 2 },
-            { name: 'React Native Mobile Development', slug: 'react-native-mobile', description: 'Xây dựng ứng dụng mobile cross-platform với React Native. Navigation, Redux, API Integration.', thumbnail: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&q=80', price: 1199000, salePrice: null, instructor: 'Nguyễn Thành Long', duration: '30 giờ', level: 'intermediate', totalLessons: 120, totalStudents: 5600, rating: 4.5, isFeatured: false, isBestSeller: false, isNewArrival: true, categoryId: 2 },
-            { name: 'Kotlin Android từ A-Z', slug: 'kotlin-android-a-z', description: 'Lập trình Android native với Kotlin. Jetpack Compose, Room Database, Retrofit.', thumbnail: 'https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=600&q=80', price: 999000, salePrice: 499000, instructor: 'Vũ Anh Tuấn', duration: '28 giờ', level: 'beginner', totalLessons: 110, totalStudents: 6200, rating: 4.6, isFeatured: false, isBestSeller: true, isNewArrival: false, categoryId: 2 },
-            { name: 'Python cho Data Science & AI', slug: 'python-data-science-ai', description: 'Học Python, NumPy, Pandas, Matplotlib, Scikit-learn. Phân tích dữ liệu và xây dựng model Machine Learning.', thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', price: 1599000, salePrice: 899000, instructor: 'Đỗ Thanh Hải', duration: '45 giờ', level: 'intermediate', totalLessons: 190, totalStudents: 15000, rating: 4.8, isFeatured: true, isBestSeller: true, isNewArrival: false, categoryId: 3 },
-            { name: 'Deep Learning với TensorFlow', slug: 'deep-learning-tensorflow', description: 'Mạng neural network, CNN, RNN, NLP với TensorFlow và Keras. Thực hành project thực tế.', thumbnail: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80', price: 1999000, salePrice: null, instructor: 'Lê Minh Trí', duration: '50 giờ', level: 'advanced', totalLessons: 210, totalStudents: 3800, rating: 4.7, isFeatured: true, isBestSeller: false, isNewArrival: true, categoryId: 3 },
-            { name: 'SQL & Database Design', slug: 'sql-database-design', description: 'Thiết kế cơ sở dữ liệu chuẩn, viết truy vấn SQL tối ưu. MySQL, PostgreSQL, MongoDB.', thumbnail: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&q=80', price: 799000, salePrice: 399000, instructor: 'Trần Văn Hùng', duration: '20 giờ', level: 'beginner', totalLessons: 80, totalStudents: 9500, rating: 4.5, isFeatured: false, isBestSeller: true, isNewArrival: false, categoryId: 3 },
-            { name: 'UI/UX Design với Figma', slug: 'uiux-design-figma', description: 'Thiết kế giao diện người dùng chuyên nghiệp với Figma. Design System, Prototyping, User Research.', thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80', price: 1099000, salePrice: 549000, instructor: 'Ngô Thị Mai', duration: '25 giờ', level: 'beginner', totalLessons: 90, totalStudents: 11000, rating: 4.8, isFeatured: true, isBestSeller: true, isNewArrival: false, categoryId: 4 },
-            { name: 'Adobe Photoshop & Illustrator', slug: 'photoshop-illustrator', description: 'Thành thạo Photoshop và Illustrator. Chỉnh sửa ảnh, thiết kế logo, banner chuyên nghiệp.', thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80', price: 899000, salePrice: null, instructor: 'Phạm Nhật Linh', duration: '22 giờ', level: 'beginner', totalLessons: 85, totalStudents: 7200, rating: 4.4, isFeatured: false, isBestSeller: false, isNewArrival: true, categoryId: 4 },
-            { name: 'Motion Design & After Effects', slug: 'motion-design-after-effects', description: 'Tạo animation và motion graphics chuyên nghiệp với After Effects. Explainer videos, UI animation.', thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80', price: 1299000, salePrice: 799000, instructor: 'Hoàng Văn Đạt', duration: '32 giờ', level: 'intermediate', totalLessons: 130, totalStudents: 4500, rating: 4.6, isFeatured: false, isBestSeller: false, isNewArrival: false, categoryId: 4 },
-            { name: 'Digital Marketing toàn diện', slug: 'digital-marketing-toan-dien', description: 'SEO, Google Ads, Facebook Ads, Email Marketing, Content Marketing. Chiến lược marketing online A-Z.', thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80', price: 1199000, salePrice: 599000, instructor: 'Trương Thị Lan', duration: '28 giờ', level: 'beginner', totalLessons: 105, totalStudents: 13500, rating: 4.7, isFeatured: true, isBestSeller: true, isNewArrival: false, categoryId: 5 },
-            { name: 'Khởi nghiệp & Business Model', slug: 'khoi-nghiep-business-model', description: 'Xây dựng ý tưởng khởi nghiệp, Business Model Canvas, Lean Startup, Pitch Deck chuyên nghiệp.', thumbnail: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80', price: 999000, salePrice: null, instructor: 'Đinh Quang Minh', duration: '18 giờ', level: 'beginner', totalLessons: 60, totalStudents: 6800, rating: 4.5, isFeatured: false, isBestSeller: false, isNewArrival: true, categoryId: 5 },
-            { name: 'Vue.js 3 & Nuxt.js Framework', slug: 'vuejs-3-nuxtjs', description: 'Master Vue.js 3 với Composition API, Pinia, Vue Router. Xây dựng ứng dụng SSR với Nuxt.js.', thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80', price: 1299000, salePrice: 749000, instructor: 'Lý Hoàng Phúc', duration: '35 giờ', level: 'intermediate', totalLessons: 140, totalStudents: 5100, rating: 4.6, isFeatured: false, isBestSeller: false, isNewArrival: true, categoryId: 1 },
-            { name: 'Docker & Kubernetes DevOps', slug: 'docker-kubernetes-devops', description: 'Container hóa ứng dụng với Docker, orchestration với Kubernetes, CI/CD pipeline, AWS deployment.', thumbnail: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=600&q=80', price: 1699000, salePrice: 999000, instructor: 'Nguyễn Hoàng Anh', duration: '40 giờ', level: 'advanced', totalLessons: 170, totalStudents: 3200, rating: 4.8, isFeatured: true, isBestSeller: false, isNewArrival: true, categoryId: 1 },
-            { name: 'Excel & Power BI cho Business', slug: 'excel-power-bi-business', description: 'Phân tích dữ liệu kinh doanh với Excel nâng cao và Power BI. Dashboard, báo cáo tự động.', thumbnail: 'https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&q=80', price: 699000, salePrice: 349000, instructor: 'Võ Thị Hạnh', duration: '16 giờ', level: 'beginner', totalLessons: 65, totalStudents: 18000, rating: 4.9, isFeatured: false, isBestSeller: true, isNewArrival: false, categoryId: 5 },
-        ];
-        await queryInterface.bulkInsert('Courses', courses.map(c => ({ ...c, createdAt: new Date(), updatedAt: new Date() })));
+        await queryInterface.bulkInsert('Courses', [
+            // ===== Web Development (categoryId: 1) =====
+            {
+                id: 1, name: 'React JS Từ Zero Đến Hero', slug: 'react-js-tu-zero-den-hero',
+                description: '<h2>Khóa học React JS toàn diện</h2><p>Bạn sẽ học React từ những khái niệm cơ bản nhất đến xây dựng ứng dụng thực tế.</p>',
+                shortDescription: 'Học React JS từ cơ bản đến nâng cao, xây dựng SPA hoàn chỉnh',
+                thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600', price: 599000, salePrice: 299000,
+                instructor: 'Nguyễn Văn An', duration: '24h 30m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 120, totalStudents: 2456, rating: 4.7, ratingCount: 324,
+                isFeatured: true, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 1, viewCount: 15890,
+                requirements: '["Kiến thức HTML, CSS cơ bản","JavaScript ES6+","Máy tính có cài Node.js"]',
+                whatYouWillLearn: '["Hiểu sâu về React Hooks","Xây dựng SPA với React Router","Quản lý state với Redux Toolkit","Tích hợp API với Axios","Deploy ứng dụng lên Vercel"]',
+                targetAudience: '["Sinh viên CNTT muốn học Frontend","Lập trình viên muốn chuyển sang React","Người đã biết JavaScript cơ bản"]',
+                createdAt: new Date('2025-06-01'), updatedAt: new Date(),
+            },
+            {
+                id: 2, name: 'Node.js & Express - Backend Mastery', slug: 'nodejs-express-backend-mastery',
+                description: '<h2>Xây dựng Backend chuyên nghiệp</h2><p>Khóa học toàn diện về Node.js, Express, và RESTful API.</p>',
+                shortDescription: 'Xây dựng REST API chuyên nghiệp với Node.js, Express & MongoDB',
+                thumbnail: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=600', price: 699000, salePrice: 399000,
+                instructor: 'Trần Minh Đức', duration: '32h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 85, totalStudents: 1892, rating: 4.8, ratingCount: 267,
+                isFeatured: true, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 1, viewCount: 12340,
+                requirements: '["JavaScript ES6+","Hiểu biết cơ bản về HTTP","Đã từng làm việc với Terminal"]',
+                whatYouWillLearn: '["Xây dựng REST API hoàn chỉnh","Authentication & Authorization","Upload files, Email service","Deployment lên production"]',
+                targetAudience: '["Backend Developer","Fullstack Developer","Sinh viên CNTT"]',
+                createdAt: new Date('2025-05-15'), updatedAt: new Date(),
+            },
+            {
+                id: 3, name: 'HTML & CSS Cho Người Mới Bắt Đầu', slug: 'html-css-cho-nguoi-moi',
+                description: '<p>Khóa học nền tảng dành cho người mới bắt đầu lập trình web.</p>',
+                shortDescription: 'Nền tảng lập trình web với HTML5 & CSS3 hiện đại',
+                thumbnail: 'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=600', price: 299000, salePrice: 149000,
+                instructor: 'Lê Thị Hương', duration: '16h 45m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 65, totalStudents: 5678, rating: 4.6, ratingCount: 456,
+                isFeatured: false, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 1, viewCount: 23456,
+                requirements: '["Không cần kiến thức lập trình","Máy tính có trình duyệt web"]',
+                whatYouWillLearn: '["HTML5 semantic","CSS3 Flexbox & Grid","Responsive Design","Tạo website đầu tiên"]',
+                targetAudience: '["Người mới bắt đầu","Sinh viên năm nhất","Ai muốn học lập trình web"]',
+                createdAt: new Date('2025-03-01'), updatedAt: new Date(),
+            },
+            {
+                id: 4, name: 'Next.js 14 - Fullstack Framework', slug: 'nextjs-14-fullstack-framework',
+                description: '<p>Khóa học Next.js 14 với App Router, Server Components và Server Actions.</p>',
+                shortDescription: 'Xây dựng ứng dụng Fullstack hiện đại với Next.js 14',
+                thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600', price: 799000, salePrice: 499000,
+                instructor: 'Nguyễn Văn An', duration: '28h 15m', level: 'advanced', language: 'Tiếng Việt',
+                totalLessons: 95, totalStudents: 876, rating: 4.9, ratingCount: 123,
+                isFeatured: true, isNewArrival: true, isBestSeller: false, status: 'published', categoryId: 1, viewCount: 8765,
+                requirements: '["React JS cơ bản","JavaScript/TypeScript","Hiểu REST API"]',
+                whatYouWillLearn: '["App Router & Server Components","Server Actions","Authentication với NextAuth","Deployment"]',
+                targetAudience: '["React Developer muốn nâng cao","Fullstack Developer"]',
+                createdAt: new Date('2026-05-01'), updatedAt: new Date(),
+            },
+            {
+                id: 5, name: 'TypeScript Từ Cơ Bản Đến Nâng Cao', slug: 'typescript-co-ban-nang-cao',
+                description: '<p>Nắm vững TypeScript để viết code chất lượng hơn.</p>',
+                shortDescription: 'TypeScript toàn diện - type system, generics, advanced patterns',
+                thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=600', price: 499000, salePrice: null,
+                instructor: 'Phạm Quang Huy', duration: '18h 30m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 72, totalStudents: 1234, rating: 4.5, ratingCount: 189,
+                isFeatured: false, isNewArrival: true, isBestSeller: false, status: 'published', categoryId: 1, viewCount: 6789,
+                requirements: '["JavaScript cơ bản"]',
+                whatYouWillLearn: '["Type System","Generics","Decorators","TypeScript với React"]',
+                targetAudience: '["JavaScript Developer","Frontend Developer"]',
+                createdAt: new Date('2026-04-15'), updatedAt: new Date(),
+            },
 
-        // Fetch the inserted courses to get their dynamic IDs
-        const slugs = courses.map(c => `'${c.slug}'`).join(', ');
-        const [insertedCourses] = await queryInterface.sequelize.query(
-            `SELECT id, slug FROM Courses WHERE slug IN (${slugs});`
-        );
+            // ===== Mobile Development (categoryId: 2) =====
+            {
+                id: 6, name: 'React Native - Lập Trình Mobile Cross-Platform', slug: 'react-native-mobile-cross-platform',
+                description: '<p>Xây dựng ứng dụng iOS và Android với một codebase duy nhất.</p>',
+                shortDescription: 'Phát triển app iOS & Android đồng thời với React Native',
+                thumbnail: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600', price: 799000, salePrice: 499000,
+                instructor: 'Võ Thanh Tùng', duration: '30h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 110, totalStudents: 1567, rating: 4.6, ratingCount: 234,
+                isFeatured: true, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 2, viewCount: 9876,
+                requirements: '["React JS cơ bản","JavaScript ES6+"]',
+                whatYouWillLearn: '["React Native Core","Navigation","State Management","Push Notifications","App Store Publishing"]',
+                targetAudience: '["React Developer muốn làm mobile","Mobile Developer"]',
+                createdAt: new Date('2025-08-01'), updatedAt: new Date(),
+            },
+            {
+                id: 7, name: 'Flutter & Dart - Mobile App Development', slug: 'flutter-dart-mobile-development',
+                description: '<p>Học Flutter từ đầu, xây dựng ứng dụng mobile đẹp mắt.</p>',
+                shortDescription: 'Xây dựng UI đẹp mắt cho mobile app với Flutter & Dart',
+                thumbnail: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', price: 699000, salePrice: 399000,
+                instructor: 'Hoàng Minh Tuấn', duration: '26h 45m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 98, totalStudents: 2345, rating: 4.7, ratingCount: 312,
+                isFeatured: false, isNewArrival: true, isBestSeller: true, status: 'published', categoryId: 2, viewCount: 11234,
+                requirements: '["Không cần kiến thức mobile trước đó","Tư duy lập trình OOP cơ bản"]',
+                whatYouWillLearn: '["Dart programming","Flutter Widgets","State Management","Firebase Integration"]',
+                targetAudience: '["Người mới học mobile","Web developer muốn chuyển sang mobile"]',
+                createdAt: new Date('2026-03-01'), updatedAt: new Date(),
+            },
 
-        // Map slugs to generated IDs
-        const slugToId = {};
-        insertedCourses.forEach(c => {
-            slugToId[c.slug] = c.id;
-        });
+            // ===== Data Science (categoryId: 3) =====
+            {
+                id: 8, name: 'Python Cho Data Science', slug: 'python-cho-data-science',
+                description: '<p>Khóa học Python toàn diện cho Data Science và Machine Learning.</p>',
+                shortDescription: 'Python, Pandas, NumPy, Matplotlib cho phân tích dữ liệu',
+                thumbnail: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=600', price: 599000, salePrice: 349000,
+                instructor: 'Nguyễn Thị Mai', duration: '22h 00m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 88, totalStudents: 3456, rating: 4.8, ratingCount: 445,
+                isFeatured: true, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 3, viewCount: 18765,
+                requirements: '["Không cần kiến thức lập trình","Toán cơ bản"]',
+                whatYouWillLearn: '["Python cơ bản đến nâng cao","Pandas & NumPy","Data Visualization","Machine Learning cơ bản"]',
+                targetAudience: '["Sinh viên muốn học Data Science","Nhân viên phân tích dữ liệu"]',
+                createdAt: new Date('2025-07-01'), updatedAt: new Date(),
+            },
+            {
+                id: 9, name: 'Machine Learning A-Z', slug: 'machine-learning-a-z',
+                description: '<p>Từ lý thuyết đến thực hành Machine Learning.</p>',
+                shortDescription: 'Machine Learning toàn diện: Regression, Classification, Clustering, Deep Learning',
+                thumbnail: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600', price: 899000, salePrice: 599000,
+                instructor: 'Trần Đức Mạnh', duration: '35h 00m', level: 'advanced', language: 'Tiếng Việt',
+                totalLessons: 130, totalStudents: 987, rating: 4.9, ratingCount: 156,
+                isFeatured: true, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 3, viewCount: 7654,
+                requirements: '["Python cơ bản","Toán cao cấp (đại số tuyến tính, xác suất)","Thống kê cơ bản"]',
+                whatYouWillLearn: '["Supervised Learning","Unsupervised Learning","Deep Learning","Model Deployment"]',
+                targetAudience: '["Data Scientist","AI Engineer","Researcher"]',
+                createdAt: new Date('2025-09-01'), updatedAt: new Date(),
+            },
 
-        const images = [];
-        courses.forEach((course, idx) => {
-            const courseId = slugToId[course.slug];
-            if (courseId) {
-                images.push({ imageUrl: course.thumbnail, isPrimary: true, sortOrder: 0, courseId, createdAt: new Date(), updatedAt: new Date() });
-                images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}a/600/400`, isPrimary: false, sortOrder: 1, courseId, createdAt: new Date(), updatedAt: new Date() });
-                images.push({ imageUrl: `https://picsum.photos/seed/course${idx + 1}b/600/400`, isPrimary: false, sortOrder: 2, courseId, createdAt: new Date(), updatedAt: new Date() });
-            }
-        });
-        await queryInterface.bulkInsert('CourseImages', images);
+            // ===== Design (categoryId: 4) =====
+            {
+                id: 10, name: 'Figma UI/UX Design Masterclass', slug: 'figma-uiux-design-masterclass',
+                description: '<p>Thiết kế giao diện chuyên nghiệp với Figma.</p>',
+                shortDescription: 'Thiết kế UI/UX chuyên nghiệp với Figma từ A đến Z',
+                thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600', price: 499000, salePrice: 299000,
+                instructor: 'Lê Hoàng Anh', duration: '20h 00m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 75, totalStudents: 4567, rating: 4.7, ratingCount: 567,
+                isFeatured: true, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 4, viewCount: 21345,
+                requirements: '["Không cần kiến thức thiết kế","Máy tính có cài Figma"]',
+                whatYouWillLearn: '["Figma fundamentals","Design System","Prototyping","Responsive Design","Handoff cho Developer"]',
+                targetAudience: '["Người muốn làm UI/UX Designer","Frontend Developer muốn hiểu design"]',
+                createdAt: new Date('2025-04-01'), updatedAt: new Date(),
+            },
+            {
+                id: 11, name: 'Adobe Photoshop - Thiết Kế Đồ Họa', slug: 'adobe-photoshop-thiet-ke-do-hoa',
+                description: '<p>Thành thạo Photoshop cho thiết kế đồ họa và chỉnh sửa ảnh.</p>',
+                shortDescription: 'Photoshop cho thiết kế đồ họa, banner, chỉnh sửa ảnh chuyên nghiệp',
+                thumbnail: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=600', price: 399000, salePrice: null,
+                instructor: 'Trần Thị Lan', duration: '15h 30m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 58, totalStudents: 2890, rating: 4.4, ratingCount: 345,
+                isFeatured: false, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 4, viewCount: 13456,
+                requirements: '["Máy tính cài Adobe Photoshop"]',
+                whatYouWillLearn: '["Photoshop tools","Chỉnh sửa ảnh nâng cao","Thiết kế banner","Retouch ảnh chân dung"]',
+                targetAudience: '["Người mới học thiết kế","Content Creator"]',
+                createdAt: new Date('2025-06-15'), updatedAt: new Date(),
+            },
+
+            // ===== Business (categoryId: 5) =====
+            {
+                id: 12, name: 'Khởi Nghiệp Từ Con Số 0', slug: 'khoi-nghiep-tu-con-so-0',
+                description: '<p>Kiến thức nền tảng cho người muốn khởi nghiệp.</p>',
+                shortDescription: 'Từ ý tưởng đến mô hình kinh doanh, gọi vốn, phát triển startup',
+                thumbnail: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600', price: 399000, salePrice: 199000,
+                instructor: 'Nguyễn Minh Trí', duration: '12h 00m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 45, totalStudents: 3456, rating: 4.5, ratingCount: 234,
+                isFeatured: false, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 5, viewCount: 9876,
+                requirements: '["Không cần kiến thức đặc biệt"]',
+                whatYouWillLearn: '["Tìm kiếm ý tưởng","Xây dựng Business Model","Lean Startup","Gọi vốn đầu tư"]',
+                targetAudience: '["Sinh viên muốn khởi nghiệp","Nhân viên muốn tự kinh doanh"]',
+                createdAt: new Date('2025-10-01'), updatedAt: new Date(),
+            },
+
+            // ===== Marketing (categoryId: 6) =====
+            {
+                id: 13, name: 'Digital Marketing Toàn Diện', slug: 'digital-marketing-toan-dien',
+                description: '<p>Chiến lược marketing số cho doanh nghiệp vừa và nhỏ.</p>',
+                shortDescription: 'SEO, Google Ads, Facebook Ads, Email Marketing, Content Marketing',
+                thumbnail: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600', price: 599000, salePrice: 349000,
+                instructor: 'Phạm Thị Hà', duration: '25h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 92, totalStudents: 4123, rating: 4.6, ratingCount: 389,
+                isFeatured: true, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 6, viewCount: 16789,
+                requirements: '["Hiểu biết cơ bản về kinh doanh","Có tài khoản Google & Facebook"]',
+                whatYouWillLearn: '["SEO On-page & Off-page","Google Ads","Facebook & Instagram Ads","Email Marketing","Analytics"]',
+                targetAudience: '["Marketer","Chủ doanh nghiệp nhỏ","Freelancer"]',
+                createdAt: new Date('2025-08-15'), updatedAt: new Date(),
+            },
+
+            // ===== IT & Software (categoryId: 7) =====
+            {
+                id: 14, name: 'Docker & Kubernetes Thực Chiến', slug: 'docker-kubernetes-thuc-chien',
+                description: '<p>Container hóa ứng dụng và orchestration với K8s.</p>',
+                shortDescription: 'DevOps thực chiến: Docker, Docker Compose, Kubernetes, CI/CD',
+                thumbnail: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=600', price: 799000, salePrice: 499000,
+                instructor: 'Đỗ Văn Khoa', duration: '28h 30m', level: 'advanced', language: 'Tiếng Việt',
+                totalLessons: 105, totalStudents: 987, rating: 4.8, ratingCount: 145,
+                isFeatured: false, isNewArrival: true, isBestSeller: false, status: 'published', categoryId: 7, viewCount: 5678,
+                requirements: '["Linux cơ bản","Đã từng deploy ứng dụng web","Git"]',
+                whatYouWillLearn: '["Docker fundamentals","Docker Compose","Kubernetes","CI/CD Pipeline","Cloud Deployment"]',
+                targetAudience: '["DevOps Engineer","Backend Developer","System Administrator"]',
+                createdAt: new Date('2026-04-01'), updatedAt: new Date(),
+            },
+            {
+                id: 15, name: 'Git & GitHub - Quản Lý Source Code', slug: 'git-github-quan-ly-source-code',
+                description: '<p>Sử dụng Git chuyên nghiệp trong team.</p>',
+                shortDescription: 'Git workflow, branching, merge, rebase, CI/CD với GitHub Actions',
+                thumbnail: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=600', price: 199000, salePrice: null,
+                instructor: 'Trần Minh Đức', duration: '8h 00m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 35, totalStudents: 6789, rating: 4.5, ratingCount: 678,
+                isFeatured: false, isNewArrival: false, isBestSeller: true, status: 'published', categoryId: 7, viewCount: 25678,
+                requirements: '["Không cần kiến thức trước"]',
+                whatYouWillLearn: '["Git cơ bản","Branch & Merge","Git Flow","GitHub Actions","Collaboration"]',
+                targetAudience: '["Sinh viên CNTT","Lập trình viên mới"]',
+                createdAt: new Date('2025-02-01'), updatedAt: new Date(),
+            },
+            {
+                id: 16, name: 'SQL & MySQL - Cơ Sở Dữ Liệu', slug: 'sql-mysql-co-so-du-lieu',
+                description: '<p>Học SQL từ cơ bản đến nâng cao với MySQL.</p>',
+                shortDescription: 'Truy vấn SQL, thiết kế database, optimization, stored procedures',
+                thumbnail: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600', price: 399000, salePrice: 249000,
+                instructor: 'Nguyễn Thị Mai', duration: '14h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 55, totalStudents: 3210, rating: 4.6, ratingCount: 298,
+                isFeatured: false, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 7, viewCount: 11234,
+                requirements: '["Không cần kiến thức SQL trước","Máy tính cài MySQL"]',
+                whatYouWillLearn: '["SQL Queries","JOIN, Subquery","Database Design","Indexing & Optimization","Stored Procedures"]',
+                targetAudience: '["Backend Developer","Data Analyst","DBA"]',
+                createdAt: new Date('2025-05-01'), updatedAt: new Date(),
+            },
+
+            // ===== Personal Development (categoryId: 8) =====
+            {
+                id: 17, name: 'Kỹ Năng Giao Tiếp Hiệu Quả', slug: 'ky-nang-giao-tiep-hieu-qua',
+                description: '<p>Nâng cao kỹ năng giao tiếp trong công việc và cuộc sống.</p>',
+                shortDescription: 'Giao tiếp, thuyết trình, đàm phán, xử lý xung đột',
+                thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600', price: 299000, salePrice: 149000,
+                instructor: 'Lê Minh Tuấn', duration: '10h 00m', level: 'beginner', language: 'Tiếng Việt',
+                totalLessons: 40, totalStudents: 5432, rating: 4.4, ratingCount: 432,
+                isFeatured: false, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 8, viewCount: 14567,
+                requirements: '["Không cần kiến thức đặc biệt"]',
+                whatYouWillLearn: '["Giao tiếp hiệu quả","Thuyết trình tự tin","Đàm phán","Xử lý xung đột"]',
+                targetAudience: '["Sinh viên","Nhân viên văn phòng","Quản lý"]',
+                createdAt: new Date('2025-11-01'), updatedAt: new Date(),
+            },
+            {
+                id: 18, name: 'Tiếng Anh Cho Dân IT', slug: 'tieng-anh-cho-dan-it',
+                description: '<p>Tiếng Anh chuyên ngành CNTT - giao tiếp, đọc tài liệu, viết email.</p>',
+                shortDescription: 'Tiếng Anh chuyên ngành IT: reading docs, writing emails, meetings',
+                thumbnail: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600', price: 499000, salePrice: 299000,
+                instructor: 'Phạm Quang Huy', duration: '20h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 80, totalStudents: 2345, rating: 4.3, ratingCount: 198,
+                isFeatured: false, isNewArrival: true, isBestSeller: false, status: 'published', categoryId: 8, viewCount: 8765,
+                requirements: '["Tiếng Anh TOEIC 300+ hoặc tương đương"]',
+                whatYouWillLearn: '["Đọc documentation","Viết email chuyên nghiệp","Meeting & Presentation","Technical Interview"]',
+                targetAudience: '["Developer muốn nâng cao tiếng Anh","Sinh viên CNTT"]',
+                createdAt: new Date('2026-02-01'), updatedAt: new Date(),
+            },
+
+            // ===== Thêm vài khóa nữa =====
+            {
+                id: 19, name: 'Vue.js 3 - Frontend Framework Hiện Đại', slug: 'vuejs-3-frontend-framework',
+                description: '<p>Khóa học Vue.js 3 Composition API, Pinia, Vue Router.</p>',
+                shortDescription: 'Vue.js 3 với Composition API, Pinia state management, Nuxt.js',
+                thumbnail: 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=600', price: 599000, salePrice: 349000,
+                instructor: 'Hoàng Minh Tuấn', duration: '22h 00m', level: 'intermediate', language: 'Tiếng Việt',
+                totalLessons: 82, totalStudents: 1456, rating: 4.6, ratingCount: 201,
+                isFeatured: false, isNewArrival: true, isBestSeller: false, status: 'published', categoryId: 1, viewCount: 7890,
+                requirements: '["HTML, CSS, JavaScript cơ bản"]',
+                whatYouWillLearn: '["Vue.js 3 Composition API","Pinia","Vue Router","Nuxt.js SSR"]',
+                targetAudience: '["Frontend Developer","Người muốn học Vue.js"]',
+                createdAt: new Date('2026-05-15'), updatedAt: new Date(),
+            },
+            {
+                id: 20, name: 'Java Spring Boot - Enterprise Backend', slug: 'java-spring-boot-enterprise',
+                description: '<p>Xây dựng ứng dụng enterprise với Spring Boot, JPA, Security.</p>',
+                shortDescription: 'Spring Boot, Spring Security, JPA/Hibernate, Microservices',
+                thumbnail: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600', price: 899000, salePrice: 599000,
+                instructor: 'Đỗ Văn Khoa', duration: '36h 00m', level: 'advanced', language: 'Tiếng Việt',
+                totalLessons: 135, totalStudents: 876, rating: 4.8, ratingCount: 112,
+                isFeatured: true, isNewArrival: false, isBestSeller: false, status: 'published', categoryId: 1, viewCount: 6543,
+                requirements: '["Java OOP","SQL cơ bản","Maven/Gradle"]',
+                whatYouWillLearn: '["Spring Boot fundamentals","Spring Security & JWT","JPA/Hibernate","Microservices","Docker deployment"]',
+                targetAudience: '["Java Developer","Backend Developer","Software Engineer"]',
+                createdAt: new Date('2025-12-01'), updatedAt: new Date(),
+            },
+        ]);
     },
-    async down(queryInterface) {
-        const { Op } = require('sequelize');
-        const slugs = [
-            'reactjs-nextjs-zero-to-hero', 'nodejs-backend-master-class', 'html-css-javascript-co-ban',
-            'typescript-nestjs-api', 'flutter-dart-complete-guide', 'react-native-mobile',
-            'kotlin-android-a-z', 'python-data-science-ai', 'deep-learning-tensorflow',
-            'sql-database-design', 'uiux-design-figma', 'photoshop-illustrator',
-            'motion-design-after-effects', 'digital-marketing-toan-dien', 'khoi-nghiep-business-model',
-            'vuejs-3-nuxtjs', 'docker-kubernetes-devops', 'excel-power-bi-business'
-        ];
-        
-        const [insertedCourses] = await queryInterface.sequelize.query(
-            `SELECT id FROM Courses WHERE slug IN (${slugs.map(s => `'${s}'`).join(', ')});`
-        );
-        const courseIds = insertedCourses.map(c => c.id);
 
-        if (courseIds.length > 0) {
-            await queryInterface.bulkDelete('CourseImages', { courseId: { [Op.in]: courseIds } }, {});
-            await queryInterface.bulkDelete('Courses', { id: { [Op.in]: courseIds } }, {});
-        }
+    async down(queryInterface) {
+        await queryInterface.bulkDelete('Courses', null, {});
     },
 };

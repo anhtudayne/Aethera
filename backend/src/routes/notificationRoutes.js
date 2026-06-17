@@ -9,5 +9,6 @@ router.get('/', verifyToken, notificationController.getNotifications);
 router.get('/unread-count', verifyToken, notificationController.getUnreadCount);
 router.put('/read-all', verifyToken, notificationController.markAllAsRead);
 router.put('/:id/read', verifyToken, notificationController.markAsRead);
+router.delete('/:id', verifyToken, notificationController.handleDeleteNotification);
 
 export default router;

@@ -1,0 +1,104 @@
+.category-page-container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-4xl);
+}
+
+.category-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.category-breadcrumbs a {
+  color: var(--color-text-muted);
+}
+
+.category-breadcrumbs a:hover {
+  color: var(--color-accent);
+}
+
+.current-crumb {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.category-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.category-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+}
+
+.category-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.category-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+.category-empty-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4xl) var(--space-lg);
+  background: var(--color-bg-white);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.category-empty-placeholder span {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+}
+
+.category-empty-placeholder h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.category-empty-placeholder p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.category-back-btn {
+  background: var(--color-accent-gradient);
+  color: var(--color-text-white);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.category-back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+}

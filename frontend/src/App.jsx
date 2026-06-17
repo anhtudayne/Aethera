@@ -1,60 +1,88 @@
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import VerifyOtpPage from './pages/VerifyOtpPage';
-import HomePage from './pages/HomePage';
-import NotFoundPage from './pages/NotFoundPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import EditProfilePage from './pages/EditProfilePage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import CourseDetailPage from './pages/CourseDetailPage';
-import CoursesPage from './pages/CoursesPage';
-import CategoryPage from './pages/CategoryPage';
-import CartPage from './pages/CartPage';
-import OrderHistoryPage from './pages/OrderHistoryPage';
-import MyRewardsPage from './pages/MyRewardsPage';
-import FavoritesPage from './pages/FavoritesPage';
-import NotificationsPage from './pages/NotificationsPage';
+import MainLayout from './components/layouts/MainLayout';
+import DashboardLayout from './components/layouts/DashboardLayout';
+import AuthLayout from './components/layouts/AuthLayout';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import { ROUTES } from './utils/constants';
+import {
+  HomePage,
+  CourseListingPage,
+  CourseDetailPage,
+  CategoryPage,
+  CertificateVerifyPage,
+  LoginPage,
+  RegisterPage,
+  OTPPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  CartPage,
+  CheckoutPage,
+  OrderSuccessPage,
+  CoursePlayerPage,
+  DashboardPage,
+  MyCoursesPage,
+  WishlistPage,
+  OrderHistoryPage,
+  OrderDetailPage,
+  MyCertificatesPage,
+  MyReviewsPage,
+  NotificationsPage,
+  ProfileSettingsPage,
+  NotFoundPage,
+} from './pages';
+import './App.css';
 
-import LearningPage from './pages/LearningPage';
-
-import AdminCoursesPage from './pages/admin/AdminCoursesPage';
-import CourseEditorPage from './pages/admin/CourseEditorPage';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-
-export default function App() {
+function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/verify-otp" element={<VerifyOtpPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      {/* Public Routes — MainLayout */}
+      <Route element={<MainLayout />}>
+        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.COURSES} element={<CourseListingPage />} />
+        <Route path={ROUTES.COURSE_DETAIL} element={<CourseDetailPage />} />
+        <Route path={ROUTES.CATEGORY} element={<CategoryPage />} />
+        <Route path={ROUTES.CERTIFICATE_VERIFY} element={<CertificateVerifyPage />} />
+      </Route>
 
-      {/* Protected routes */}
-      <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/user/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-      <Route path="/user/orders" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} />
-      <Route path="/user/rewards" element={<ProtectedRoute><MyRewardsPage /></ProtectedRoute>} />
-      <Route path="/user/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
-      <Route path="/user/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-      
-      {/* Admin routes */}
-      <Route path="/admin/profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-      <Route path="/admin/courses" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
-      <Route path="/admin/courses/:slug/edit" element={<ProtectedRoute><CourseEditorPage /></ProtectedRoute>} />
-      {/* Fallback admin routes to admin courses page for now */}
-      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
-      <Route path="/admin/students" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
-      <Route path="/admin/revenue" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
-      <Route path="/admin/settings" element={<ProtectedRoute><AdminCoursesPage /></ProtectedRoute>} />
+      {/* Authentication Routes — AuthLayout */}
+      <Route element={<AuthLayout />}>
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTES.VERIFY_OTP} element={<OTPPage />} />
+        <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+        <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
+      </Route>
 
-      <Route path="/courses" element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />
-      <Route path="/course/:slug" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
-      <Route path="/course/:slug/learn" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
-      <Route path="/category/:slug" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
-      <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+      {/* Protected Routes — Guarded by ProtectedRoute */}
+      <Route element={<ProtectedRoute />}>
+        {/* Checkout flow with Header & Footer */}
+        <Route element={<MainLayout />}>
+          <Route path={ROUTES.CART} element={<CartPage />} />
+          <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
+          <Route path={ROUTES.ORDER_SUCCESS} element={<OrderSuccessPage />} />
+        </Route>
 
+        {/* Course video player — minimal design, no footer */}
+        <Route path={ROUTES.COURSE_PLAYER} element={<CoursePlayerPage />} />
+
+        {/* Student Dashboard area — DashboardLayout with sidebar */}
+        <Route element={<DashboardLayout />}>
+          <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          <Route path={ROUTES.MY_COURSES} element={<MyCoursesPage />} />
+          <Route path={ROUTES.WISHLIST} element={<WishlistPage />} />
+          <Route path={ROUTES.ORDERS} element={<OrderHistoryPage />} />
+          <Route path={ROUTES.ORDER_DETAIL} element={<OrderDetailPage />} />
+          <Route path={ROUTES.CERTIFICATES} element={<MyCertificatesPage />} />
+          <Route path={ROUTES.MY_REVIEWS} element={<MyReviewsPage />} />
+          <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
+          <Route path={ROUTES.SETTINGS} element={<ProfileSettingsPage />} />
+        </Route>
+      </Route>
+
+      {/* 404 Not Found Page */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
+
+export default App;

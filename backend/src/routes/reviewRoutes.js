@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/', verifyToken, reviewController.handleCreateReview);
 router.get('/my-reviews', verifyToken, reviewController.handleGetMyReviews);
 router.get('/can-review/:courseId', verifyToken, reviewController.handleCheckCanReview);
-router.get('/course/:courseId', verifyToken, reviewController.handleGetCourseReviews);
+router.get('/course/:courseId', reviewController.handleGetCourseReviews);
 
 export default router;

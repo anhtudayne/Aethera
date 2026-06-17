@@ -1,4 +1,4 @@
-import { registerUser, verifyOTP, resendOTP, loginUser, forgotPassword, resetPassword } from '../services/authService';
+import { registerUser, verifyOTP, resendOTP, loginUser, forgotPassword, resetPassword, googleLogin, changePassword } from '../services/authService';
 
 // Register new account
 export const handleRegister = async (req, res) => {
@@ -118,3 +118,44 @@ export const handleResetPassword = async (req, res) => {
         });
     }
 };
+
+// Google OAuth Login
+export const handleGoogleLogin = async (req, res) => {
+    try {
+        const { idToken } = req.body;
+        if (!idToken) {
+            return res.status(400).json({ status: 400, message: 'idToken is required' });
+        }
+        const result = await googleLogin(idToken);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi đăng nhập Google:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Lỗi server. Vui lòng thử lại sau.',
+        });
+    }
+};
+
+// Change Password
+export const handleChangePassword = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { oldPassword, newPassword } = req.body;
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Vui lòng cung cấp mật khẩu hiện tại và mật khẩu mới.',
+            });
+        }
+        const result = await changePassword(userId, oldPassword, newPassword);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi đổi mật khẩu:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Lỗi server. Vui lòng thử lại sau.',
+        });
+    }
+};
+

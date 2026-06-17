@@ -1,30 +1,21 @@
 import db from '../models';
 import * as notificationService from './notificationService';
-
-const POINTS_PER_REVIEW = 10;
+import { createError } from '../utils/helpers';
 
 /**
- * Tạo đánh giá cho khóa học đã mua thành công.
- * Tự động cộng điểm tích lũy và cập nhật rating trung bình.
+ * Tạo đánh giá cho khóa học đã đăng ký thành công.
+ * Cập nhật rating trung bình và số lượng đánh giá của khóa học.
  */
 export const createReview = async (userId, courseId, rating, comment) => {
     const transaction = await db.sequelize.transaction();
     try {
-        // 1. Kiểm tra user đã mua khóa học chưa (Order status = 'paid' chứa courseId)
-        const paidOrder = await db.Order.findOne({
-            where: { userId, status: 'paid' },
-            include: [{
-                model: db.OrderItem,
-                as: 'orderItems',
-                where: { courseId },
-                required: true,
-            }],
+        // 1. Kiểm tra user đã enrolled (đăng ký) khóa học chưa
+        const enrollment = await db.UserCourse.findOne({
+            where: { userId, courseId },
         });
 
-        if (!paidOrder) {
-            const error = new Error('Bạn chưa mua khóa học này hoặc đơn hàng chưa thanh toán.');
-            error.statusCode = 400;
-            throw error;
+        if (!enrollment) {
+            throw createError(400, 'Bạn chưa đăng ký khóa học này.');
         }
 
         // 2. Kiểm tra đã review chưa
@@ -33,21 +24,18 @@ export const createReview = async (userId, courseId, rating, comment) => {
         });
 
         if (existingReview) {
-            const error = new Error('Bạn đã đánh giá khóa học này rồi.');
-            error.statusCode = 400;
-            throw error;
+            throw createError(400, 'Bạn đã đánh giá khóa học này rồi.');
         }
 
         // 3. Tạo review
         const review = await db.Review.create({
             userId,
             courseId,
-            orderId: paidOrder.id,
             rating,
             comment: comment || null,
         }, { transaction });
 
-        // 4. Cập nhật rating trung bình của khóa học
+        // 4. Cập nhật rating trung bình và số lượng đánh giá
         const avgResult = await db.Review.findOne({
             where: { courseId },
             attributes: [
@@ -58,42 +46,26 @@ export const createReview = async (userId, courseId, rating, comment) => {
         });
 
         const avgRating = parseFloat(avgResult.getDataValue('avgRating')) || 0;
+        const totalReviews = parseInt(avgResult.getDataValue('totalReviews')) || 0;
+
         await db.Course.update(
-            { rating: Math.round(avgRating * 10) / 10 },
+            { rating: Math.round(avgRating * 10) / 10, ratingCount: totalReviews },
             { where: { id: courseId }, transaction }
         );
 
-        // 5. Cộng điểm tích lũy cho user
-        await db.User.increment('loyaltyPoints', {
-            by: POINTS_PER_REVIEW,
-            where: { id: userId },
-            transaction,
-        });
-
-        // 6. Ghi log lịch sử điểm
-        const courseName = await db.Course.findByPk(courseId, {
-            attributes: ['name'],
-            transaction,
-        });
-
-        await db.LoyaltyPoint.create({
-            userId,
-            points: POINTS_PER_REVIEW,
-            type: 'earn',
-            description: `Đánh giá khóa học "${courseName?.name || courseId}"`,
-            referenceId: review.id,
-        }, { transaction });
-
         await transaction.commit();
 
-        // === NOTIFICATION: Review created + points earned ===
+        // 5. Tạo notification
         try {
+            const courseName = await db.Course.findByPk(courseId, {
+                attributes: ['name'],
+            });
             await notificationService.createNotification(
                 userId,
                 'new_review',
                 '⭐ Đánh giá thành công!',
-                `Bạn đã đánh giá khóa học "${courseName?.name || 'Khóa học'}" và nhận được +${POINTS_PER_REVIEW} điểm tích lũy!`,
-                { courseId, courseName: courseName?.name, pointsEarned: POINTS_PER_REVIEW, reviewId: review.id }
+                `Bạn đã đánh giá khóa học "${courseName?.name || 'Khóa học'}".`,
+                { courseId, courseName: courseName?.name, reviewId: review.id }
             );
         } catch (notifErr) {
             console.error('Lỗi gửi notification review (không ảnh hưởng review):', notifErr);
@@ -101,8 +73,8 @@ export const createReview = async (userId, courseId, rating, comment) => {
 
         return {
             review,
-            pointsEarned: POINTS_PER_REVIEW,
             newAvgRating: Math.round(avgRating * 10) / 10,
+            newRatingCount: totalReviews,
         };
 
     } catch (error) {
@@ -178,19 +150,13 @@ export const getMyReviews = async (userId) => {
  * Kiểm tra user có quyền đánh giá khóa học không
  */
 export const checkCanReview = async (userId, courseId) => {
-    // Kiểm tra đã mua chưa
-    const paidOrder = await db.Order.findOne({
-        where: { userId, status: 'paid' },
-        include: [{
-            model: db.OrderItem,
-            as: 'orderItems',
-            where: { courseId },
-            required: true,
-        }],
+    // Kiểm tra đã đăng ký chưa
+    const enrollment = await db.UserCourse.findOne({
+        where: { userId, courseId }
     });
 
-    if (!paidOrder) {
-        return { canReview: false, reason: 'Bạn chưa mua khóa học này.' };
+    if (!enrollment) {
+        return { canReview: false, reason: 'Bạn chưa đăng ký khóa học này.' };
     }
 
     // Kiểm tra đã review chưa

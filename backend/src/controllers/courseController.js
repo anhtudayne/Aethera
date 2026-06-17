@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
 
 export const handleGetCourses = async (req, res, next) => {
     try {
@@ -33,6 +33,15 @@ export const handleGetCourseBySlug = async (req, res, next) => {
         const result = await getCourseBySlug(req.params.slug);
         if (!result.data) return res.status(404).json({ status: 404, message: 'Không tìm thấy khóa học' });
         return res.status(200).json({ status: 200, ...result });
+    } catch (err) { next(err); }
+};
+
+export const handleGetCourseCurriculum = async (req, res, next) => {
+    try {
+        const { slug } = req.params;
+        const result = await getCourseCurriculum(slug);
+        if (!result) return res.status(404).json({ status: 404, message: 'Không tìm thấy chương trình học của khóa học này' });
+        return res.status(200).json({ status: 200, data: result });
     } catch (err) { next(err); }
 };
 

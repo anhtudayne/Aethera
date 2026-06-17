@@ -11,19 +11,51 @@ const includeOptions = [
     { model: CourseImage, as: 'images', attributes: ['id', 'imageUrl', 'isPrimary', 'sortOrder'] },
 ];
 
-const courseDetailIncludeOptions = [
-    ...includeOptions,
-    {
-        model: Section,
-        as: 'sections',
-        include: [{
-            model: Lesson,
-            as: 'lessons'
-        }]
-    }
-];
-
 const slugify = require('slugify');
+
+// Helper function to sum lesson durations in "HH:MM:SS" or "MM:SS" formats, or numbers
+const parseDuration = (durationStr) => {
+    if (!durationStr) return 0;
+    if (typeof durationStr === 'number') return durationStr;
+    const parts = durationStr.split(':').map(Number);
+    if (parts.some(isNaN)) return 0;
+    if (parts.length === 3) {
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else if (parts.length === 2) {
+        return parts[0] * 60 + parts[1];
+    } else if (parts.length === 1) {
+        return parts[0];
+    }
+    return 0;
+};
+
+const formatDuration = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    }
+    if (minutes > 0) {
+        return `${minutes}m ${seconds}s`;
+    }
+    return `${seconds}s`;
+};
+
+const calculateTotalDuration = (sections) => {
+    let totalSeconds = 0;
+    if (sections && Array.isArray(sections)) {
+        for (const section of sections) {
+            if (section.lessons && Array.isArray(section.lessons)) {
+                for (const lesson of section.lessons) {
+                    totalSeconds += parseDuration(lesson.duration);
+                }
+            }
+        }
+    }
+    return formatDuration(totalSeconds);
+};
 
 // Lấy danh sách khóa học (filter, search, sort, pagination)
 const getCourses = async (params) => {
@@ -53,11 +85,12 @@ const getCourses = async (params) => {
     }
 
     const order = {
-        newest: [['isNewArrival', 'DESC'], ['createdAt', 'DESC']],
+        newest: [['createdAt', 'DESC']],
         price_asc: [['price', 'ASC']],
         price_desc: [['price', 'DESC']],
         rating_desc: [['rating', 'DESC']],
-        best_seller: [['isBestSeller', 'DESC'], ['totalStudents', 'DESC']],
+        best_seller: [['totalStudents', 'DESC']],
+        popular: [['viewCount', 'DESC']],
     }[sort] || [['createdAt', 'DESC']];
 
     const parsedLimit = parseInt(limit);
@@ -96,7 +129,20 @@ const getBestSellers = async () => {
 const getCourseBySlug = async (slug) => {
     const course = await Course.findOne({ 
         where: { slug }, 
-        include: courseDetailIncludeOptions,
+        include: [
+            ...includeOptions,
+            {
+                model: Section,
+                as: 'sections',
+                attributes: ['id', 'title', 'order'],
+                include: [{
+                    model: Lesson,
+                    as: 'lessons',
+                    // PUBLIC: chỉ trả metadata, KHÔNG trả videoUrl và content
+                    attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview'],
+                }]
+            }
+        ],
         order: [
             [{ model: Section, as: 'sections' }, 'order', 'ASC'],
             [{ model: Section, as: 'sections' }, { model: Lesson, as: 'lessons' }, 'order', 'ASC']
@@ -105,10 +151,69 @@ const getCourseBySlug = async (slug) => {
     if (!course) return { data: null };
     
     const data = course.toJSON();
+
+    // Parse các trường dạng JSON string array lưu ở DB
+    try {
+        data.requirements = data.requirements ? JSON.parse(data.requirements) : [];
+    } catch (e) {
+        data.requirements = typeof data.requirements === 'string' ? [data.requirements] : [];
+    }
+    try {
+        data.whatYouWillLearn = data.whatYouWillLearn ? JSON.parse(data.whatYouWillLearn) : [];
+    } catch (e) {
+        data.whatYouWillLearn = typeof data.whatYouWillLearn === 'string' ? [data.whatYouWillLearn] : [];
+    }
+    try {
+        data.targetAudience = data.targetAudience ? JSON.parse(data.targetAudience) : [];
+    } catch (e) {
+        data.targetAudience = typeof data.targetAudience === 'string' ? [data.targetAudience] : [];
+    }
+
     data.buyersCount = await db.UserCourse.count({ where: { courseId: course.id } });
     data.reviewsCount = await db.Review.count({ where: { courseId: course.id } });
+    data.totalSections = data.sections ? data.sections.length : 0;
+    data.totalDuration = calculateTotalDuration(data.sections);
     
     return { data };
+};
+
+const getCourseCurriculum = async (slug) => {
+    const course = await Course.findOne({
+        where: { slug, status: 'published' },
+        attributes: ['id', 'name', 'totalLessons'],
+        include: [{
+            model: Section,
+            as: 'sections',
+            attributes: ['id', 'title', 'order'],
+            include: [{
+                model: Lesson,
+                as: 'lessons',
+                attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview'],
+            }]
+        }],
+        order: [
+            [{ model: Section, as: 'sections' }, 'order', 'ASC'],
+            [{ model: Section, as: 'sections' }, { model: Lesson, as: 'lessons' }, 'order', 'ASC'],
+        ],
+    });
+
+    if (!course) return null;
+
+    const sections = course.sections.map(section => {
+        const sJson = section.toJSON();
+        const totalSecs = sJson.lessons.reduce((sum, l) => sum + parseDuration(l.duration), 0);
+        sJson.lessonsCount = sJson.lessons.length;
+        sJson.totalDuration = formatDuration(totalSecs);
+        return sJson;
+    });
+
+    return {
+        courseId: course.id,
+        courseName: course.name,
+        totalSections: sections.length,
+        totalLessons: course.totalLessons,
+        sections,
+    };
 };
 
 const getRelatedCourses = async (id) => {
@@ -193,4 +298,4 @@ const checkEnrollmentService = async (userId, slug) => {
     return { enrolled: !!enrollment, courseId: course.id };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };

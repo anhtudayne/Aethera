@@ -1,0 +1,72 @@
+# ==============================================================================
+# STAGE 3: COURSE BROWSING & DETAIL - API VERIFICATION
+# ==============================================================================
+# Hướng dẫn sử dụng:
+# 1. Bấm "Send Request" ở Request số 1 để đăng nhập và lưu token tự động.
+# 2. Thực hiện kiểm tra các API phía dưới.
+
+@baseUrl = http://localhost:8089/api
+@email = student@elearning.com
+@password = Student@123
+@courseSlug = nextjs-14-fullstack-framework
+@courseId = 4
+
+# ==============================================================================
+# 1. ĐĂNG NHẬP (Lấy Token)
+# ==============================================================================
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Lưu token tự động vào biến {{authToken}}
+@authToken = {{login.response.body.data.token}}
+
+
+# ==============================================================================
+# 2. KHÓA HỌC (Courses)
+# ==============================================================================
+
+### 2.1 Danh sách khóa học - Phân trang & Sắp xếp theo phổ biến (Popular - viewCount)
+GET {{baseUrl}}/courses?sort=popular&page=1&limit=4
+
+### 2.2 Danh sách khóa học - Tìm kiếm theo từ khóa
+GET {{baseUrl}}/courses?search=nextjs
+
+### 2.3 Xem chi tiết khóa học bằng Slug (Public)
+# Kiểm tra:
+# - Cột JSON: requirements, whatYouWillLearn, targetAudience được tự động chuyển đổi thành mảng JSON.
+# - Metadata bài học: sections.lessons chỉ chứa id, title, type, duration, isFreePreview (KHÔNG chứa videoUrl và content).
+# - Thống kê tự động: buyersCount, reviewsCount, totalSections, totalDuration.
+GET {{baseUrl}}/courses/{{courseSlug}}
+
+### 2.4 Xem trước chương trình học (Curriculum Preview)
+# Kiểm tra danh sách chương/bài học và thống kê thời lượng riêng từng phần của khóa học.
+GET {{baseUrl}}/courses/{{courseSlug}}/curriculum
+
+
+# ==============================================================================
+# 3. DANH SÁCH YÊU THÍCH (Wishlist / Favorites)
+# ==============================================================================
+
+### 3.1 Kiểm tra xem một khóa học đã có trong wishlist hay chưa
+# Trả về: { "status": 200, "isFavorite": true/false }
+GET {{baseUrl}}/favorites/check/{{courseId}}
+Authorization: Bearer {{authToken}}
+
+### 3.2 Toggle trạng thái wishlist (Thêm / Xóa)
+POST {{baseUrl}}/favorites/toggle
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}}
+}
+
+### 3.3 Lấy danh sách khóa học yêu thích có phân trang
+GET {{baseUrl}}/favorites?page=1&limit=3
+Authorization: Bearer {{authToken}}

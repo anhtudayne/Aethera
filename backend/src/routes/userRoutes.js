@@ -16,7 +16,7 @@ router.put(
     '/profile',
     updateProfileLimiter,
     verifyToken,
-    authorizeRole('user'), // Giả sử user có quyền sửa profile của chính mình
+    authorizeRole('user', 'teacher'),
     updateProfileValidation,
     handleValidationErrors,
     updateProfile
@@ -25,7 +25,7 @@ router.put(
 router.get(
     '/profile',
     verifyToken,
-    authorizeRole('user'),
+    authorizeRole('user', 'teacher'),
     getProfile
 );
 
