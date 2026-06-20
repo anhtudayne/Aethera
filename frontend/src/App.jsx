@@ -29,6 +29,11 @@ import {
   NotificationsPage,
   ProfileSettingsPage,
   NotFoundPage,
+  AdminDashboardPage,
+  CourseApprovalsPage,
+  UsersManagementPage,
+  PayoutsManagementPage,
+  MarketingManagementPage
 } from './pages';
 import './App.css';
 
@@ -65,9 +70,13 @@ function App() {
         {/* Course video player — minimal design, no footer */}
         <Route path={ROUTES.COURSE_PLAYER} element={<CoursePlayerPage />} />
 
-        {/* Student Dashboard area — DashboardLayout with sidebar */}
+        {/* Student/Admin Dashboard area — DashboardLayout with sidebar */}
         <Route element={<DashboardLayout />}>
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          <Route path={ROUTES.ADMIN_COURSE_APPROVALS} element={<CourseApprovalsPage />} />
+          <Route path={ROUTES.ADMIN_USERS} element={<UsersManagementPage />} />
+          <Route path={ROUTES.ADMIN_PAYOUTS} element={<PayoutsManagementPage />} />
+          <Route path={ROUTES.ADMIN_MARKETING} element={<MarketingManagementPage />} />
           <Route path={ROUTES.MY_COURSES} element={<MyCoursesPage />} />
           <Route path={ROUTES.WISHLIST} element={<WishlistPage />} />
           <Route path={ROUTES.ORDERS} element={<OrderHistoryPage />} />

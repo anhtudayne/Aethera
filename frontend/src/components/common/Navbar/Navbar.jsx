@@ -10,7 +10,7 @@ import { ROUTES } from '../../../utils/constants';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <header className="navbar glass">
@@ -23,14 +23,20 @@ const Navbar = () => {
 
         {/* Explore Links */}
         <nav className="nav-links">
-          <NavLink
-            to={ROUTES.COURSES}
-            className={({ isActive }) =>
-              isActive ? 'nav-link nav-link-active' : 'nav-link'
-            }
-          >
-            Explore
-          </NavLink>
+          {isAuthenticated && user?.role === 'admin' ? (
+             <Button variant="primary" size="sm" icon={Sparkles}>
+               Quick Create
+             </Button>
+          ) : (
+            <NavLink
+              to={ROUTES.COURSES}
+              className={({ isActive }) =>
+                isActive ? 'nav-link nav-link-active' : 'nav-link'
+              }
+            >
+              Explore
+            </NavLink>
+          )}
         </nav>
 
         {/* Search */}

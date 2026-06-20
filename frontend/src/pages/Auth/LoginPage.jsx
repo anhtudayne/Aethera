@@ -65,8 +65,11 @@ const LoginPage = () => {
 
       if (token && user) {
         login(token, user);
-        toast.success('Logged in successfully');
-        navigate(redirectPath);
+        toast.success('Logged in successfully', { duration: 750 });
+        // Delay to allow toast to show and context to update before redirecting
+        setTimeout(() => {
+          navigate(redirectPath, { replace: true });
+        }, 250);
       } else {
         throw new Error('Invalid authentication response from server');
       }
@@ -130,10 +133,10 @@ const LoginPage = () => {
         </div>
 
         {/* Submit */}
-        <Button 
-          type="submit" 
-          variant="primary" 
-          fullWidth 
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
           loading={loading}
           disabled={loading}
           className="auth-submit-btn"

@@ -8,13 +8,18 @@ import {
   MessageSquare,
   Bell,
   Settings,
+  Tag,
 } from 'lucide-react';
 import Navbar from '../common/Navbar/Navbar';
-import { ROUTES } from '../../utils/constants';
+import { ROUTES, STORAGE_KEYS } from '../../utils/constants';
 import './DashboardLayout.css';
 
 const DashboardLayout = () => {
-  const sidebarLinks = [
+  const userStr = localStorage.getItem(STORAGE_KEYS.USER);
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAdmin = user?.role === 'admin' || user?.roleId === 'admin';
+
+  const studentLinks = [
     { to: ROUTES.DASHBOARD, label: 'Overview', icon: LayoutDashboard, end: true },
     { to: ROUTES.MY_COURSES, label: 'My Courses', icon: BookOpen },
     { to: ROUTES.WISHLIST, label: 'Wishlist', icon: Heart },
@@ -24,6 +29,17 @@ const DashboardLayout = () => {
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell },
     { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
   ];
+
+  const adminLinks = [
+    { to: ROUTES.DASHBOARD, label: 'Admin Dashboard', icon: LayoutDashboard, end: true },
+    { to: ROUTES.ADMIN_USERS, label: 'Users Management', icon: Heart },
+    { to: ROUTES.ADMIN_COURSE_APPROVALS, label: 'Course Approvals', icon: BookOpen },
+    { to: ROUTES.ADMIN_PAYOUTS, label: 'Payouts', icon: ShoppingBag },
+    { to: ROUTES.ADMIN_MARKETING, label: 'Marketing', icon: Tag },
+    { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
+  ];
+
+  const sidebarLinks = isAdmin ? adminLinks : studentLinks;
 
   return (
     <div className="dashboard-layout">

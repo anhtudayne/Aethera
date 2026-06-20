@@ -27,6 +27,11 @@ import ResetPasswordPage from './Auth/ResetPasswordPage';
 import CartPage from './Cart/CartPage';
 import CheckoutPage from './Checkout/CheckoutPage';
 import OrderSuccessPage from './Checkout/OrderSuccessPage';
+import AdminDashboardPage from './admin/Dashboard';
+import CourseApprovalsPage from './admin/CourseApprovalsPage';
+import UsersManagementPage from './admin/UsersManagementPage';
+import PayoutsManagementPage from './admin/PayoutsManagementPage';
+import MarketingManagementPage from './admin/MarketingManagementPage';
 
 export { 
   HomePage, 
@@ -40,7 +45,12 @@ export {
   ResetPasswordPage,
   CartPage,
   CheckoutPage,
-  OrderSuccessPage
+  OrderSuccessPage,
+  AdminDashboardPage,
+  CourseApprovalsPage,
+  UsersManagementPage,
+  PayoutsManagementPage,
+  MarketingManagementPage
 };
 
 export const CertificateVerifyPage = () => (
@@ -66,23 +76,32 @@ export const CoursePlayerPage = () => (
   </div>
 );
 
-// ── Dashboard Pages ────
-export const DashboardPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>Student Dashboard</h3>
-    <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Overview of active study programs, progress and stats.</p>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-      <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
-        <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Courses Enrolled</h4>
-        <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-accent)' }}>12</p>
-      </div>
-      <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
-        <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Completed Programs</h4>
-        <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-success)' }}>4</p>
+export const DashboardPage = () => {
+  const userStr = localStorage.getItem('aethera_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAdmin = user?.role === 'admin' || user?.roleId === 'admin';
+
+  if (isAdmin) {
+    return <AdminDashboardPage />;
+  }
+
+  return (
+    <div>
+      <h3 style={{ marginBottom: '16px' }}>Student Dashboard</h3>
+      <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Overview of active study programs, progress and stats.</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+        <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
+          <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Courses Enrolled</h4>
+          <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-accent)' }}>12</p>
+        </div>
+        <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
+          <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Completed Programs</h4>
+          <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-success)' }}>4</p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const MyCoursesPage = () => (
   <div>

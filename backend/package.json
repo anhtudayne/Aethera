@@ -14,7 +14,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
@@ -25,7 +25,7 @@
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.22.3",
-    "nodemailer": "^8.0.9",
+    "nodemailer": "^9.0.1",
     "sequelize": "^6.37.8",
     "slugify": "^1.6.9",
     "socket.io": "^4.8.3"
@@ -36,5 +36,8 @@
     "@babel/preset-env": "^7.29.3",
     "nodemon": "^3.1.14",
     "sequelize-cli": "^6.6.5"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
   }
 }

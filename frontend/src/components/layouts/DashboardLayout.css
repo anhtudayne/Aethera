@@ -63,6 +63,7 @@
   padding: var(--space-2xl);
   box-shadow: var(--shadow-glass);
   min-height: 600px;
+  min-width: 0;
 }
 
 /* Responsiveness */

@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             Course.hasMany(models.Certificate, { foreignKey: 'courseId', as: 'certificates' });
             Course.hasMany(models.Review, { foreignKey: 'courseId', as: 'reviews' });
             Course.hasMany(models.FavoriteCourse, { foreignKey: 'courseId', as: 'favoriteCourses' });
+            Course.hasMany(models.CourseStatusHistory, { foreignKey: 'courseId', as: 'statusHistories' });
         }
     }
     Course.init(
@@ -36,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             isFeatured: { type: DataTypes.BOOLEAN, defaultValue: false },
             isNewArrival: { type: DataTypes.BOOLEAN, defaultValue: false },
             isBestSeller: { type: DataTypes.BOOLEAN, defaultValue: false },
-            status: { type: DataTypes.ENUM('draft', 'published'), defaultValue: 'draft' },
+            status: { type: DataTypes.ENUM('draft', 'pending', 'published', 'rejected', 'suspended'), defaultValue: 'draft' },
             categoryId: {
                 type: DataTypes.INTEGER,
                 references: { model: 'Categories', key: 'id' },

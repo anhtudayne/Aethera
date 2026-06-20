@@ -12,6 +12,7 @@ export const ROUTES = {
   CHECKOUT: '/checkout',
   ORDER_SUCCESS: '/order-success',
   DASHBOARD: '/dashboard',
+  ADMIN_DASHBOARD: '/admin/dashboard',
   MY_COURSES: '/dashboard/my-courses',
   COURSE_PLAYER: '/learn/:slug',
   WISHLIST: '/dashboard/wishlist',
@@ -22,6 +23,10 @@ export const ROUTES = {
   MY_REVIEWS: '/dashboard/reviews',
   NOTIFICATIONS: '/dashboard/notifications',
   SETTINGS: '/dashboard/settings',
+  ADMIN_COURSE_APPROVALS: '/dashboard/approvals',
+  ADMIN_USERS: '/dashboard/users',
+  ADMIN_PAYOUTS: '/dashboard/payouts',
+  ADMIN_MARKETING: '/dashboard/marketing',
 };
 
 export const STORAGE_KEYS = {
