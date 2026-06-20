@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 7. CERTIFICATES (/api/certificates)
+### ==========================================
+
+### Lấy chứng chỉ của tôi
+GET {{baseUrl}}/certificates
+Authorization: Bearer {{token}}
+
+### Xác thực chứng chỉ (Public)
+GET {{baseUrl}}/certificates/verify/CERT_CODE

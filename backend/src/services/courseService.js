@@ -59,11 +59,15 @@ const calculateTotalDuration = (sections) => {
 
 // Lấy danh sách khóa học (filter, search, sort, pagination)
 const getCourses = async (params) => {
-    const { search, categories, levels, min_price, max_price, sort = 'newest', page = 1, limit = 12, status = 'published' } = params;
+    const { search, categories, levels, min_price, max_price, sort = 'newest', page = 1, limit = 12, status = 'published', instructor } = params;
     const where = {};
 
     if (status !== 'all') {
         where.status = status;
+    }
+
+    if (instructor) {
+        where.instructor = instructor;
     }
 
     if (search) where.name = { [Op.like]: `%${search}%` };
@@ -231,6 +235,18 @@ const getCategories = async () => {
     return { data };
 };
 
+const createCategory = async (categoryData) => {
+    try {
+        if (!categoryData.slug && categoryData.name) {
+            categoryData.slug = slugify(categoryData.name, { lower: true, strict: true }) + '-' + Date.now();
+        }
+        const newCategory = await Category.create(categoryData);
+        return { data: newCategory };
+    } catch (error) {
+        throw error;
+    }
+};
+
 const createCourse = async (courseData) => {
     try {
         if (!courseData.slug && courseData.name) {
@@ -244,12 +260,60 @@ const createCourse = async (courseData) => {
     }
 };
 
+const updateCourse = async (id, courseData, instructorName) => {
+    try {
+        const course = await Course.findByPk(id);
+        if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
+
+        // Kiểm tra quyền sở hữu dựa trên string matching
+        if (course.instructor !== instructorName) {
+            return { status: 403, message: 'Bạn không có quyền chỉnh sửa khóa học này.' };
+        }
+
+        if (courseData.name && courseData.name !== course.name && !courseData.slug) {
+            courseData.slug = slugify(courseData.name, { lower: true, strict: true }) + '-' + Date.now();
+        }
+
+        const dataToUpdate = { ...courseData };
+        if (Array.isArray(dataToUpdate.requirements)) {
+            dataToUpdate.requirements = JSON.stringify(dataToUpdate.requirements);
+        }
+        if (Array.isArray(dataToUpdate.whatYouWillLearn)) {
+            dataToUpdate.whatYouWillLearn = JSON.stringify(dataToUpdate.whatYouWillLearn);
+        }
+        if (Array.isArray(dataToUpdate.targetAudience)) {
+            dataToUpdate.targetAudience = JSON.stringify(dataToUpdate.targetAudience);
+        }
+
+        await course.update(dataToUpdate);
+        return { status: 200, message: 'Cập nhật khóa học thành công', data: course };
+    } catch (error) {
+        throw error;
+    }
+};
+
 const publishCourse = async (id) => {
     const course = await Course.findByPk(id);
     if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
     course.status = 'published';
     await course.save();
     return { status: 200, message: 'Đã xuất bản khóa học!', data: course };
+};
+
+const toggleFeaturedCourse = async (id) => {
+    const course = await Course.findByPk(id);
+    if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
+    course.isFeatured = !course.isFeatured;
+    await course.save();
+    return { status: 200, message: course.isFeatured ? 'Đã thêm vào danh sách Nổi bật' : 'Đã xóa khỏi danh sách Nổi bật', data: course };
+};
+
+const toggleBestSellerCourse = async (id) => {
+    const course = await Course.findByPk(id);
+    if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
+    course.isBestSeller = !course.isBestSeller;
+    await course.save();
+    return { status: 200, message: course.isBestSeller ? 'Đã đánh dấu là Bán chạy' : 'Đã bỏ đánh dấu Bán chạy', data: course };
 };
 
 // Khóa học theo danh mục (phân trang cho Infinite Scroll)
@@ -298,4 +362,4 @@ const checkEnrollmentService = async (userId, slug) => {
     return { enrolled: !!enrollment, courseId: course.id };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };

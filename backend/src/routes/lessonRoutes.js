@@ -1,10 +1,12 @@
 import express from 'express';
-import { handleCreateLesson, handleGetLessons, handleDeleteLesson } from '../controllers/lessonController.js';
+import { handleCreateLesson, handleGetLessons, handleUpdateLesson, handleDeleteLesson } from '../controllers/lessonController.js';
+import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', handleCreateLesson);
+router.post('/', verifyToken, handleCreateLesson);
 router.get('/', handleGetLessons);
-router.delete('/:id', handleDeleteLesson);
+router.put('/:id', verifyToken, handleUpdateLesson);
+router.delete('/:id', verifyToken, handleDeleteLesson);
 
 export default router;

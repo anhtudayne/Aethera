@@ -1,45 +1,69 @@
-### 1. Lấy danh sách danh mục khóa học
-GET http://localhost:8089/api/categories
+@baseUrl = http://localhost:8089/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6Imluc3RydWN0b3IiLCJlbWFpbCI6InF1b2NpbnN0cnVjdG9yQGdtYWlsLmNvbSIsImlhdCI6MTc4MTk0MzM3NSwiZXhwIjoxNzgyMDI5Nzc1fQ.61MUXI77lPa8gP_qY5dYvOb1tlLVqtKNcGyjD5ixmhk
 
-### 2. Lấy danh sách tất cả khóa học (có phân trang/lọc)
-GET http://localhost:8089/api/courses?page=1&limit=10
+### ==========================================
+### COURSES (/api/courses)
+### ==========================================
 
-### 3. Lấy khóa học nổi bật
-GET http://localhost:8089/api/courses/featured
+### Lấy danh sách khóa học (có phân trang)
+GET {{baseUrl}}/courses?page=1&limit=10
 
-### 4. Lấy khóa học mới ra mắt
-GET http://localhost:8089/api/courses/new-arrivals
+### [Dành cho Instructor] Lấy danh sách khóa học của mình (bao gồm cả bản nháp)
+GET {{baseUrl}}/instructor/my-courses?instructorName=Quoc%20Sensei&page=1&limit=10
+Authorization: Bearer {{token}}
 
-### 5. Lấy khóa học bán chạy nhất
-GET http://localhost:8089/api/courses/best-sellers
+### Lấy khóa học nổi bật
+GET {{baseUrl}}/courses/featured
 
-### 6. Lấy khóa học xem nhiều nhất
-GET http://localhost:8089/api/courses/top-viewed
+### Đánh dấu/Bỏ đánh dấu khóa học Nổi bật
+PUT {{baseUrl}}/courses/5/featured
+Authorization: Bearer {{token}}
 
-### 7. Lấy khóa học theo danh mục (slug)
-GET http://localhost:8089/api/courses/category/web-development
+### Lấy khóa học mới
+GET {{baseUrl}}/courses/new-arrivals
 
-### 8. Lấy chi tiết khóa học (bằng slug)
-GET http://localhost:8089/api/courses/reactjs-nextjs-zero-to-hero
+### Lấy khóa học bán chạy
+GET {{baseUrl}}/courses/best-sellers
 
-### 9. Lấy các khóa học liên quan
-GET http://localhost:8089/api/courses/1/related
+### Đánh dấu/Bỏ đánh dấu khóa học Bán chạy
+PUT {{baseUrl}}/courses/5/best-seller
+Authorization: Bearer {{token}}
 
-### 10. Tăng lượt xem cho khóa học
-PATCH http://localhost:8089/api/courses/1/view
+### Lấy khóa học xem nhiều
+GET {{baseUrl}}/courses/top-viewed
 
-### 11. Tạo khóa học mới
-POST http://localhost:8089/api/courses
+### Lấy khóa học theo danh mục (slug)
+GET {{baseUrl}}/courses/category/web-development
+
+### Lấy chương trình giảng dạy (curriculum) của khóa học
+GET {{baseUrl}}/courses/some-course-slug/curriculum
+
+### Lấy chi tiết khóa học (theo slug)
+GET {{baseUrl}}/courses/complete-data-analyst-bootcamp-from-basics-to-advanced-1781944596015
+
+### Các khóa học liên quan
+GET {{baseUrl}}/courses/1/related
+
+### Kiểm tra user đã đăng ký khóa học chưa
+GET {{baseUrl}}/courses/some-course-slug/check-enrollment
+Authorization: Bearer {{token}}
+
+### Tạo khóa học mới
+POST {{baseUrl}}/courses
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "name": "Khóa học Python nâng cao",
-    "description": "Học Python từ cơ bản đến nâng cao",
-    "thumbnail": "https://example.com/thumb.jpg",
-    "price": 500000,
-    "salePrice": 300000,
-    "instructor": "Nguyen Van A",
-    "duration": "10h",
-    "level": "intermediate",
-    "categoryId": 1
+  "name": "Complete Data Analyst Bootcamp From Basics To Advanced",
+  "description": "Master Data Analysis from foundational concepts to advanced techniques with practical Python projects.",
+  "categoryId": 2,
+  "instructor": "Quoc Sensei",
+  "price": 200000
 }
+
+### Publish (xuất bản) khóa học
+PUT {{baseUrl}}/courses/5/publish
+Authorization: Bearer {{token}}
+
+### Tăng lượt xem khóa học
+PATCH {{baseUrl}}/courses/1/view

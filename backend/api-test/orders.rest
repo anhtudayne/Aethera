@@ -1,24 +1,35 @@
-### 1. Lấy danh sách đơn hàng của tôi
-GET http://localhost:8089/api/orders/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJlbWFpbCI6InF1b2MxQGdtYWlsLmNvbSIsImlhdCI6MTc3OTY3MzMxOCwiZXhwIjoxNzc5Njc2OTE4fQ.wDLJW8uomF2Ew7NMTqZclyikvFIS6JCRlVoADO4gMOM
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
 
-### 2. Tạo đơn hàng từ giỏ hàng
-POST http://localhost:8089/api/orders/create-from-cart
-Authorization: Bearer [YOUR_TOKEN_HERE]
+### ==========================================
+### 5. ORDERS (/api/orders)
+### ==========================================
+
+### Tạo đơn hàng từ giỏ hàng
+POST {{baseUrl}}/orders/create-from-cart
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "paymentMethod": "bank_transfer"
+  "paymentMethod": "vnpay"
 }
 
-### 3. Lấy chi tiết một đơn hàng (truyền ID đơn hàng)
-GET http://localhost:8089/api/orders/1
-Authorization: Bearer [YOUR_TOKEN_HERE]
+### Kiểm tra trạng thái đơn hàng
+GET {{baseUrl}}/orders/check-status/ORDER_CODE
+Authorization: Bearer {{token}}
 
-### 4. Kiểm tra trạng thái đơn hàng (bằng mã đơn - orderCode)
-GET http://localhost:8089/api/orders/check-status/ORDER-CODE-123
-Authorization: Bearer [YOUR_TOKEN_HERE]
+### Lấy danh sách đơn hàng của tôi
+GET {{baseUrl}}/orders
+Authorization: Bearer {{token}}
 
-### 5. Hủy đơn hàng (chưa thanh toán)
-PUT http://localhost:8089/api/orders/1/cancel
-Authorization: Bearer [YOUR_TOKEN_HERE]
+### Lấy chi tiết đơn hàng
+GET {{baseUrl}}/orders/1
+Authorization: Bearer {{token}}
+
+### Hủy đơn hàng
+PUT {{baseUrl}}/orders/1/cancel
+Authorization: Bearer {{token}}
+
+### Hoàn thành đơn hàng (Dùng để test)
+PUT {{baseUrl}}/orders/1/fulfill
+Authorization: Bearer {{token}}

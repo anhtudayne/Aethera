@@ -54,10 +54,17 @@ const UserMenu = () => {
           <hr className="dropdown-divider" />
           <ul className="dropdown-list">
             <li>
-              <Link to={ROUTES.DASHBOARD} onClick={() => setIsOpen(false)} className="dropdown-item">
-                <LayoutDashboard size={16} />
-                <span>Dashboard</span>
-              </Link>
+              {(user?.role === 'instructor' || user?.roleId === 'instructor') ? (
+                <Link to={ROUTES.INSTRUCTOR_DASHBOARD} onClick={() => setIsOpen(false)} className="dropdown-item">
+                  <LayoutDashboard size={16} />
+                  <span>Instructor Dashboard</span>
+                </Link>
+              ) : (
+                <Link to={ROUTES.DASHBOARD} onClick={() => setIsOpen(false)} className="dropdown-item">
+                  <LayoutDashboard size={16} />
+                  <span>Dashboard</span>
+                </Link>
+              )}
             </li>
             <li>
               <Link to={ROUTES.MY_COURSES} onClick={() => setIsOpen(false)} className="dropdown-item">

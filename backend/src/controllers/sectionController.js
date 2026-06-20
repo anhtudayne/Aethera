@@ -37,3 +37,38 @@ export const handleGetSections = async (req, res, next) => {
         next(error);
     }
 };
+
+export const handleUpdateSection = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { title, order } = req.body;
+        const section = await db.Section.findByPk(id);
+        
+        if (!section) {
+            return res.status(404).json({ status: 404, message: 'Không tìm thấy chương' });
+        }
+        
+        await section.update({ title, order });
+        return res.status(200).json({ status: 200, message: 'Cập nhật chương thành công', data: section });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const handleDeleteSection = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const section = await db.Section.findByPk(id);
+        
+        if (!section) {
+            return res.status(404).json({ status: 404, message: 'Không tìm thấy chương' });
+        }
+        
+        // Also delete associated lessons
+        await db.Lesson.destroy({ where: { sectionId: id } });
+        await section.destroy();
+        return res.status(200).json({ status: 200, message: 'Xóa chương thành công' });
+    } catch (error) {
+        next(error);
+    }
+};

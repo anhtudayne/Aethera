@@ -1,0 +1,169 @@
+.curriculum-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.curriculum-header {
+  margin-bottom: 32px;
+}
+
+.curriculum-header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+
+.curriculum-header p {
+  color: #6a6f73;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #5624d0;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.curriculum-loading, .curriculum-error {
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+.curriculum-error {
+  color: #b30820;
+}
+
+.section-card {
+  background: #f7f9fa;
+  border: 1px solid #1c1d1f;
+  margin-bottom: 24px;
+  padding: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+}
+
+.section-actions button, .lesson-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  color: #1c1d1f;
+}
+
+.lessons-list {
+  background: #fff;
+  border: 1px solid #d1d7dc;
+  margin-bottom: 16px;
+}
+
+.lesson-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #d1d7dc;
+}
+
+.lesson-item:last-child {
+  border-bottom: none;
+}
+
+.lesson-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.add-lesson-wrapper {
+  margin-left: 32px;
+}
+
+.add-lesson-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.edit-box {
+  background: #fff;
+  border: 1px solid #1c1d1f;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.curriculum-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #1c1d1f;
+  font-size: 15px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.edit-box-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.add-section-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  width: 100%;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #1c1d1f;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 700;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}

@@ -1,0 +1,10 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 14. STATS (/api/stats)
+### ==========================================
+
+### Lấy thống kê tổng quan
+GET {{baseUrl}}/stats
+Authorization: Bearer {{token}}

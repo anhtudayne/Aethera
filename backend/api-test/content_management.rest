@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 12. SECTIONS & LESSONS (Content Management)
+### ==========================================
+
+### Tạo section
+POST {{baseUrl}}/sections
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "courseId": 1,
+  "title": "New Section",
+  "order": 1
+}
+
+### Lấy danh sách section
+GET {{baseUrl}}/sections?courseId=1
+
+### Tạo lesson
+POST {{baseUrl}}/lessons
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sectionId": 1,
+  "title": "New Lesson",
+  "type": "video",
+  "order": 1
+}
+
+### Lấy danh sách lesson
+GET {{baseUrl}}/lessons?sectionId=1
+
+### Xóa lesson
+DELETE {{baseUrl}}/lessons/1
+Authorization: Bearer {{token}}

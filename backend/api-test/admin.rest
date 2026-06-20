@@ -1,17 +1,129 @@
-### 1. Lấy thông tin cá nhân (Admin)
-GET http://localhost:8089/api/admin/profile
-Authorization: Bearer [YOUR_ADMIN_TOKEN_HERE]
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
 
-### 2. Cập nhật thông tin cá nhân (Admin)
-PUT http://localhost:8089/api/admin/profile
-Authorization: Bearer [YOUR_ADMIN_TOKEN_HERE]
+### ==========================================
+### 13. ADMIN (/api/admin)
+### ==========================================
+
+### Lấy thông báo
+GET {{baseUrl}}/admin/profile
+Authorization: Bearer {{token}}
+
+### Lấy dashboard Admin
+GET {{baseUrl}}/admin/dashboard
+Authorization: Bearer {{token}}
+
+### Cập nhật thông tin Admin
+PUT {{baseUrl}}/admin/profile
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "firstName": "Admin",
-    "lastName": "System",
-    "phoneNumber": "0987654321",
-    "address": "Hà Nội",
-    "gender": true,
-    "image": "https://example.com/admin.jpg"
+  "firstName": "Admin",
+  "lastName": "Super"
 }
+
+### Lấy danh sách người dùng
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{token}}
+
+### Thay đổi trạng thái người dùng
+PUT {{baseUrl}}/admin/users/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+### Lấy danh sách khóa học (Admin)
+GET {{baseUrl}}/admin/courses
+Authorization: Bearer {{token}}
+
+### Lấy lịch sử thay đổi trạng thái khóa học
+GET {{baseUrl}}/admin/courses/1/history
+Authorization: Bearer {{token}}
+
+### Thay đổi trạng thái khóa học
+PUT {{baseUrl}}/admin/courses/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "published",
+  "reason": "Approved"
+}
+
+### Lấy danh sách payout
+GET {{baseUrl}}/admin/payouts
+Authorization: Bearer {{token}}
+
+### Đánh dấu payout đã thanh toán
+PUT {{baseUrl}}/admin/payouts/1/complete
+Authorization: Bearer {{token}}
+
+### Từ chối payout
+PUT {{baseUrl}}/admin/payouts/1/reject
+Authorization: Bearer {{token}}
+
+### Lấy setting
+GET {{baseUrl}}/admin/settings/site_title
+Authorization: Bearer {{token}}
+
+### Cập nhật setting
+PUT {{baseUrl}}/admin/settings/site_title
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "value": "My E-Learning Platform"
+}
+
+### Lấy danh sách Vouchers
+GET {{baseUrl}}/admin/marketing/vouchers
+Authorization: Bearer {{token}}
+
+### Tạo Voucher
+POST {{baseUrl}}/admin/marketing/vouchers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "code": "SUMMER2026",
+  "discountPercent": 20,
+  "maxDiscountAmount": 50000,
+  "minOrderValue": 100000,
+  "startDate": "2026-06-01",
+  "endDate": "2026-06-30",
+  "usageLimit": 100
+}
+
+### Đổi trạng thái Voucher
+PUT {{baseUrl}}/admin/marketing/vouchers/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isActive": true
+}
+
+### Cập nhật Voucher
+PUT {{baseUrl}}/admin/marketing/vouchers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "usageLimit": 200
+}
+
+### Upload Banner
+POST {{baseUrl}}/admin/marketing/upload-banner
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="banner"; filename="banner.jpg"
+Content-Type: image/jpeg
+
+< ./banner.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

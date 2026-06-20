@@ -13,6 +13,7 @@ export const ROUTES = {
   ORDER_SUCCESS: '/order-success',
   DASHBOARD: '/dashboard',
   ADMIN_DASHBOARD: '/admin/dashboard',
+  INSTRUCTOR_DASHBOARD: '/instructor/courses',
   MY_COURSES: '/dashboard/my-courses',
   COURSE_PLAYER: '/learn/:slug',
   WISHLIST: '/dashboard/wishlist',

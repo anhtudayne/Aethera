@@ -1,17 +1,26 @@
-### 1. Lấy thông tin cá nhân (User)
-GET http://localhost:8089/api/user/profile
-Authorization: Bearer [YOUR_USER_TOKEN_HERE]
+@baseUrl = http://localhost:8089/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6Imluc3RydWN0b3IiLCJlbWFpbCI6InF1b2NpbnN0cnVjdG9yQGdtYWlsLmNvbSIsImlhdCI6MTc4MTk0MzM3NSwiZXhwIjoxNzgyMDI5Nzc1fQ.61MUXI77lPa8gP_qY5dYvOb1tlLVqtKNcGyjD5ixmhk
 
-### 2. Cập nhật thông tin cá nhân (User)
-PUT http://localhost:8089/api/user/profile
-Authorization: Bearer [YOUR_USER_TOKEN_HERE]
+### ==========================================
+### 2. USER & DASHBOARD (/api/user)
+### ==========================================
+
+### Lấy thông tin user
+GET {{baseUrl}}/user/profile
+Authorization: Bearer {{token}}
+
+### Cập nhật thông tin user
+PUT {{baseUrl}}/user/profile
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "firstName": "Vũ",
-    "lastName": "Anh Quốc",
-    "phoneNumber": "0338997920",
-    "address": "Hà Nội",
-    "gender": true,
-    "image": "https://example.com/avatar.jpg"
+  "firstName": "Quoc",
+  "lastName": "Sensei",
+  "phoneNumber": "0329675562",
+  "address": "123 Main St"
 }
+
+### Lấy dashboard user
+GET {{baseUrl}}/user/dashboard
+Authorization: Bearer {{token}}

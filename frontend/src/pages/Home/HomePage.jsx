@@ -10,9 +10,9 @@ import './HomePage.css';
 const HomePage = () => {
   return (
     <div className="home-page-container">
+      <CategoryGrid />
       <HeroSection />
       <FeaturedCourses />
-      <CategoryGrid />
       <NewArrivals />
       <BestSellers />
       <StatsSection />

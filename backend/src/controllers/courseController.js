@@ -1,4 +1,5 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCourse, publishCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
+import db from '../models/index';
 
 export const handleGetCourses = async (req, res, next) => {
     try {
@@ -59,16 +60,72 @@ export const handleGetCategories = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
+export const handleCreateCategory = async (req, res, next) => {
+    try {
+        const result = await createCategory(req.body);
+        return res.status(201).json({ status: 201, message: 'Tạo danh mục thành công', ...result });
+    } catch (err) { next(err); }
+};
+
+export const handleGetInstructorCourses = async (req, res, next) => {
+    try {
+        const { instructorName } = req.query;
+        if (!instructorName) return res.status(400).json({ status: 400, message: "Vui lòng truyền instructorName" });
+        const result = await getCourses({ ...req.query, instructor: instructorName, status: 'all' });
+        return res.status(200).json({ status: 200, ...result });
+    } catch (err) { next(err); }
+};
+
 export const handleCreateCourse = async (req, res, next) => {
     try {
-        const result = await createCourse(req.body);
+        let instructorName = 'Unknown';
+        if (req.user && req.user.id) {
+            const user = await db.User.findByPk(req.user.id);
+            if (user) {
+                instructorName = `${user.firstName} ${user.lastName}`.trim();
+            }
+        }
+        const courseData = { ...req.body, instructor: instructorName };
+        const result = await createCourse(courseData);
         return res.status(201).json({ status: 201, message: 'Tạo khóa học thành công', ...result });
+    } catch (err) { next(err); }
+};
+
+export const handleUpdateCourse = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        let instructorName = '';
+        if (req.user && req.user.id) {
+            const user = await db.User.findByPk(req.user.id);
+            if (user) {
+                instructorName = `${user.firstName} ${user.lastName}`.trim();
+            }
+        }
+        const result = await updateCourse(id, req.body, instructorName);
+        if (result.status && result.status !== 200) {
+            return res.status(result.status).json(result);
+        }
+        return res.status(200).json(result);
     } catch (err) { next(err); }
 };
 
 export const handlePublishCourse = async (req, res, next) => {
     try {
         const result = await publishCourse(req.params.id);
+        return res.status(result.status || 200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleToggleFeatured = async (req, res, next) => {
+    try {
+        const result = await toggleFeaturedCourse(req.params.id);
+        return res.status(result.status || 200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleToggleBestSeller = async (req, res, next) => {
+    try {
+        const result = await toggleBestSellerCourse(req.params.id);
         return res.status(result.status || 200).json(result);
     } catch (err) { next(err); }
 };

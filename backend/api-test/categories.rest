@@ -1,0 +1,20 @@
+@baseUrl = http://localhost:8089/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJxdW9jYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzgxOTQzMDgzLCJleHAiOjE3ODIwMjk0ODN9.tdKRctQQ3a_GW9FpkRPPm1qhLnMRMA2qSBt3koMelBA
+
+### ==========================================
+### CATEGORIES (/api/categories)
+### ==========================================
+
+### Lấy danh sách danh mục
+GET {{baseUrl}}/categories
+
+### Thêm mới danh mục (Lưu ý: Backend hiện tại chưa có api POST cho categories)
+POST {{baseUrl}}/categories
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Music",
+  "slug": "music",
+  "description": "Học về âm nhạc"
+}

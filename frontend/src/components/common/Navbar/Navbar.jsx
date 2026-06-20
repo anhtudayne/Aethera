@@ -12,6 +12,8 @@ import './Navbar.css';
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth();
 
+  console.log(user)
+
   return (
     <header className="navbar glass">
       <div className="container nav-container">
@@ -23,19 +25,28 @@ const Navbar = () => {
 
         {/* Explore Links */}
         <nav className="nav-links">
-          {isAuthenticated && user?.role === 'admin' ? (
-             <Button variant="primary" size="sm" icon={Sparkles}>
-               Quick Create
-             </Button>
-          ) : (
+          <NavLink
+            to={ROUTES.COURSES}
+            className={({ isActive }) =>
+              isActive ? 'nav-link nav-link-active' : 'nav-link'
+            }
+          >
+            Explore
+          </NavLink>
+          {isAuthenticated && (user?.role === 'instructor' || user?.roleId === 'instructor') && (
             <NavLink
-              to={ROUTES.COURSES}
+              to={ROUTES.INSTRUCTOR_DASHBOARD}
               className={({ isActive }) =>
                 isActive ? 'nav-link nav-link-active' : 'nav-link'
               }
             >
-              Explore
+              Instructor
             </NavLink>
+          )}
+          {isAuthenticated && (user?.roleId === 'admin' || user?.role === 'admin') && (
+             <Button variant="primary" size="sm" icon={Sparkles}>
+               Quick Create
+             </Button>
           )}
         </nav>
 

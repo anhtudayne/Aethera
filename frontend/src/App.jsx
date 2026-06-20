@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layouts/MainLayout';
 import DashboardLayout from './components/layouts/DashboardLayout';
+import InstructorLayout from './components/layouts/InstructorLayout';
 import AuthLayout from './components/layouts/AuthLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { ROUTES } from './utils/constants';
@@ -33,7 +34,11 @@ import {
   CourseApprovalsPage,
   UsersManagementPage,
   PayoutsManagementPage,
-  MarketingManagementPage
+  MarketingManagementPage,
+  InstructorDashboardPage,
+  InstructorCourseCreatePage,
+  InstructorCourseManagePage,
+  InstructorCourseCurriculumPage
 } from './pages';
 import './App.css';
 
@@ -69,6 +74,14 @@ function App() {
 
         {/* Course video player — minimal design, no footer */}
         <Route path={ROUTES.COURSE_PLAYER} element={<CoursePlayerPage />} />
+
+        {/* Instructor Area — InstructorLayout */}
+        <Route element={<InstructorLayout />}>
+          <Route path={ROUTES.INSTRUCTOR_DASHBOARD} element={<InstructorDashboardPage />} />
+          <Route path="/instructor/course/create" element={<InstructorCourseCreatePage />} />
+          <Route path="/instructor/course/:slug/manage" element={<InstructorCourseManagePage />} />
+          <Route path="/instructor/course/:slug/curriculum" element={<InstructorCourseCurriculumPage />} />
+        </Route>
 
         {/* Student/Admin Dashboard area — DashboardLayout with sidebar */}
         <Route element={<DashboardLayout />}>

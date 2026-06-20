@@ -16,7 +16,6 @@ router.put(
     '/profile',
     updateProfileLimiter,
     verifyToken,
-    authorizeRole('user', 'teacher'),
     updateProfileValidation,
     handleValidationErrors,
     updateProfile
@@ -25,7 +24,6 @@ router.put(
 router.get(
     '/profile',
     verifyToken,
-    authorizeRole('user', 'teacher'),
     getProfile
 );
 

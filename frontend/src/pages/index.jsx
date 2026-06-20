@@ -32,6 +32,10 @@ import CourseApprovalsPage from './admin/CourseApprovalsPage';
 import UsersManagementPage from './admin/UsersManagementPage';
 import PayoutsManagementPage from './admin/PayoutsManagementPage';
 import MarketingManagementPage from './admin/MarketingManagementPage';
+import InstructorDashboardPage from './instructor/InstructorDashboardPage';
+import InstructorCourseCreatePage from './instructor/InstructorCourseCreatePage';
+import InstructorCourseManagePage from './instructor/InstructorCourseManagePage';
+import InstructorCourseCurriculumPage from './instructor/InstructorCourseCurriculumPage';
 
 export { 
   HomePage, 
@@ -50,7 +54,11 @@ export {
   CourseApprovalsPage,
   UsersManagementPage,
   PayoutsManagementPage,
-  MarketingManagementPage
+  MarketingManagementPage,
+  InstructorDashboardPage,
+  InstructorCourseCreatePage,
+  InstructorCourseManagePage,
+  InstructorCourseCurriculumPage
 };
 
 export const CertificateVerifyPage = () => (

@@ -1,0 +1,113 @@
+.instructor-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7f9fa; /* Udemy light gray background */
+}
+
+/* Sidebar */
+.instructor-sidebar {
+  width: 80px;
+  background-color: #1c1d1f; /* Udemy dark color */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding-top: 24px;
+}
+
+.instructor-logo {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+}
+
+.instructor-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.instructor-nav-item {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+  color: #d1d7dc;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.instructor-nav-item:hover {
+  color: #fff;
+}
+
+.instructor-nav-item.active {
+  color: #fff;
+  border-left-color: #fff;
+}
+
+/* Main Content Wrapper */
+.instructor-main {
+  flex: 1;
+  margin-left: 80px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Important for flex child to not overflow */
+}
+
+/* Header */
+.instructor-header {
+  height: 72px;
+  background-color: #fff;
+  border-bottom: 1px solid #d1d7dc;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.instructor-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.instructor-header-link {
+  font-size: 15px;
+  color: #1c1d1f;
+  text-decoration: none;
+}
+
+.instructor-header-link:hover {
+  color: #5624d0;
+}
+
+.instructor-content-area {
+  padding: 48px;
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .instructor-sidebar {
+    width: 60px;
+  }
+  .instructor-main {
+    margin-left: 60px;
+  }
+  .instructor-content-area {
+    padding: 24px;
+  }
+}

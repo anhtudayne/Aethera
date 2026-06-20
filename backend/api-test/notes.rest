@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 8. NOTES (/api/notes)
+### ==========================================
+
+### Tạo ghi chú
+POST {{baseUrl}}/notes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "lessonId": 1,
+  "courseId": 1,
+  "content": "This is a note",
+  "timePosition": 120
+}
+
+### Lấy ghi chú của bài học
+GET {{baseUrl}}/notes/lesson/1
+Authorization: Bearer {{token}}
+
+### Lấy ghi chú của khóa học
+GET {{baseUrl}}/notes/course/1
+Authorization: Bearer {{token}}
+
+### Cập nhật ghi chú
+PUT {{baseUrl}}/notes/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "Updated note"
+}
+
+### Xóa ghi chú
+DELETE {{baseUrl}}/notes/1
+Authorization: Bearer {{token}}

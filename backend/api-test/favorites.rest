@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 10. FAVORITES (/api/favorites)
+### ==========================================
+
+### Bật/Tắt yêu thích khóa học
+POST {{baseUrl}}/favorites/toggle
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "courseId": 1
+}
+
+### Lấy danh sách khóa học yêu thích
+GET {{baseUrl}}/favorites
+Authorization: Bearer {{token}}
+
+### Kiểm tra khóa học có yêu thích chưa
+GET {{baseUrl}}/favorites/check/1
+Authorization: Bearer {{token}}

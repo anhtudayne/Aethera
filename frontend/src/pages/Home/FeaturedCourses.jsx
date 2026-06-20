@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
 import { courseApi } from '../../api/courseApi';
 import { extractArray } from '../../utils/helpers';
 import CourseCarousel from '../../components/course/CourseCarousel';
@@ -25,17 +24,15 @@ const FeaturedCourses = () => {
   }, []);
 
   return (
-    <section className="home-section bg-white">
-      <div className="container">
-        <div className="section-header-col">
-          <div className="section-badge">
-            <Sparkles size={16} />
-            <span>Highlights</span>
-          </div>
-          <h2 className="section-title" style={{ marginBottom: '32px' }}>
-            Featured Programs
-          </h2>
-        </div>
+    <section className="home-section bg-white pt-12 pb-8">
+      <div className="container max-w-[1340px] mx-auto px-4 md:px-6">
+        <h1 className="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-8">
+          What to learn next
+        </h1>
+        
+        <h2 className="text-2xl font-bold font-heading text-gray-900 mb-4">
+          Trending courses
+        </h2>
 
         {loading ? (
           <div style={{ display: 'flex', gap: '24px', overflowX: 'auto', paddingBottom: '16px' }}>
@@ -46,10 +43,12 @@ const FeaturedCourses = () => {
             ))}
           </div>
         ) : courses.length > 0 ? (
-          <CourseCarousel courses={courses} />
+          <div className="mb-12">
+            <CourseCarousel courses={courses} />
+          </div>
         ) : (
           <div style={{ padding: '40px', textAlign: 'center', border: '1px dashed var(--color-border)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)' }}>
-            No featured courses found.
+            No trending courses found.
           </div>
         )}
       </div>

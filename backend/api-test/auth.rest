@@ -1,54 +1,79 @@
-### 1. Đăng ký tài khoản
-POST http://localhost:8089/api/auth/register
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 1. AUTHENTICATION (/api/auth)
+### ==========================================
+
+### Đăng ký
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-    "email": "test@gmail.com",
-    "password": "password123",
-    "firstName": "Test",
-    "lastName": "User"
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "Password123!"
 }
 
-### 2. Xác thực OTP
-POST http://localhost:8089/api/auth/verify-otp
+### Xác thực OTP
+POST {{baseUrl}}/auth/verify-otp
 Content-Type: application/json
 
 {
-    "email": "test@gmail.com",
-    "otp": "123456"
+  "email": "john.doe@example.com",
+  "otp": "123456"
 }
 
-### 3. Gửi lại mã OTP
-POST http://localhost:8089/api/auth/resend-otp
+### Gửi lại OTP
+POST {{baseUrl}}/auth/resend-otp
 Content-Type: application/json
 
 {
-    "email": "test@gmail.com"
+  "email": "john.doe@example.com"
 }
 
-### 4. Đăng nhập
-POST http://localhost:8089/api/auth/login
+### Đăng nhập
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "quoc1@gmail.com",
-    "password": "123456q"
+  "email": "quocinstructor@gmail.com",
+  "password": "123456abc"
 }
 
-### 5. Quên mật khẩu
-POST http://localhost:8089/api/auth/forgot-password
+### Đăng nhập Google
+POST {{baseUrl}}/auth/google
 Content-Type: application/json
 
 {
-    "email": "test@gmail.com"
+  "tokenId": "google_token_here"
 }
 
-### 6. Đặt lại mật khẩu
-POST http://localhost:8089/api/auth/reset-password
+### Đổi mật khẩu
+PUT {{baseUrl}}/auth/change-password
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "email": "test@gmail.com",
-    "otp": "123456",
-    "newPassword": "newpassword123"
+  "oldPassword": "Password123!",
+  "newPassword": "NewPassword123!"
+}
+
+### Quên mật khẩu
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com"
+}
+
+### Đặt lại mật khẩu
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "otp": "123456",
+  "newPassword": "NewPassword123!"
 }

@@ -1,0 +1,26 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 11. NOTIFICATIONS (/api/notifications)
+### ==========================================
+
+### Lấy thông báo
+GET {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+
+### Lấy số lượng thông báo chưa đọc
+GET {{baseUrl}}/notifications/unread-count
+Authorization: Bearer {{token}}
+
+### Đánh dấu tất cả là đã đọc
+PUT {{baseUrl}}/notifications/read-all
+Authorization: Bearer {{token}}
+
+### Đánh dấu 1 thông báo là đã đọc
+PUT {{baseUrl}}/notifications/1/read
+Authorization: Bearer {{token}}
+
+### Xóa thông báo
+DELETE {{baseUrl}}/notifications/1
+Authorization: Bearer {{token}}

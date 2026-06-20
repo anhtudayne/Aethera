@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:8089/api
+@token = your_access_token_here
+
+### ==========================================
+### 6. LEARNING (/api/learning)
+### ==========================================
+
+### Lấy danh sách khóa học của tôi
+GET {{baseUrl}}/learning/my-courses
+Authorization: Bearer {{token}}
+
+### Lấy nội dung khóa học (khi học)
+GET {{baseUrl}}/learning/courses/some-course-slug/content
+Authorization: Bearer {{token}}
+
+### Đánh dấu bài học đã hoàn thành
+POST {{baseUrl}}/learning/lessons/1/complete
+Authorization: Bearer {{token}}
+
+### Cập nhật vị trí xem video
+PUT {{baseUrl}}/learning/lessons/1/position
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "position": 120
+}
+
+### Lấy bài học tiếp theo
+GET {{baseUrl}}/learning/courses/1/next-lesson
+Authorization: Bearer {{token}}
