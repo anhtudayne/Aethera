@@ -15,6 +15,7 @@ const StubContainer = ({ title, subtitle, icon: Icon = Sparkles, children }) => 
   </div>
 );
 
+// ── Real page imports ────
 import HomePage from './Home/HomePage';
 import CourseListingPage from './Courses/CourseListingPage';
 import CourseDetailPage from './CourseDetail/CourseDetailPage';
@@ -27,20 +28,36 @@ import ResetPasswordPage from './Auth/ResetPasswordPage';
 import CartPage from './Cart/CartPage';
 import CheckoutPage from './Checkout/CheckoutPage';
 import OrderSuccessPage from './Checkout/OrderSuccessPage';
+
+// Admin pages
 import AdminDashboardPage from './admin/Dashboard';
 import CourseApprovalsPage from './admin/CourseApprovalsPage';
 import UsersManagementPage from './admin/UsersManagementPage';
 import PayoutsManagementPage from './admin/PayoutsManagementPage';
 import MarketingManagementPage from './admin/MarketingManagementPage';
+
+// Instructor pages
 import InstructorDashboardPage from './instructor/InstructorDashboardPage';
 import InstructorCourseCreatePage from './instructor/InstructorCourseCreatePage';
 import InstructorCourseManagePage from './instructor/InstructorCourseManagePage';
 import InstructorCourseCurriculumPage from './instructor/InstructorCourseCurriculumPage';
 
-export { 
-  HomePage, 
-  CourseListingPage, 
-  CourseDetailPage, 
+// ── Dashboard / User pages (REAL implementations) ────
+import DashboardPageReal from './Dashboard/DashboardPage';
+import MyCoursesPage from './MyCourses/MyCoursesPage';
+import WishlistPage from './Wishlist/WishlistPage';
+import OrderHistoryPage from './Orders/OrderHistoryPage';
+import OrderDetailPage from './Orders/OrderDetailPage';
+import MyCertificatesPage from './Certificates/MyCertificatesPage';
+import CertificateVerifyPage from './Certificates/CertificateVerifyPage';
+import MyReviewsPage from './Reviews/MyReviewsPage';
+import NotificationsPage from './Notifications/NotificationsPage';
+import ProfileSettingsPage from './Settings/ProfileSettingsPage';
+
+export {
+  HomePage,
+  CourseListingPage,
+  CourseDetailPage,
   CategoryPage,
   LoginPage,
   RegisterPage,
@@ -58,15 +75,32 @@ export {
   InstructorDashboardPage,
   InstructorCourseCreatePage,
   InstructorCourseManagePage,
-  InstructorCourseCurriculumPage
+  InstructorCourseCurriculumPage,
+  CertificateVerifyPage,
+  MyCoursesPage,
+  WishlistPage,
+  OrderHistoryPage,
+  OrderDetailPage,
+  MyCertificatesPage,
+  MyReviewsPage,
+  NotificationsPage,
+  ProfileSettingsPage,
 };
 
-export const CertificateVerifyPage = () => (
-  <StubContainer title="Verify Certificate" subtitle="Check the authenticity of Aethera certificates.">
-    <input type="text" placeholder="Enter Certificate Code (e.g. CERT-XXXX)" style={{ width: '100%', padding: '12px 16px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', marginBottom: '16px', textAlign: 'center' }} />
-    <Button variant="primary" fullWidth>Verify Code</Button>
-  </StubContainer>
-);
+// ── DashboardPage: Routes admin to admin, student to student ────
+import { STORAGE_KEYS } from '../utils/constants';
+
+export const DashboardPage = () => {
+  const userStr = localStorage.getItem(STORAGE_KEYS.USER);
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAdmin = user?.role === 'admin' || user?.roleId === 'admin';
+
+  if (isAdmin) {
+    return <AdminDashboardPage />;
+  }
+
+  return <DashboardPageReal />;
+};
 
 // ── Course Player ────
 export const CoursePlayerPage = () => (
@@ -80,98 +114,6 @@ export const CoursePlayerPage = () => (
         <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
         <p>Lecture Video and Notes Workspace will render here in Stage F5.</p>
       </div>
-    </div>
-  </div>
-);
-
-export const DashboardPage = () => {
-  const userStr = localStorage.getItem('aethera_user');
-  const user = userStr ? JSON.parse(userStr) : null;
-  const isAdmin = user?.role === 'admin' || user?.roleId === 'admin';
-
-  if (isAdmin) {
-    return <AdminDashboardPage />;
-  }
-
-  return (
-    <div>
-      <h3 style={{ marginBottom: '16px' }}>Student Dashboard</h3>
-      <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Overview of active study programs, progress and stats.</p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-        <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Courses Enrolled</h4>
-          <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-accent)' }}>12</p>
-        </div>
-        <div style={{ padding: '20px', border: '1px solid var(--color-border-light)', borderRadius: 'var(--radius-md)' }}>
-          <h4 style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Completed Programs</h4>
-          <p style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-success)' }}>4</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const MyCoursesPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>My Enrolled Courses</h3>
-    <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Click on a course program to resume video lectures.</p>
-    <Link to="/learn/premium-javascript">
-      <Button variant="primary">Resume Learning: Javascript</Button>
-    </Link>
-  </div>
-);
-
-export const WishlistPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>My Wishlist</h3>
-    <p style={{ color: 'var(--color-text-muted)' }}>You have no courses in your wishlist yet.</p>
-  </div>
-);
-
-export const OrderHistoryPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>Purchase History</h3>
-    <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Manage receipts and order invoices.</p>
-    <Link to={`${ROUTES.ORDERS}/1`} style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>View Order #1</Link>
-  </div>
-);
-
-export const OrderDetailPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>Order Details</h3>
-    <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Invoice details of your purchase.</p>
-    <Link to={ROUTES.ORDERS}><Button variant="secondary">Back to List</Button></Link>
-  </div>
-);
-
-export const MyCertificatesPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>My Certificates</h3>
-    <p style={{ color: 'var(--color-text-muted)' }}>Complete your courses to verify program certificates here.</p>
-  </div>
-);
-
-export const MyReviewsPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>My Reviews</h3>
-    <p style={{ color: 'var(--color-text-muted)' }}>Feedback and ratings you have written for courses.</p>
-  </div>
-);
-
-export const NotificationsPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>Notifications</h3>
-    <p style={{ color: 'var(--color-text-muted)' }}>No unread updates.</p>
-  </div>
-);
-
-export const ProfileSettingsPage = () => (
-  <div>
-    <h3 style={{ marginBottom: '16px' }}>Profile Settings</h3>
-    <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>Update name, password, email or avatar configurations.</p>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '380px' }}>
-      <input type="text" placeholder="Full Name" style={{ padding: '12px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)' }} />
-      <Button variant="primary">Save Changes</Button>
     </div>
   </div>
 );

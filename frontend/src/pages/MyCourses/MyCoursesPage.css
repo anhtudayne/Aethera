@@ -1,0 +1,164 @@
+/* =============================================
+   MY COURSES PAGE
+   ============================================= */
+
+.my-courses-page { animation: fadeInUp 0.4s ease-out; }
+
+.my-courses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.my-courses-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+}
+
+.filter-tab {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+  background: none;
+  white-space: nowrap;
+}
+
+.filter-tab:hover { color: var(--color-text-primary); }
+
+.filter-tab--active {
+  background: var(--color-bg-white);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-1);
+}
+
+/* Sort Dropdown */
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sort-dropdown label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.sort-dropdown select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  background: var(--color-bg-white);
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+/* Course Cards Grid */
+.enrolled-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.enrolled-course-card {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  background: var(--color-bg-white);
+}
+
+.enrolled-course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-3);
+  border-color: var(--color-accent);
+}
+
+.enrolled-card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: var(--color-bg-secondary);
+}
+
+.enrolled-card-body {
+  padding: var(--space-md);
+}
+
+.enrolled-card-title {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.enrolled-card-instructor {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.enrolled-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-sm);
+}
+
+.continue-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-white);
+  background: var(--color-accent-gradient);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.continue-btn:hover { opacity: 0.9; transform: translateX(2px); }
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.status-badge--in-progress { background: var(--color-accent-light); color: var(--color-accent); }
+.status-badge--completed { background: var(--color-success-light); color: var(--color-success); }
+.status-badge--not-started { background: var(--color-bg-secondary); color: var(--color-text-muted); }
+
+@media (max-width: 768px) {
+  .my-courses-header { flex-direction: column; align-items: flex-start; }
+  .filter-tabs { overflow-x: auto; width: 100%; }
+  .enrolled-courses-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,65 @@
+/* =============================================
+   MY REVIEWS PAGE
+   ============================================= */
+
+.reviews-page { animation: fadeInUp 0.4s ease-out; }
+
+.reviews-page h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: var(--space-xl);
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.review-card {
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.review-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-2);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+  gap: var(--space-md);
+}
+
+.review-course-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.review-rating {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.star-filled { color: var(--color-star); }
+.star-empty { color: var(--color-border); }
+
+.review-comment {
+  font-size: 0.92rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-sm);
+}
+
+.review-date {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}

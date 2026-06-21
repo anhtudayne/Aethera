@@ -30,7 +30,6 @@ import {
   NotificationsPage,
   ProfileSettingsPage,
   NotFoundPage,
-  AdminDashboardPage,
   CourseApprovalsPage,
   UsersManagementPage,
   PayoutsManagementPage,
