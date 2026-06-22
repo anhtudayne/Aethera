@@ -1,5 +1,6 @@
 import db from '../models';
 import * as notificationService from './notificationService';
+import * as emailService from './emailService';
 import { createError } from '../utils/helpers';
 
 export const createOrderFromCart = async (userId) => {
@@ -256,6 +257,23 @@ export const fulfillOrder = async (orderId) => {
             `Đơn hàng ${order.code} đã thanh toán thành công. Bạn có thể học ngay!`,
             { orderId: order.id, orderCode: order.code, courseNames }
         );
+
+        // 6. Gửi email cảm ơn
+        try {
+            const user = await db.User.findByPk(order.userId, { attributes: ['email', 'firstName'] });
+            if (user && user.email) {
+                // Not awaiting to prevent blocking the response
+                emailService.sendOrderPaidEmail(
+                    user.email,
+                    user.firstName,
+                    order.code,
+                    order.totalAmount,
+                    courseNames
+                ).catch(err => console.error('Lỗi khi gửi email async:', err));
+            }
+        } catch (e) {
+            console.error('Lỗi khi chuẩn bị gửi email:', e);
+        }
 
         return { message: 'Thanh toán đơn hàng thành công, đã kích hoạt khóa học.' };
     } catch (error) {

@@ -23,5 +23,15 @@ const videoStorage = new CloudinaryStorage({
 });
 export const uploadVideo = multer({ storage: videoStorage });
 
+// 3. Dành cho Avatar
+const avatarStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'aethera_avatars',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+  },
+});
+export const uploadAvatar = multer({ storage: avatarStorage });
+
 // Export default cho banner hoặc tùy chọn import cụ thể
 export default uploadCloud;

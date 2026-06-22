@@ -18,7 +18,8 @@ Content-Type: application/json
   "firstName": "Quoc",
   "lastName": "Sensei",
   "phoneNumber": "0329675562",
-  "address": "123 Main St"
+  "address": "123 Main St",
+  "bio": "I am an expert instructor at Aethera."
 }
 
 ### Lấy dashboard user

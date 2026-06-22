@@ -2,7 +2,7 @@ import db from '../models';
 
 export const handleCreateLesson = async (req, res, next) => {
     try {
-        const { sectionId, title, type, content, videoUrl, duration, order } = req.body;
+        const { sectionId, title, type, content, videoUrl, duration, order, isFreePreview } = req.body;
         if (!sectionId || !title) {
             return res.status(400).json({ status: 400, message: 'Thiếu thông tin sectionId hoặc title' });
         }
@@ -14,7 +14,8 @@ export const handleCreateLesson = async (req, res, next) => {
             content, 
             videoUrl, 
             duration, 
-            order: order || 0 
+            order: order || 0,
+            isFreePreview: isFreePreview || false
         });
         return res.status(201).json({ status: 201, message: 'Tạo bài học thành công', data: lesson });
     } catch (error) {

@@ -103,20 +103,44 @@ export const DashboardPage = () => {
 };
 
 // ── Course Player ────
-export const CoursePlayerPage = () => (
-  <div style={{ background: '#0F172A', color: '#F8FAFC', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-    <div style={{ padding: '16px 24px', borderBottom: '1px solid #1E293B', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Course Player Placeholder</h3>
-      <Link to={ROUTES.DASHBOARD} style={{ color: '#6366F1', fontSize: '0.9rem' }}>Back to Dashboard</Link>
-    </div>
-    <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '48px' }}>
-      <div style={{ width: '100%', maxWidth: '800px', aspectRatio: '16/9', background: '#1E293B', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
-        <p>Lecture Video and Notes Workspace will render here in Stage F5.</p>
+import { useEffect } from 'react';
+import { userApi } from '../api/userApi';
+
+export const CoursePlayerPage = () => {
+  useEffect(() => {
+    // Điểm danh và cộng 5 phút học tập mẫu khi mở Course Player
+    const logInitialActivity = async () => {
+      try {
+        await userApi.logStreakActivity(5);
+      } catch (err) {
+        console.error('Failed to log streak activity', err);
+      }
+    };
+    logInitialActivity();
+
+    // Trong thực tế, sẽ gọi API mỗi phút khi video đang phát
+    const interval = setInterval(() => {
+      userApi.logStreakActivity(1).catch(console.error);
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={{ background: '#0F172A', color: '#F8FAFC', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid #1E293B', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Course Player Placeholder</h3>
+        <Link to={ROUTES.DASHBOARD} style={{ color: '#6366F1', fontSize: '0.9rem' }}>Back to Dashboard</Link>
+      </div>
+      <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '48px' }}>
+        <div style={{ width: '100%', maxWidth: '800px', aspectRatio: '16/9', background: '#1E293B', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
+          <p>Lecture Video and Notes Workspace will render here in Stage F5.</p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── 404 Page ────
 export const NotFoundPage = () => (

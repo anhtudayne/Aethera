@@ -10,18 +10,25 @@ import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
 import { ROUTES } from '../../utils/constants';
 
-const PriceCard = ({ course, onOpenPreview }) => {
+const PriceCard = ({ course, onOpenPreview, initialEnrolled = false }) => {
   const { id, price, discountedPrice, coverImageUrl, slug } = course || {};
   const { isAuthenticated } = useAuth();
   const { refreshCart } = useCart();
   const navigate = useNavigate();
 
-  const [enrolled, setEnrolled] = useState(false);
+  const [enrolled, setEnrolled] = useState(initialEnrolled);
   const [isInCart, setIsInCart] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
+    // If initialEnrolled is true, we already know they are enrolled.
+    if (initialEnrolled) {
+      setEnrolled(true);
+      setLoading(false);
+      return;
+    }
+    
     const checkStatus = async () => {
       if (!slug) return;
       try {

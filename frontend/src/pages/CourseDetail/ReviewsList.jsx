@@ -3,13 +3,35 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { reviewApi } from '../../api/reviewApi';
 import RatingStars from '../../components/course/RatingStars';
 import { formatDate, getInitials } from '../../utils/helpers';
+import ReviewForm from './ReviewForm';
+import useAuth from '../../hooks/useAuth';
 
-const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
+const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0, isEnrolled }) => {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [distribution, setDistribution] = useState({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 });
+  
+  // Can review states
+  const [canReview, setCanReview] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [editingReview, setEditingReview] = useState(null);
+
+  useEffect(() => {
+    const fetchCanReview = async () => {
+      if (!isEnrolled || !courseId) return;
+      try {
+        const res = await reviewApi.checkCanReview(courseId);
+        const canReviewStatus = res?.data?.canReview ?? res?.canReview;
+        setCanReview(canReviewStatus);
+      } catch (err) {
+        console.error('Failed to check can review status:', err);
+      }
+    };
+    fetchCanReview();
+  }, [courseId, isEnrolled, refreshTrigger]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -39,27 +61,37 @@ const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
       }
     };
     fetchReviews();
-  }, [courseId, page]);
+  }, [courseId, page, refreshTrigger]);
 
   if (!courseId) return null;
 
   // Calculate dynamic percentages based on actual distribution
-  const totalReviewsInDist = Object.values(distribution).reduce((acc, val) => acc + val, 0) || reviewsCount || 1;
+  const totalReviewsInDist = Object.values(distribution).reduce((acc, val) => acc + val, 0);
+  const displayTotalReviews = totalReviewsInDist > 0 ? totalReviewsInDist : reviewsCount;
+  
+  // Dynamically calculate the average rating from the distribution
+  const sumOfRatings = 
+    (distribution[5] * 5) + 
+    (distribution[4] * 4) + 
+    (distribution[3] * 3) + 
+    (distribution[2] * 2) + 
+    (distribution[1] * 1);
+  const dynamicAverageRating = totalReviewsInDist > 0 ? sumOfRatings / totalReviewsInDist : 0;
 
   return (
     <div className="reviews-section-wrapper">
       <h3 className="detail-section-title">
-        Student Reviews ({reviewsCount})
+        Student Reviews ({displayTotalReviews})
       </h3>
 
       {/* Ratings Summary Card */}
       <div className="reviews-summary-card">
         <div className="rating-average-box">
           <span className="rating-average-num">
-            {Number(averageRating).toFixed(1)}
+            {Number(dynamicAverageRating).toFixed(1)}
           </span>
           <div style={{ margin: '8px 0 4px 0' }}>
-            <RatingStars rating={averageRating} size={16} />
+            <RatingStars rating={dynamicAverageRating} size={16} />
           </div>
           <span className="rating-average-label">
             Course Rating
@@ -70,7 +102,7 @@ const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
         <div className="reviews-distribution-list">
           {[5, 4, 3, 2, 1].map((stars) => {
             const count = distribution[stars] || 0;
-            const percentage = Math.round((count / totalReviewsInDist) * 100);
+            const percentage = displayTotalReviews > 0 ? Math.round((count / displayTotalReviews) * 100) : 0;
             
             return (
               <div key={stars} className="distribution-row">
@@ -84,6 +116,30 @@ const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
           })}
         </div>
       </div>
+
+      {/* Review Form for Enrolled Users */}
+      {isEnrolled && canReview && !editingReview && (
+        <ReviewForm 
+          courseId={courseId} 
+          onReviewSuccess={() => {
+            setRefreshTrigger(prev => prev + 1);
+            setCanReview(false);
+          }} 
+        />
+      )}
+
+      {/* Edit Review Form */}
+      {editingReview && (
+        <ReviewForm 
+          courseId={courseId} 
+          initialReview={editingReview}
+          onReviewSuccess={() => {
+            setRefreshTrigger(prev => prev + 1);
+            setEditingReview(null);
+          }} 
+          onCancelEdit={() => setEditingReview(null)}
+        />
+      )}
 
       {/* Reviews list */}
       {loading ? (
@@ -119,13 +175,23 @@ const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
                 )}
 
                 <div className="review-main-content">
-                  <div className="review-user-row">
-                    <h4 className="review-username-text">
-                      {userName}
-                    </h4>
-                    <span className="review-date-text">
-                      {formatDate(rev.createdAt)}
-                    </span>
+                  <div className="review-user-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 className="review-username-text">
+                        {userName}
+                      </h4>
+                      <span className="review-date-text">
+                        {formatDate(rev.createdAt)}
+                      </span>
+                    </div>
+                    {user && user.id === rev.userId && !editingReview && (
+                      <button 
+                        onClick={() => setEditingReview(rev)}
+                        style={{ fontSize: '0.85rem', color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }}
+                      >
+                        Sửa đánh giá
+                      </button>
+                    )}
                   </div>
 
                   <div className="review-rating-stars">
@@ -165,11 +231,7 @@ const ReviewsList = ({ courseId, averageRating = 0, reviewsCount = 0 }) => {
             </div>
           )}
         </div>
-      ) : (
-        <div style={{ padding: '20px', border: '1px dashed var(--color-border)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)', textAlign: 'center' }}>
-          No reviews for this course yet.
-        </div>
-      )}
+      ) : null}
     </div>
   );
 };

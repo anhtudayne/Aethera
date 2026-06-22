@@ -81,20 +81,25 @@ const FreePreviewModal = ({ isOpen, onClose, lesson, courseTitle }) => {
         {/* Video Player */}
         <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', position: 'relative' }}>
           {lesson.videoUrl ? (
-            <ReactPlayer
-              url={lesson.videoUrl}
-              width="100%"
-              height="100%"
-              controls
-              playing
-              config={{
-                file: {
-                  attributes: {
-                    controlsList: 'nodownload' // prevent download dropdown
-                  }
-                }
-              }}
-            />
+            lesson.videoUrl.includes('youtube.com') || lesson.videoUrl.includes('youtu.be') ? (
+              <ReactPlayer
+                url={lesson.videoUrl}
+                width="100%"
+                height="100%"
+                controls
+                playing
+              />
+            ) : (
+              <video 
+                src={lesson.videoUrl}
+                width="100%"
+                height="100%"
+                controls
+                autoPlay
+                controlsList="nodownload"
+                style={{ objectFit: 'contain', backgroundColor: '#000' }}
+              />
+            )
           ) : (
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.9rem' }}>
               Preview video is currently unavailable.

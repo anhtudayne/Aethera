@@ -142,8 +142,8 @@ const getCourseBySlug = async (slug) => {
                 include: [{
                     model: Lesson,
                     as: 'lessons',
-                    // PUBLIC: chỉ trả metadata, KHÔNG trả videoUrl và content
-                    attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview'],
+                    // PUBLIC: trả metadata, CHỈ trả videoUrl nếu isFreePreview = true (xử lý ở dưới)
+                    attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview', 'videoUrl'],
                 }]
             }
         ],
@@ -155,6 +155,21 @@ const getCourseBySlug = async (slug) => {
     if (!course) return { data: null };
     
     const data = course.toJSON();
+
+    // Sanitize videoUrl cho public view
+    if (data.sections) {
+        data.sections = data.sections.map(section => {
+            if (section.lessons) {
+                section.lessons = section.lessons.map(l => {
+                    if (!l.isFreePreview) {
+                        delete l.videoUrl;
+                    }
+                    return l;
+                });
+            }
+            return section;
+        });
+    }
 
     // Parse các trường dạng JSON string array lưu ở DB
     try {
@@ -174,7 +189,24 @@ const getCourseBySlug = async (slug) => {
     }
 
     data.buyersCount = await db.UserCourse.count({ where: { courseId: course.id } });
-    data.reviewsCount = await db.Review.count({ where: { courseId: course.id } });
+    
+    const reviewsResult = await db.Review.findAll({
+        attributes: [
+            [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'totalReviews'],
+            [db.sequelize.fn('AVG', db.sequelize.col('rating')), 'avgRating']
+        ],
+        where: { courseId: course.id },
+        raw: true
+    });
+
+    if (reviewsResult && reviewsResult[0] && parseInt(reviewsResult[0].totalReviews) > 0) {
+        data.reviewsCount = parseInt(reviewsResult[0].totalReviews);
+        data.averageRating = parseFloat(reviewsResult[0].avgRating);
+    } else {
+        data.reviewsCount = 0;
+        data.averageRating = 0;
+    }
+
     data.totalSections = data.sections ? data.sections.length : 0;
     data.totalDuration = calculateTotalDuration(data.sections);
     
@@ -192,7 +224,7 @@ const getCourseCurriculum = async (slug) => {
             include: [{
                 model: Lesson,
                 as: 'lessons',
-                attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview'],
+                attributes: ['id', 'title', 'type', 'duration', 'order', 'isFreePreview', 'videoUrl'],
             }]
         }],
         order: [
@@ -206,6 +238,14 @@ const getCourseCurriculum = async (slug) => {
     const sections = course.sections.map(section => {
         const sJson = section.toJSON();
         const totalSecs = sJson.lessons.reduce((sum, l) => sum + parseDuration(l.duration), 0);
+        
+        sJson.lessons = sJson.lessons.map(l => {
+            if (!l.isFreePreview) {
+                delete l.videoUrl;
+            }
+            return l;
+        });
+
         sJson.lessonsCount = sJson.lessons.length;
         sJson.totalDuration = formatDuration(totalSecs);
         return sJson;
@@ -362,4 +402,74 @@ const checkEnrollmentService = async (userId, slug) => {
     return { enrolled: !!enrollment, courseId: course.id };
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService };
+const getInstructorInfo = async (name) => {
+    try {
+        // Find instructor in User table based on name (firstName + lastName)
+        // Since names are stored as strings in Course, we might not have a perfect match in Users table
+        // But we try to find one. If not found, we fallback to default bio/avatar.
+        const users = await db.User.findAll({
+            where: {
+                [Op.or]: [
+                    db.sequelize.where(
+                        db.sequelize.fn('concat', db.sequelize.col('firstName'), ' ', db.sequelize.col('lastName')),
+                        { [Op.like]: `%${name}%` }
+                    ),
+                    { firstName: { [Op.like]: `%${name}%` } },
+                    { lastName: { [Op.like]: `%${name}%` } }
+                ]
+            }
+        });
+
+        const user = users.length > 0 ? users[0] : null;
+
+        // Find all courses taught by this instructor
+        const courses = await Course.findAll({
+            where: { instructor: name, status: 'published' }
+        });
+
+        const coursesCount = courses.length;
+        let totalStudents = 0;
+        let reviewsCount = 0;
+        let averageRating = 0;
+
+        if (coursesCount > 0) {
+            totalStudents = courses.reduce((acc, curr) => acc + (curr.totalStudents || 0), 0);
+            
+            const courseIds = courses.map(c => c.id);
+            const reviewsResult = await db.Review.findAll({
+                attributes: [
+                    [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'totalReviews'],
+                    [db.sequelize.fn('AVG', db.sequelize.col('rating')), 'avgRating']
+                ],
+                where: { courseId: { [Op.in]: courseIds } },
+                raw: true
+            });
+
+            if (reviewsResult && reviewsResult[0]) {
+                reviewsCount = parseInt(reviewsResult[0].totalReviews) || 0;
+                averageRating = parseFloat(reviewsResult[0].avgRating) || 0;
+            } else {
+                // fallback if Review table query fails or is empty, use Course table cached ratings
+                reviewsCount = courses.reduce((acc, curr) => acc + (curr.ratingCount || 0), 0);
+                averageRating = courses.reduce((acc, curr) => acc + parseFloat(curr.rating || 0), 0) / coursesCount;
+            }
+        }
+
+        return {
+            status: 200,
+            data: {
+                name: name,
+                bio: user?.bio || "Bundling the courses and know how of successful instructors, we strive to deliver high quality online education. Real-Life Success - that's what we stand for. Learn topics like web development, data analyses and more in a fun and engaging way.",
+                image: user?.image || "https://i.pravatar.cc/150?img=11",
+                instructorRating: averageRating.toFixed(1),
+                reviewsCount: reviewsCount,
+                studentsCount: totalStudents,
+                coursesCount: coursesCount
+            }
+        };
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo };

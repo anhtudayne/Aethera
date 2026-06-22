@@ -84,6 +84,59 @@ export const createReview = async (userId, courseId, rating, comment) => {
 };
 
 /**
+ * Cập nhật đánh giá đã có.
+ * Cập nhật rating trung bình của khóa học.
+ */
+export const updateReview = async (userId, reviewId, rating, comment) => {
+    const transaction = await db.sequelize.transaction();
+    try {
+        const review = await db.Review.findOne({
+            where: { id: reviewId, userId },
+        });
+
+        if (!review) {
+            throw createError(404, 'Không tìm thấy đánh giá hoặc bạn không có quyền sửa.');
+        }
+
+        const courseId = review.courseId;
+
+        // Cập nhật review
+        await db.Review.update(
+            { rating, comment: comment || null },
+            { where: { id: reviewId }, transaction }
+        );
+
+        // Cập nhật rating trung bình
+        const avgResult = await db.Review.findOne({
+            where: { courseId },
+            attributes: [
+                [db.sequelize.fn('AVG', db.sequelize.col('rating')), 'avgRating'],
+                [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'totalReviews'],
+            ],
+            transaction,
+        });
+
+        const avgRating = parseFloat(avgResult.getDataValue('avgRating')) || 0;
+        const totalReviews = parseInt(avgResult.getDataValue('totalReviews')) || 0;
+
+        await db.Course.update(
+            { rating: Math.round(avgRating * 10) / 10, ratingCount: totalReviews },
+            { where: { id: courseId }, transaction }
+        );
+
+        await transaction.commit();
+
+        return {
+            message: 'Cập nhật đánh giá thành công',
+            newAvgRating: Math.round(avgRating * 10) / 10,
+        };
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+/**
  * Lấy danh sách đánh giá theo khóa học (có phân trang)
  */
 export const getReviewsByCourse = async (courseId, page = 1, limit = 10) => {

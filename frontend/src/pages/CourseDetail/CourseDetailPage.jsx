@@ -10,8 +10,11 @@ import Requirements from './Requirements';
 import TargetAudience from './TargetAudience';
 import CurriculumAccordion from './CurriculumAccordion';
 import ReviewsList from './ReviewsList';
+import InstructorSection from './InstructorSection';
 import RelatedCourses from './RelatedCourses';
 import FreePreviewModal from './FreePreviewModal';
+import CourseComments from '../../components/common/CourseComments/CourseComments';
+import useAuth from '../../hooks/useAuth';
 import './CourseDetailPage.css';
 
 const CourseDetailPage = () => {
@@ -21,6 +24,8 @@ const CourseDetailPage = () => {
   const [curriculum, setCurriculum] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Preview Modal States
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -54,6 +59,17 @@ const CourseDetailPage = () => {
           // ignore increment error
         }
 
+        // Check enrollment if authenticated
+        if (isAuthenticated) {
+          try {
+            const enrollRes = await courseApi.checkEnrollment(slug);
+            const enrolled = typeof enrollRes === 'boolean' ? enrollRes : (enrollRes?.enrolled ?? enrollRes?.data?.enrolled ?? false);
+            setIsEnrolled(enrolled);
+          } catch (e) {
+            console.error('Lỗi check enroll:', e);
+          }
+        }
+
       } catch (err) {
         console.error('Failed to load course details:', err);
         setError(err?.message || 'Failed to load course details');
@@ -62,7 +78,7 @@ const CourseDetailPage = () => {
       }
     };
     fetchCourseDetails();
-  }, [slug]);
+  }, [slug, isAuthenticated]);
 
   const handleOpenPreview = (lesson) => {
     setSelectedLesson(lesson);
@@ -132,11 +148,19 @@ const CourseDetailPage = () => {
           <Requirements items={course.requirements} />
           <TargetAudience items={course.targetAudience} />
 
+          <InstructorSection instructorName={course.instructor} />
+
           <ReviewsList 
             courseId={course.id} 
             averageRating={course.averageRating} 
             reviewsCount={course.reviewsCount} 
+            isEnrolled={isEnrolled}
           />
+
+          {/* Render CourseComments if enrolled */}
+          {isEnrolled && (
+            <CourseComments courseId={course.id} />
+          )}
 
           <RelatedCourses courseId={course.id} />
         </div>
@@ -145,7 +169,8 @@ const CourseDetailPage = () => {
         <div className="course-detail-sidebar">
           <PriceCard 
             course={course} 
-            onOpenPreview={handleOpenGeneralPreview} 
+            onOpenPreview={handleOpenGeneralPreview}
+            initialEnrolled={isEnrolled}
           />
         </div>
       </div>

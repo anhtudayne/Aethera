@@ -1,4 +1,4 @@
-import { updateUserProfile, getUserProfile } from '../services/userService';
+import { updateUserProfile, getUserProfile, getUserStreak, logUserActivity } from '../services/userService';
 
 export const getProfile = async (req, res) => {
     try {
@@ -31,5 +31,28 @@ export const updateProfile = async (req, res) => {
             status: 500,
             message: 'Lỗi server nội bộ. Vui lòng thử lại sau.',
         });
+    }
+};
+
+export const getStreak = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const result = await getUserStreak(userId);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi lấy streak:', error);
+        return res.status(500).json({ status: 500, message: 'Lỗi server nội bộ' });
+    }
+};
+
+export const logActivity = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { minutes } = req.body;
+        const result = await logUserActivity(userId, minutes);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi log activity:', error);
+        return res.status(500).json({ status: 500, message: 'Lỗi server nội bộ' });
     }
 };

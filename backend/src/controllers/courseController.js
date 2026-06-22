@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo } from '../services/courseService';
 import db from '../models/index';
 
 export const handleGetCourses = async (req, res, next) => {
@@ -160,5 +160,37 @@ export const handleCheckEnrollment = async (req, res, next) => {
         const { slug } = req.params;
         const result = await checkEnrollmentService(userId, slug);
         return res.status(200).json({ status: 200, data: result });
+    } catch (err) { next(err); }
+};
+
+export const handleGetInstructorInfo = async (req, res, next) => {
+    try {
+        const { name } = req.params;
+        if (!name) return res.status(400).json({ status: 400, message: "Vui lòng truyền tên giảng viên" });
+        const result = await getInstructorInfo(name);
+        return res.status(200).json(result);
+    } catch (err) { next(err); }
+};
+
+export const handleGetCourseComments = async (req, res, next) => {
+    try {
+        const { id } = req.params; // courseId
+        const { getCourseCommentsService } = require('../services/commentService');
+        const result = await getCourseCommentsService(id);
+        return res.status(200).json({ status: 200, data: result });
+    } catch (err) { next(err); }
+};
+
+export const handleCreateCourseComment = async (req, res, next) => {
+    try {
+        const { id } = req.params; // courseId
+        const userId = req.user.id;
+        const { content, parentId } = req.body;
+        const { createCourseCommentService } = require('../services/commentService');
+        const result = await createCourseCommentService(userId, id, content, parentId);
+        if (result.status && result.status !== 200 && result.status !== 201) {
+            return res.status(result.status).json(result);
+        }
+        return res.status(201).json({ status: 201, data: result.data });
     } catch (err) { next(err); }
 };

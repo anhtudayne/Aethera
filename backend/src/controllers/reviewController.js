@@ -18,6 +18,23 @@ export const handleCreateReview = asyncHandler(async (req, res) => {
     return res.status(201).json(new ApiResponse(201, data, 'Đánh giá thành công!'));
 });
 
+export const handleUpdateReview = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+
+    if (!rating) {
+        return res.status(400).json(new ApiResponse(400, null, 'Rating là bắt buộc.'));
+    }
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json(new ApiResponse(400, null, 'Rating phải từ 1 đến 5.'));
+    }
+
+    const data = await reviewService.updateReview(userId, id, parseInt(rating), comment);
+    return res.status(200).json(new ApiResponse(200, data, 'Cập nhật đánh giá thành công!'));
+});
+
 export const handleGetCourseReviews = asyncHandler(async (req, res) => {
     const { courseId } = req.params;
     const { page = 1, limit = 10 } = req.query;

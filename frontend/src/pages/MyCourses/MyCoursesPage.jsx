@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { learningApi } from '../../api/learningApi';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
+import LearningStreak from '../../components/common/LearningStreak/LearningStreak';
 import './MyCoursesPage.css';
 
 const STATUS_TABS = [
@@ -56,6 +57,8 @@ const MyCoursesPage = () => {
 
   return (
     <div className="my-courses-page">
+      <LearningStreak />
+      
       <div className="my-courses-header">
         <h2>Khóa học của tôi</h2>
         <div className="sort-dropdown">

@@ -46,11 +46,37 @@ export const getInitials = (name) => {
 };
 
 /**
+ * Parse duration string (MM:SS or HH:MM:SS) to seconds
+ * @param {string|number} duration 
+ * @returns {number}
+ */
+export const parseDurationToSeconds = (duration) => {
+  if (!duration) return 0;
+  if (typeof duration === 'number') return duration;
+  if (typeof duration === 'string') {
+    if (!duration.includes(':')) {
+       const val = parseInt(duration, 10);
+       return isNaN(val) ? 0 : val;
+    }
+    const parts = duration.split(':').map(Number);
+    if (parts.length === 3) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    if (parts.length === 2) {
+      return parts[0] * 60 + parts[1];
+    }
+  }
+  return 0;
+};
+
+/**
  * Format duration (seconds) into HH:MM:SS or MM:SS
- * @param {number} seconds 
+ * @param {number|string} input 
  * @returns {string}
  */
-export const formatDuration = (seconds) => {
+export const formatDuration = (input) => {
+  if (typeof input === 'string' && input.includes(':')) return input;
+  const seconds = parseDurationToSeconds(input);
   if (!seconds || isNaN(seconds)) return '00:00';
   const hrs = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);

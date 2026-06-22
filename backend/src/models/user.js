@@ -41,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: true,
             },
             image: DataTypes.STRING,
+            bio: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
             roleId: {
                 type: DataTypes.STRING,
                 defaultValue: 'user',
@@ -65,6 +69,26 @@ module.exports = (sequelize, DataTypes) => {
             provider: {
                 type: DataTypes.ENUM('local', 'google'),
                 defaultValue: 'local',
+            },
+            streakWeeks: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+            },
+            weeklyVisits: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+            },
+            weeklyMinutes: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+            },
+            lastActivityDate: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+            weekStartDate: {
+                type: DataTypes.DATE,
+                allowNull: true,
             },
         },
         {

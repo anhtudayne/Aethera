@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, PlayCircle, Lock } from 'lucide-react';
-import { formatDuration } from '../../utils/helpers';
+import { formatDuration, parseDurationToSeconds } from '../../utils/helpers';
 
 const CurriculumAccordion = ({ curriculum = [], onSelectPreview }) => {
   const [expandedSections, setExpandedSections] = useState({ 0: true }); // Expand first section by default
@@ -29,6 +29,7 @@ const CurriculumAccordion = ({ curriculum = [], onSelectPreview }) => {
         {curriculum.map((section, sIndex) => {
           const isExpanded = !!expandedSections[sIndex];
           const lessons = section.Lessons || section.lessons || [];
+          const totalSeconds = lessons.reduce((acc, l) => acc + parseDurationToSeconds(l.duration), 0);
           
           return (
             <div
@@ -43,7 +44,7 @@ const CurriculumAccordion = ({ curriculum = [], onSelectPreview }) => {
                 <div className="accordion-header-details">
                   <span>{section.title}</span>
                   <span className="accordion-header-meta">
-                    {lessons.length} lessons • {section.totalDurationFormatted || section.totalDuration || `${lessons.reduce((acc, l) => acc + (l.duration || 0), 0)}s`}
+                    {lessons.length} lessons • {section.totalDurationFormatted || section.totalDuration || formatDuration(totalSeconds)}
                   </span>
                 </div>
                 {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}

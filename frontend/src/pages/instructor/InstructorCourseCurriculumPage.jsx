@@ -18,6 +18,61 @@ const InstructorCourseCurriculumPage = () => {
   // States for Modals/Forms
   const [editingSection, setEditingSection] = useState(null); // { id, title } or { isNew: true, title: '' }
   const [editingLesson, setEditingLesson] = useState(null); // { id, title, type, content, videoUrl, duration, sectionId, isNew: boolean }
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Tính thời lượng video trực tiếp từ file ở frontend
+    const videoElement = document.createElement('video');
+    videoElement.preload = 'metadata';
+    let localDuration = '';
+    videoElement.onloadedmetadata = () => {
+      window.URL.revokeObjectURL(videoElement.src);
+      const durationSec = videoElement.duration;
+      if (durationSec > 0) {
+        const m = Math.floor(durationSec / 60);
+        const s = Math.floor(durationSec % 60);
+        localDuration = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        // Cập nhật duration ngay lập tức trên UI
+        setEditingLesson(prev => ({ ...prev, duration: localDuration }));
+      }
+    };
+    videoElement.src = URL.createObjectURL(file);
+
+    const uploadData = new FormData();
+    uploadData.append('video', file);
+
+    try {
+      setUploadingVideo(true);
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/upload/video', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: uploadData
+      });
+      
+      const resData = await res.json();
+      if (res.ok && resData.data?.url) {
+        setEditingLesson(prev => ({ 
+          ...prev, 
+          videoUrl: resData.data.url,
+          // Ưu tiên duration từ backend (nếu có), không thì dùng localDuration, nếu không có nữa thì giữ nguyên prev.duration
+          duration: resData.data.duration || localDuration || prev.duration
+        }));
+      } else {
+        alert(resData.message || 'Failed to upload video.');
+      }
+    } catch (err) {
+      console.error('Upload video error', err);
+      alert('Error uploading video.');
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
 
   const fetchCurriculum = async () => {
     try {
@@ -84,7 +139,8 @@ const InstructorCourseCurriculumPage = () => {
           type: editingLesson.type,
           content: editingLesson.content,
           videoUrl: editingLesson.videoUrl,
-          duration: editingLesson.duration
+          duration: editingLesson.duration,
+          isFreePreview: editingLesson.isFreePreview
         });
       } else {
         await instructorApi.updateLesson(editingLesson.id, {
@@ -92,7 +148,8 @@ const InstructorCourseCurriculumPage = () => {
           type: editingLesson.type,
           content: editingLesson.content,
           videoUrl: editingLesson.videoUrl,
-          duration: editingLesson.duration
+          duration: editingLesson.duration,
+          isFreePreview: editingLesson.isFreePreview
         });
       }
       setEditingLesson(null);
@@ -162,7 +219,7 @@ const InstructorCourseCurriculumPage = () => {
               <Button 
                 variant="outline" 
                 className="add-lesson-btn"
-                onClick={() => setEditingLesson({ isNew: true, sectionId: section.id, title: '', type: 'video', content: '', videoUrl: '', duration: '' })}
+                onClick={() => setEditingLesson({ isNew: true, sectionId: section.id, title: '', type: 'video', content: '', videoUrl: '', duration: '', isFreePreview: false })}
               >
                 <Plus size={16} /> Curriculum Item
               </Button>
@@ -214,11 +271,21 @@ const InstructorCourseCurriculumPage = () => {
               <>
                 <div className="form-group">
                   <label>Video URL</label>
-                  <input type="text" value={editingLesson.videoUrl || ''} onChange={e => setEditingLesson({...editingLesson, videoUrl: e.target.value})} className="curriculum-input" placeholder="https://youtube.com/..." />
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <input type="text" value={editingLesson.videoUrl || ''} onChange={e => setEditingLesson({...editingLesson, videoUrl: e.target.value})} className="curriculum-input" placeholder="https://youtube.com/..." style={{ flex: 1 }} />
+                    <label style={{ cursor: 'pointer', padding: '10px 16px', background: '#f7f9fa', border: '1px solid #1c1d1f', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700 }}>
+                      {uploadingVideo ? <Loader2 size={16} className="animate-spin" /> : 'Upload Video'}
+                      <input type="file" accept="video/*" style={{ display: 'none' }} onChange={handleVideoUpload} disabled={uploadingVideo} />
+                    </label>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>Duration (e.g. 05:30)</label>
                   <input type="text" value={editingLesson.duration || ''} onChange={e => setEditingLesson({...editingLesson, duration: e.target.value})} className="curriculum-input" />
+                </div>
+                <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+                  <input type="checkbox" id="isFreePreview" checked={!!editingLesson.isFreePreview} onChange={e => setEditingLesson({...editingLesson, isFreePreview: e.target.checked})} style={{ width: '16px', height: '16px' }} />
+                  <label htmlFor="isFreePreview" style={{ marginBottom: 0, cursor: 'pointer' }}>Mark as Free Preview</label>
                 </div>
               </>
             ) : (

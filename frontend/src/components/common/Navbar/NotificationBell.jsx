@@ -13,7 +13,7 @@ const NotificationBell = () => {
     if (!isAuthenticated) return;
     try {
       const response = await axiosClient.get('/notifications/unread-count');
-      const count = typeof response === 'number' ? response : (response?.count ?? response?.data?.count ?? 0);
+      const count = typeof response === 'number' ? response : (response?.unreadCount ?? response?.data?.unreadCount ?? response?.count ?? response?.data?.count ?? 0);
       setUnreadCount(count);
     } catch (error) {
       console.error('Failed to load notification unread count:', error);

@@ -30,4 +30,9 @@ export const updateProfileValidation = [
         .optional({ checkFalsy: true })
         .isString().withMessage('Ảnh đại diện không hợp lệ')
         .trim(),
+
+    body('bio')
+        .optional({ checkFalsy: true })
+        .isString().withMessage('Tiểu sử phải là chuỗi văn bản')
+        .trim(),
 ];

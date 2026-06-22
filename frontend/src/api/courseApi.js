@@ -10,6 +10,10 @@ export const courseApi = {
   getBySlug: (slug) => axiosClient.get(`/courses/${slug}`),
   getCurriculum: (slug) => axiosClient.get(`/courses/${slug}/curriculum`),
   checkEnrollment: (slug) => axiosClient.get(`/courses/${slug}/check-enrollment`),
+  getComments: (courseId) => axiosClient.get(`/courses/${courseId}/comments`),
+  postComment: (courseId, content, parentId = null) => 
+    axiosClient.post(`/courses/${courseId}/comments`, { content, parentId }),
   incrementView: (id) => axiosClient.patch(`/courses/${id}/view`),
   getRelated: (id, limit = 4) => axiosClient.get(`/courses/${id}/related`, { params: { limit } }),
+  getInstructorInfo: (name) => axiosClient.get(`/instructor/${encodeURIComponent(name)}`),
 };

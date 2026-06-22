@@ -6,13 +6,23 @@ export const handleUploadVideo = (req, res, next) => {
         
         // Cloudinary trả về thông tin file trong req.file
         // req.file.path chính là URL video đã được upload
+        let durationSec = req.file.duration || 0;
+        let formattedDuration = '';
+        if (durationSec > 0) {
+            const m = Math.floor(durationSec / 60);
+            const s = Math.floor(durationSec % 60);
+            formattedDuration = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
         return res.status(200).json({
             status: 200,
             message: 'Upload video thành công',
             data: {
                 url: req.file.path,
                 filename: req.file.filename,
-                size: req.file.size
+                size: req.file.size,
+                duration: formattedDuration,
+                rawDuration: durationSec
             }
         });
     } catch (err) {
