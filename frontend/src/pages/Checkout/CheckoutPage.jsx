@@ -1,24 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Globe, Lock, CreditCard, Wallet, Landmark, Building } from 'lucide-react';
 import { cartApi } from '../../api/cartApi';
 import { orderApi } from '../../api/orderApi';
-import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
 import OrderReviewItem from './OrderReviewItem';
-import Button from '../../components/common/Button/Button';
 import { formatPrice } from '../../utils/helpers';
 import { ROUTES } from '../../utils/constants';
 import './CheckoutPage.css';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { refreshCart } = useCart();
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
+  
+  // Custom checkout states matching Udemy
+  const [selectedCountry, setSelectedCountry] = useState('VN');
+  const [paymentMethod, setPaymentMethod] = useState('credit-card');
+  const [cardName, setCardName] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvc, setCardCvc] = useState('');
 
   const fetchCart = useCallback(async () => {
     try {
@@ -47,11 +53,20 @@ const CheckoutPage = () => {
     return () => clearTimeout(timer);
   }, [fetchCart]);
 
-  const total = items.reduce((sum, item) => {
+  // Order summary calculations
+  const totalOriginalPrice = items.reduce((sum, item) => {
+    const { price } = item.course || {};
+    return sum + (price || 0);
+  }, 0);
+
+  const totalDiscount = items.reduce((sum, item) => {
     const { price, salePrice } = item.course || {};
     const finalPrice = (salePrice !== undefined && salePrice !== null && salePrice < price) ? salePrice : price;
-    return sum + (finalPrice || 0);
+    return sum + ((price - finalPrice) || 0);
   }, 0);
+
+  const total = totalOriginalPrice - totalDiscount;
+  const discountPercent = totalOriginalPrice > 0 ? Math.round((totalDiscount / totalOriginalPrice) * 100) : 0;
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
@@ -97,34 +112,197 @@ const CheckoutPage = () => {
   return (
     <div className="checkout-page-viewport">
       <div className="checkout-page-container">
-        <h1 className="checkout-page-title">Secure Checkout</h1>
-
         <div className="checkout-layout-grid">
-          {/* Left Column: Billing Information & Review Items */}
+          {/* Left Column: Checkout details, address, payment methods, order details */}
           <div className="checkout-left-column">
-            {/* Billing Info */}
-            <div className="checkout-section-card">
-              <h3 className="checkout-section-title">Billing Information</h3>
-              <div className="checkout-billing-info">
-                <div className="billing-info-row">
-                  <span className="billing-label">Full Name</span>
-                  <span className="billing-val">{user?.name || `${user?.lastName || ''} ${user?.firstName || ''}`.trim() || 'Aethera Student'}</span>
+            <h1 className="checkout-main-title">Checkout</h1>
+
+            {/* Section 1: Billing Address */}
+            <div className="checkout-section-block">
+              <h2 className="checkout-section-heading">Billing address</h2>
+              <div className="checkout-billing-address-box">
+                <div className="checkout-field-group">
+                  <label className="checkout-field-label">Country</label>
+                  <div className="checkout-select-container">
+                    <Globe className="checkout-select-icon" size={16} />
+                    <select
+                      value={selectedCountry}
+                      onChange={(e) => setSelectedCountry(e.target.value)}
+                      className="checkout-country-dropdown"
+                    >
+                      <option value="VN">Vietnam</option>
+                      <option value="US">United States</option>
+                      <option value="SG">Singapore</option>
+                      <option value="JP">Japan</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="billing-info-row">
-                  <span className="billing-label">Email Address</span>
-                  <span className="billing-val">{user?.email || 'N/A'}</span>
-                </div>
-                <div className="billing-info-row">
-                  <span className="billing-label">Country</span>
-                  <span className="billing-val">Vietnam</span>
-                </div>
+                <p className="checkout-billing-disclaimer">
+                  Aethera is required by law to collect applicable transaction taxes for purchases made in certain tax jurisdictions.
+                </p>
               </div>
             </div>
 
-            {/* Order Items Review */}
-            <div className="checkout-section-card">
-              <h3 className="checkout-section-title">Order Review</h3>
-              <div className="order-review-list">
+            {/* Section 2: Payment Method */}
+            <div className="checkout-section-block">
+              <h2 className="checkout-section-heading">Payment method</h2>
+              
+              {total === 0 ? (
+                <div className="checkout-no-payment-needed">
+                  <h4 className="free-purchase-title">Good news! No payment needed.</h4>
+                  <p className="free-purchase-desc">
+                    Your discounts or Aethera credits fully cover this purchase. Enroll now to begin learning.
+                  </p>
+                </div>
+              ) : (
+                <div className="checkout-payment-methods-list">
+                  {/* Option 1: Credit/Debit Card */}
+                  <div 
+                    className={`payment-method-row ${paymentMethod === 'credit-card' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('credit-card')}
+                  >
+                    <label className="payment-radio-label">
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        value="credit-card"
+                        checked={paymentMethod === 'credit-card'}
+                        onChange={() => setPaymentMethod('credit-card')}
+                        className="payment-radio-input"
+                      />
+                      <CreditCard size={18} className="payment-icon" />
+                      <span className="payment-method-name">Credit/Debit Card</span>
+                    </label>
+
+                    {paymentMethod === 'credit-card' && (
+                      <div className="credit-card-form" onClick={(e) => e.stopPropagation()}>
+                        <div className="card-input-row">
+                          <input
+                            type="text"
+                            placeholder="Name on Card"
+                            value={cardName}
+                            onChange={(e) => setCardName(e.target.value)}
+                            className="card-text-field"
+                            required
+                          />
+                        </div>
+                        <div className="card-input-row">
+                          <input
+                            type="text"
+                            placeholder="Card Number"
+                            value={cardNumber}
+                            onChange={(e) => setCardNumber(e.target.value)}
+                            className="card-text-field"
+                            required
+                          />
+                        </div>
+                        <div className="card-input-cols">
+                          <input
+                            type="text"
+                            placeholder="Expiry Date (MM/YY)"
+                            value={cardExpiry}
+                            onChange={(e) => setCardExpiry(e.target.value)}
+                            className="card-text-field"
+                            required
+                          />
+                          <input
+                            type="text"
+                            placeholder="CVC/CVV"
+                            value={cardCvc}
+                            onChange={(e) => setCardCvc(e.target.value)}
+                            className="card-text-field"
+                            required
+                          />
+                        </div>
+                        <p className="card-demo-note">
+                          Note: This is a secure payment simulation. Your actual card details are not processed.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Option 2: Momo / ShopeePay / ZaloPay (E-Wallet) */}
+                  <div 
+                    className={`payment-method-row ${paymentMethod === 'e-wallet' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('e-wallet')}
+                  >
+                    <label className="payment-radio-label">
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        value="e-wallet"
+                        checked={paymentMethod === 'e-wallet'}
+                        onChange={() => setPaymentMethod('e-wallet')}
+                        className="payment-radio-input"
+                      />
+                      <Wallet size={18} className="payment-icon" />
+                      <span className="payment-method-name">Momo / ZaloPay (E-Wallet)</span>
+                    </label>
+                    
+                    {paymentMethod === 'e-wallet' && (
+                      <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
+                        <p>You will be redirected to Momo/ZaloPay secure gateway to scan the QR code and complete your purchase.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Option 3: Internet Banking / ATM */}
+                  <div 
+                    className={`payment-method-row ${paymentMethod === 'banking' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('banking')}
+                  >
+                    <label className="payment-radio-label">
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        value="banking"
+                        checked={paymentMethod === 'banking'}
+                        onChange={() => setPaymentMethod('banking')}
+                        className="payment-radio-input"
+                      />
+                      <Landmark size={18} className="payment-icon" />
+                      <span className="payment-method-name">Internet Banking (VNPay / ATM)</span>
+                    </label>
+                    
+                    {paymentMethod === 'banking' && (
+                      <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
+                        <p>Choose your bank in the next step. You will be redirected to VNPay portal for authentication.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Option 4: Direct Bank Transfer */}
+                  <div 
+                    className={`payment-method-row ${paymentMethod === 'transfer' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('transfer')}
+                  >
+                    <label className="payment-radio-label">
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        value="transfer"
+                        checked={paymentMethod === 'transfer'}
+                        onChange={() => setPaymentMethod('transfer')}
+                        className="payment-radio-input"
+                      />
+                      <Building size={18} className="payment-icon" />
+                      <span className="payment-method-name">Direct Bank Transfer</span>
+                    </label>
+                    
+                    {paymentMethod === 'transfer' && (
+                      <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
+                        <p>Transfer the total amount directly to our corporate bank account. Details will be shown after you place the order.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Section 3: Order Details */}
+            <div className="checkout-section-block">
+              <h2 className="checkout-section-heading">Order details <span className="checkout-details-count">({items.length} course{items.length > 1 ? 's' : ''})</span></h2>
+              <div className="checkout-order-review-list">
                 {items.map((item) => (
                   <OrderReviewItem key={item.id} item={item} />
                 ))}
@@ -132,42 +310,70 @@ const CheckoutPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Payment & Terms Summary */}
+          {/* Right Column: Order Summary sticky */}
           <div className="checkout-right-column">
-            <form onSubmit={handlePaymentSubmit} className="checkout-payment-card">
-              <h3 className="checkout-section-title">Payment Summary</h3>
+            <div className="checkout-order-summary-card">
+              <h2 className="checkout-summary-title">Order summary</h2>
               
-              <div className="payment-summary-rows">
-                <div className="payment-row">
-                  <span>Subtotal</span>
-                  <span>{formatPrice(total)}</span>
+              <div className="checkout-summary-details">
+                <div className="summary-detail-row">
+                  <span className="summary-label">Original Price:</span>
+                  <span className="summary-value">{formatPrice(totalOriginalPrice)}</span>
                 </div>
-                <div className="payment-row">
-                  <span>Processing Fee</span>
-                  <span>Free</span>
+                
+                {totalDiscount > 0 && (
+                  <div className="summary-detail-row discount-row">
+                    <span className="summary-label">Discounts ({discountPercent}% Off):</span>
+                    <span className="summary-value">- {formatPrice(totalDiscount)}</span>
+                  </div>
+                )}
+
+                <div className="summary-divider"></div>
+
+                <div className="summary-detail-row subtotal-row">
+                  <span className="summary-label">Subtotal:</span>
+                  <span className="summary-value">{formatPrice(total)}</span>
                 </div>
-                <div className="payment-divider"></div>
-                <div className="payment-row total-row">
-                  <span>Total Due</span>
-                  <span className="payment-total-value">{formatPrice(total)}</span>
+
+                <div className="summary-divider"></div>
+
+                <div className="summary-detail-row total-payment-row">
+                  <span className="total-label">Total:</span>
+                  <span className="total-value">{formatPrice(total)}</span>
                 </div>
               </div>
 
-              <div className="checkout-terms-note">
-                By confirming this payment, you agree to our terms of service. You will receive lifetime access and instant certification upon completing courses.
+              <div className="checkout-legal-disclaimer">
+                By enrolling, you agree to these <a href="/" className="legal-link" onClick={(e) => e.preventDefault()}>Terms of Use</a>.
               </div>
 
-              <Button
-                type="submit"
-                variant="primary"
-                fullWidth
-                loading={paying}
+              <button
+                onClick={handlePaymentSubmit}
                 disabled={paying || items.length === 0}
-                className="checkout-pay-btn"
+                className="checkout-complete-payment-btn"
               >
-                Confirm Payment
-              </Button>
-            </form>
+                {paying ? (
+                  <span>Processing...</span>
+                ) : (
+                  <>
+                    <Lock size={16} className="lock-icon" />
+                    <span>{total === 0 ? 'Enroll now' : 'Complete Payment'}</span>
+                  </>
+                )}
+              </button>
+
+              <div className="checkout-moneyback-badge">
+                <h4 className="moneyback-title">30-Day Money-Back Guarantee</h4>
+                <p className="moneyback-text">Not satisfied? Get a full refund within 30 days. Simple and straightforward!</p>
+              </div>
+
+              <div className="checkout-social-proof-panel">
+                <span className="social-proof-icon">🔥</span>
+                <p className="social-proof-text">
+                  Join <strong>5 people</strong> in Vietnam who have recently enrolled in Aethera courses in the last 24 hours.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

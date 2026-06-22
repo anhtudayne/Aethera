@@ -16,52 +16,55 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 2px;
   background: var(--color-bg-white);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-glass);
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  padding: 12px 0;
+  box-shadow: none;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: 12px 16px;
-  font-family: var(--font-heading);
-  font-weight: 600;
+  padding: 12px 20px 12px 16px;
+  font-family: var(--font-body);
+  font-weight: 400;
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  color: #2d2f31;
+  border-radius: 0;
+  border-left: 4px solid transparent;
+  transition: all 150ms ease;
 }
 
 .sidebar-link:hover {
-  background: var(--color-border-light);
-  color: var(--color-accent);
+  background: #f7f9fa;
+  color: #5624d0;
 }
 
 .sidebar-link-active {
-  background: var(--color-accent-light);
-  color: var(--color-accent);
+  background: #f7f9fa;
+  color: #5624d0;
+  font-weight: 700;
+  border-left-color: #5624d0;
 }
 
 .sidebar-icon {
   flex-shrink: 0;
-  transition: transform var(--transition-fast);
+  transition: none;
 }
 
 .sidebar-link:hover .sidebar-icon {
-  transform: translateX(2px);
+  transform: none;
 }
 
 .dashboard-content {
   background: var(--color-bg-white);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-  padding: var(--space-2xl);
-  box-shadow: var(--shadow-glass);
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  padding: 32px;
+  box-shadow: none;
   min-height: 600px;
   min-width: 0;
 }
@@ -84,8 +87,8 @@
     white-space: nowrap;
     padding: var(--space-sm);
     gap: var(--space-sm);
-    box-shadow: var(--shadow-1);
-    border-radius: var(--radius-lg);
+    box-shadow: none;
+    border-radius: 4px;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
@@ -96,6 +99,13 @@
 
   .sidebar-link {
     padding: 10px 16px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .sidebar-link-active {
+    border-bottom-color: #5624d0;
+    background: transparent;
   }
 
   .sidebar-link:hover .sidebar-icon {

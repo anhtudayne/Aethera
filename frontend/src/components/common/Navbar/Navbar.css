@@ -397,3 +397,24 @@
     font-size: 13px;
   }
 }
+
+/* Minimal Checkout Navbar */
+.navbar-checkout-minimal {
+  background-color: #ffffff;
+  border-bottom: 1px solid #d1d7dc;
+  height: 72px;
+  box-shadow: none;
+}
+
+.nav-checkout-cancel {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #5624d0;
+  transition: color var(--transition-fast);
+  padding: 8px 16px;
+}
+
+.nav-checkout-cancel:hover {
+  color: #371a80;
+}

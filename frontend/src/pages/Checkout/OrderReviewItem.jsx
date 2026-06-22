@@ -22,6 +22,9 @@ const OrderReviewItem = ({ item }) => {
 
       <div className="review-item-pricing">
         <span className="review-item-price">{formatPrice(displayPrice)}</span>
+        {hasDiscount && (
+          <span className="review-item-original-price">{formatPrice(price)}</span>
+        )}
       </div>
     </div>
   );

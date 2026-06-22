@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Sparkles, Heart } from 'lucide-react';
 import useAuth from '../../../hooks/useAuth';
 import SearchBar from './SearchBar';
@@ -10,6 +10,24 @@ import './Navbar.css';
 
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+  const isCheckoutPage = location.pathname === ROUTES.CHECKOUT;
+
+  if (isCheckoutPage) {
+    return (
+      <header className="navbar navbar-checkout-minimal">
+        <div className="container nav-container">
+          <Link to={ROUTES.HOME} className="nav-logo">
+            <Sparkles className="nav-logo-icon" size={20} />
+            <span className="nav-logo-text">Aethera</span>
+          </Link>
+          <Link to={ROUTES.CART} className="nav-checkout-cancel">
+            Cancel
+          </Link>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="navbar">

@@ -35,7 +35,11 @@ const PriceCard = ({ course, onOpenPreview }) => {
           if (!isEnrolled) {
             const cartRes = await axiosClient.get('/cart');
             const cartItems = cartRes?.items || cartRes?.data?.items || cartRes || [];
-            const found = Array.isArray(cartItems) && cartItems.some(item => (item.courseId === id || item.id === id));
+            const found = Array.isArray(cartItems) && cartItems.some(item => (
+              item.courseId === id || 
+              item.course?.id === id || 
+              item.id === id
+            ));
             setIsInCart(found);
           }
         }
@@ -63,6 +67,35 @@ const PriceCard = ({ course, onOpenPreview }) => {
       toast.success('Course added to cart successfully');
     } catch (err) {
       toast.error(err?.message || 'Failed to add course to cart');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      if (!isInCart) {
+        try {
+          await axiosClient.post('/cart', { courseId: id });
+          setIsInCart(true);
+          refreshCart();
+        } catch (postErr) {
+          const errMsg = postErr?.message || postErr?.response?.data?.message || '';
+          const isAlreadyInCart = errMsg.includes('có trong giỏ hàng') || errMsg.includes('already in cart');
+          if (!isAlreadyInCart) {
+            throw postErr;
+          }
+        }
+      }
+      navigate(ROUTES.CHECKOUT);
+    } catch (err) {
+      toast.error(err?.message || 'Failed to process checkout');
     } finally {
       setActionLoading(false);
     }
@@ -99,21 +132,34 @@ const PriceCard = ({ course, onOpenPreview }) => {
                 Continue Learning
               </button>
             </Link>
-          ) : isInCart ? (
-            <Link to={ROUTES.CART} style={{ width: '100%', display: 'block' }}>
-              <button className="price-card-btn btn-secondary-style" style={{ width: '100%' }}>
-                Go to Cart
-              </button>
-            </Link>
           ) : (
-            <button
-              onClick={handleAddToCart}
-              disabled={actionLoading}
-              className="price-card-btn btn-primary-style"
-              style={{ width: '100%' }}
-            >
-              Add to Cart
-            </button>
+            <>
+              {isInCart ? (
+                <Link to={ROUTES.CART} style={{ width: '100%', display: 'block' }}>
+                  <button className="price-card-btn btn-primary-style" style={{ width: '100%' }}>
+                    Go to Cart
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={actionLoading}
+                  className="price-card-btn btn-primary-style"
+                  style={{ width: '100%' }}
+                >
+                  Add to Cart
+                </button>
+              )}
+
+              <button
+                onClick={handleBuyNow}
+                disabled={actionLoading}
+                className="price-card-btn btn-secondary-style"
+                style={{ width: '100%' }}
+              >
+                Buy Now
+              </button>
+            </>
           )}
 
           {!enrolled && (
