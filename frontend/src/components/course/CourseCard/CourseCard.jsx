@@ -24,7 +24,7 @@ const CourseCard = ({ course }) => {
     authorName,
     totalStudents = 0,
     isBestSeller,
-    isPremium = true, // mockup
+    isPremium = true,
   } = course;
 
   const displayTitle = name || title;
@@ -37,57 +37,53 @@ const CourseCard = ({ course }) => {
   const isCourseBestseller = isBestSeller || totalStudents > 100;
 
   return (
-    <div className="course-card group">
+    <div className="course-card">
       {/* Thumbnail */}
       <div className="course-card-thumb-wrapper">
         <Link to={`/courses/${slug}`}>
           <img
             src={displayImage}
             alt={displayTitle}
-            className="course-card-img group-hover:scale-105 transition-transform duration-500"
+            className="course-card-img"
             loading="lazy"
           />
         </Link>
-        
-        {/* Absolute elements */}
-        <div className="course-card-heart opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <FavoriteButton courseId={id} size={18} />
+        <div className="course-card-heart">
+          <FavoriteButton courseId={id} size={16} />
         </div>
       </div>
 
       {/* Info Section */}
       <div className="course-card-info">
-        <h3 className="course-card-title line-clamp-2 min-h-[3rem] font-bold text-gray-900 leading-tight mb-1">
+        <h3 className="course-card-title">
           <Link to={`/courses/${slug}`}>{displayTitle}</Link>
         </h3>
         
-        <p className="course-card-author text-xs text-gray-500 mb-1 truncate">{displayAuthor}</p>
+        <p className="course-card-author">{displayAuthor}</p>
 
         {/* Rating */}
-        <div className="course-card-rating-row flex items-center gap-1.5 mb-2">
-          <span className="rating-score text-sm font-bold text-[#b4690e]">{Number(displayRating).toFixed(1)}</span>
-          <RatingStars rating={displayRating} size={14} />
-          <span className="rating-count text-xs text-gray-500">({displayReviewsCount.toLocaleString()})</span>
+        <div className="course-card-rating-row">
+          <span className="rating-score">{Number(displayRating).toFixed(1)}</span>
+          <RatingStars rating={displayRating} size={12} />
+          <span className="rating-count">({displayReviewsCount.toLocaleString()})</span>
         </div>
 
         {/* Price & Details */}
-        <div className="course-card-price-row mb-3">
+        <div className="course-card-price-row">
           <PriceBadge price={displayPrice} discountedPrice={displayDiscounted} />
         </div>
 
         {/* Badges */}
-        <div className="course-card-badges flex items-center gap-2 mt-auto">
-          {isPremium && (
-            <span className="badge-premium bg-[#eceb98] text-[#3d3c0a] font-bold text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-wide">
-              Premium
-            </span>
-          )}
-          {isCourseBestseller && (
-            <span className="badge-bestseller bg-[#eceb98] text-[#3d3c0a] font-bold text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-wide">
-              Bestseller
-            </span>
-          )}
-        </div>
+        {(isCourseBestseller || isPremium) && (
+          <div className="course-card-badges">
+            {isCourseBestseller && (
+              <span className="badge-bestseller">Bán chạy nhất</span>
+            )}
+            {isPremium && (
+              <span className="badge-premium">Premium</span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

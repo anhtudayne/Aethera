@@ -18,16 +18,16 @@ const SearchBar = () => {
 
   return (
     <form className="nav-search-bar" onSubmit={handleSubmit}>
+      <button type="submit" className="nav-search-icon-btn" aria-label="Search">
+        <Search size={18} />
+      </button>
       <input
         type="text"
-        placeholder="Search for courses, skills..."
+        placeholder="Tìm kiếm nội dung bất kỳ..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="nav-search-input"
       />
-      <button type="submit" className="nav-search-btn" aria-label="Search">
-        <Search size={18} />
-      </button>
     </form>
   );
 };
