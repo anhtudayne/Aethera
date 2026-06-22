@@ -78,7 +78,7 @@ app.use(errorHandler);
 // Database
 connectDB();
 const db = require('./models/index');
-db.sequelize.sync().then(() => console.log('DB synced')).catch(console.error);
+db.sequelize.sync({ alter: true }).then(() => console.log('DB synced')).catch(console.error);
 
 // Server
 const port = process.env.PORT || 8089;

@@ -28,6 +28,7 @@ export const ROUTES = {
   ADMIN_USERS: '/dashboard/users',
   ADMIN_PAYOUTS: '/dashboard/payouts',
   ADMIN_MARKETING: '/dashboard/marketing',
+  ADMIN_CATEGORIES: '/dashboard/categories',
 };
 
 export const STORAGE_KEYS = {

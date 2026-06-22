@@ -12,6 +12,7 @@ import { handleGetAdminUsers, handleUpdateUserStatus } from '../controllers/admi
 import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../controllers/adminPayoutController';
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
+import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory, handleDeleteCategory } from '../controllers/adminCategoryController';
 import uploadCloud from '../middlewares/uploadMiddleware';
 const router = express.Router();
 
@@ -151,6 +152,35 @@ router.post(
     authorizeRole(ROLES.ADMIN),
     uploadCloud.single('banner'),
     handleUploadBanner
+);
+
+// Quản lý Categories
+router.get(
+    '/categories',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleGetAdminCategories
+);
+
+router.post(
+    '/categories',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleCreateCategory
+);
+
+router.put(
+    '/categories/:id',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleUpdateCategory
+);
+
+router.delete(
+    '/categories/:id',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleDeleteCategory
 );
 
 export default router;

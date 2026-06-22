@@ -35,6 +35,7 @@ import CourseApprovalsPage from './admin/CourseApprovalsPage';
 import UsersManagementPage from './admin/UsersManagementPage';
 import PayoutsManagementPage from './admin/PayoutsManagementPage';
 import MarketingManagementPage from './admin/MarketingManagementPage';
+import CategoryManagementPage from './admin/CategoryManagementPage';
 
 // Instructor pages
 import InstructorDashboardPage from './instructor/InstructorDashboardPage';
@@ -72,6 +73,7 @@ export {
   UsersManagementPage,
   PayoutsManagementPage,
   MarketingManagementPage,
+  CategoryManagementPage,
   InstructorDashboardPage,
   InstructorCourseCreatePage,
   InstructorCourseManagePage,

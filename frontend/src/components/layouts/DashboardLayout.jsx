@@ -9,6 +9,7 @@ import {
   Bell,
   Settings,
   Tag,
+  Layers,
 } from 'lucide-react';
 import Navbar from '../common/Navbar/Navbar';
 import { ROUTES, STORAGE_KEYS } from '../../utils/constants';
@@ -35,6 +36,7 @@ const DashboardLayout = () => {
     { to: ROUTES.ADMIN_USERS, label: 'Users Management', icon: Heart },
     { to: ROUTES.ADMIN_COURSE_APPROVALS, label: 'Course Approvals', icon: BookOpen },
     { to: ROUTES.ADMIN_PAYOUTS, label: 'Payouts', icon: ShoppingBag },
+    { to: ROUTES.ADMIN_CATEGORIES, label: 'Categories', icon: Layers },
     { to: ROUTES.ADMIN_MARKETING, label: 'Marketing', icon: Tag },
     { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
   ];

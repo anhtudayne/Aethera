@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
             slug: { type: DataTypes.STRING, allowNull: false, unique: true },
             description: DataTypes.STRING,
             image: DataTypes.STRING,
+            isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
+            icon: { type: DataTypes.STRING, defaultValue: 'category' },
+            themeColor: { type: DataTypes.STRING, defaultValue: 'primary' },
         },
         { sequelize, modelName: 'Category' }
     );

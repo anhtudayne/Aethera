@@ -28,5 +28,11 @@ export const adminApi = {
   updateVoucherStatus: (id, status) => axiosClient.put(`/admin/marketing/vouchers/${id}/status`, { status }),
   uploadBanner: (formData) => axiosClient.post('/admin/marketing/upload-banner', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
-  })
+  }),
+
+  // Categories management
+  getCategories: (params) => axiosClient.get('/admin/categories', { params }),
+  createCategory: (data) => axiosClient.post('/admin/categories', data),
+  updateCategory: (id, data) => axiosClient.put(`/admin/categories/${id}`, data),
+  deleteCategory: (id) => axiosClient.delete(`/admin/categories/${id}`)
 };

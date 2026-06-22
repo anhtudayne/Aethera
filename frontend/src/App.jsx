@@ -37,7 +37,8 @@ import {
   InstructorDashboardPage,
   InstructorCourseCreatePage,
   InstructorCourseManagePage,
-  InstructorCourseCurriculumPage
+  InstructorCourseCurriculumPage,
+  CategoryManagementPage
 } from './pages';
 import './App.css';
 
@@ -87,6 +88,7 @@ function App() {
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.ADMIN_COURSE_APPROVALS} element={<CourseApprovalsPage />} />
           <Route path={ROUTES.ADMIN_USERS} element={<UsersManagementPage />} />
+          <Route path={ROUTES.ADMIN_CATEGORIES} element={<CategoryManagementPage />} />
           <Route path={ROUTES.ADMIN_PAYOUTS} element={<PayoutsManagementPage />} />
           <Route path={ROUTES.ADMIN_MARKETING} element={<MarketingManagementPage />} />
           <Route path={ROUTES.MY_COURSES} element={<MyCoursesPage />} />
