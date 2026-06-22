@@ -10,6 +10,7 @@ import {
   Settings,
   Tag,
   Layers,
+  LifeBuoy
 } from 'lucide-react';
 import Navbar from '../common/Navbar/Navbar';
 import { ROUTES, STORAGE_KEYS } from '../../utils/constants';
@@ -38,6 +39,7 @@ const DashboardLayout = () => {
     { to: ROUTES.ADMIN_PAYOUTS, label: 'Payouts', icon: ShoppingBag },
     { to: ROUTES.ADMIN_CATEGORIES, label: 'Categories', icon: Layers },
     { to: ROUTES.ADMIN_MARKETING, label: 'Marketing', icon: Tag },
+    { to: ROUTES.ADMIN_TICKETS, label: 'Support / Refunds', icon: LifeBuoy },
     { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
   ];
 

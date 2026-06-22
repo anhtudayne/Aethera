@@ -38,7 +38,8 @@ import {
   InstructorCourseCreatePage,
   InstructorCourseManagePage,
   InstructorCourseCurriculumPage,
-  CategoryManagementPage
+  CategoryManagementPage,
+  TicketManagementPage
 } from './pages';
 import './App.css';
 
@@ -91,6 +92,7 @@ function App() {
           <Route path={ROUTES.ADMIN_CATEGORIES} element={<CategoryManagementPage />} />
           <Route path={ROUTES.ADMIN_PAYOUTS} element={<PayoutsManagementPage />} />
           <Route path={ROUTES.ADMIN_MARKETING} element={<MarketingManagementPage />} />
+          <Route path={ROUTES.ADMIN_TICKETS} element={<TicketManagementPage />} />
           <Route path={ROUTES.MY_COURSES} element={<MyCoursesPage />} />
           <Route path={ROUTES.WISHLIST} element={<WishlistPage />} />
           <Route path={ROUTES.ORDERS} element={<OrderHistoryPage />} />

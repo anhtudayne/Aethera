@@ -13,6 +13,7 @@ import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../contr
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
 import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory, handleDeleteCategory } from '../controllers/adminCategoryController';
+import { getAllTickets, updateTicketStatus, updateInternalNote } from '../controllers/adminTicketController';
 import uploadCloud from '../middlewares/uploadMiddleware';
 const router = express.Router();
 
@@ -181,6 +182,28 @@ router.delete(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     handleDeleteCategory
+);
+
+// Quản lý Support Tickets (Refund / Report)
+router.get(
+    '/tickets',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    getAllTickets
+);
+
+router.patch(
+    '/tickets/:id/status',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    updateTicketStatus
+);
+
+router.patch(
+    '/tickets/:id/note',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    updateInternalNote
 );
 
 export default router;

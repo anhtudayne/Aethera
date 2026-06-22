@@ -34,6 +34,10 @@ const AdminLayout = ({ children }) => {
                         <span className="material-symbols-outlined">payments</span>
                         <span>Payouts</span>
                     </a>
+                    <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-body-sm hover:bg-white/5 hover:text-on-surface transition-colors" href="/dashboard/tickets">
+                        <span className="material-symbols-outlined">support_agent</span>
+                        <span>Support</span>
+                    </a>
                 </div>
             </nav>
 

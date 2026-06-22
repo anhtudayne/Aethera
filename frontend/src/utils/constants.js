@@ -29,6 +29,7 @@ export const ROUTES = {
   ADMIN_PAYOUTS: '/dashboard/payouts',
   ADMIN_MARKETING: '/dashboard/marketing',
   ADMIN_CATEGORIES: '/dashboard/categories',
+  ADMIN_TICKETS: '/dashboard/tickets',
 };
 
 export const STORAGE_KEYS = {

@@ -36,6 +36,7 @@ import UsersManagementPage from './admin/UsersManagementPage';
 import PayoutsManagementPage from './admin/PayoutsManagementPage';
 import MarketingManagementPage from './admin/MarketingManagementPage';
 import CategoryManagementPage from './admin/CategoryManagementPage';
+import TicketManagementPage from './admin/TicketManagementPage';
 
 // Instructor pages
 import InstructorDashboardPage from './instructor/InstructorDashboardPage';
@@ -74,6 +75,7 @@ export {
   PayoutsManagementPage,
   MarketingManagementPage,
   CategoryManagementPage,
+  TicketManagementPage,
   InstructorDashboardPage,
   InstructorCourseCreatePage,
   InstructorCourseManagePage,

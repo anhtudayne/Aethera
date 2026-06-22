@@ -34,5 +34,10 @@ export const adminApi = {
   getCategories: (params) => axiosClient.get('/admin/categories', { params }),
   createCategory: (data) => axiosClient.post('/admin/categories', data),
   updateCategory: (id, data) => axiosClient.put(`/admin/categories/${id}`, data),
-  deleteCategory: (id) => axiosClient.delete(`/admin/categories/${id}`)
+  deleteCategory: (id) => axiosClient.delete(`/admin/categories/${id}`),
+
+  // Support Tickets management
+  getTickets: (params) => axiosClient.get('/admin/tickets', { params }),
+  updateTicketStatus: (id, status) => axiosClient.patch(`/admin/tickets/${id}/status`, { status }),
+  updateTicketNote: (id, internalNotes) => axiosClient.patch(`/admin/tickets/${id}/note`, { internalNotes })
 };
