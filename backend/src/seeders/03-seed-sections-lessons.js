@@ -69,7 +69,11 @@ module.exports = {
             // Course 20: Java Spring Boot - Enterprise Backend
             { id: 25, courseId: 20, title: 'Spring Boot Overview & DI/IoC', order: 1, createdAt: new Date(), updatedAt: new Date() }
         ];
-        await queryInterface.bulkInsert('Sections', sections);
+        try {
+            await queryInterface.bulkInsert('Sections', sections);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Sections đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 2. Seed Lessons ==========
         const lessons = [
@@ -158,7 +162,12 @@ module.exports = {
             // Section 25: Spring Boot Overview & DI/IoC (courseId: 20)
             { id: 35, sectionId: 25, title: 'Dependency Injection & IoC Container', type: 'video', content: null, videoUrl: 'https://res.cloudinary.com/demo/video/upload/v1633356122/spring_di.mp4', duration: '17:30', order: 1, isFreePreview: true, createdAt: new Date(), updatedAt: new Date() }
         ];
-        await queryInterface.bulkInsert('Lessons', lessons);
+
+        try {
+            await queryInterface.bulkInsert('Lessons', lessons);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Lessons đã tồn tại, tự động bỏ qua.');
+        }
     },
 
     async down(queryInterface) {

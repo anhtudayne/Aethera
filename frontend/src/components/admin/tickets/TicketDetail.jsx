@@ -44,7 +44,14 @@ const TicketDetail = ({ ticket, onTicketUpdated }) => {
     }
   };
 
-  const attachments = ticket.attachments ? JSON.parse(ticket.attachments) : [];
+  let attachments = [];
+  if (ticket.attachments) {
+    try {
+      attachments = typeof ticket.attachments === 'string' ? JSON.parse(ticket.attachments) : ticket.attachments;
+    } catch (e) {
+      console.error('Error parsing attachments:', e);
+    }
+  }
 
   const getStatusBadge = (status) => {
     switch (status) {

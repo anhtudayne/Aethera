@@ -41,15 +41,15 @@ export const handleLessonChat = async (req, res, next) => {
         // BƯỚC 3: Kiểm tra điều kiện (Validation)
         if (user.aiCredits <= 0) {
             const minutesToWait = 60 - diffMinutes;
-            return res.status(429).json({ 
-                message: `Bạn đã hết lượt hỏi, vui lòng chờ ${minutesToWait > 0 ? minutesToWait : 60} phút để nạp lại năng lượng ⚡` 
+            return res.status(429).json({
+                message: `Bạn đã hết lượt hỏi, vui lòng chờ ${minutesToWait > 0 ? minutesToWait : 60} phút để nạp lại năng lượng ⚡`
             });
         }
 
         // Kiểm tra xem đã có transcript chưa
         if (!lesson.transcript || lesson.transcript.length === 0) {
-            return res.status(400).json({ 
-                message: 'Xin lỗi, bài học này chưa được bóc băng (transcript) nên trợ lý không thể trả lời dựa trên nội dung video được.' 
+            return res.status(400).json({
+                message: 'Xin lỗi, bài học này chưa được bóc băng (transcript) nên trợ lý không thể trả lời dựa trên nội dung video được.'
             });
         }
 
@@ -71,7 +71,7 @@ export const handleLessonChat = async (req, res, next) => {
                 const course = await db.Course.findByPk(section.courseId);
                 if (course) courseName = course.title;
             }
-        } catch(e) {}
+        } catch (e) { }
 
         const genAI = new GoogleGenerativeAI(geminiApiKey);
         const chatModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -88,7 +88,7 @@ export const handleLessonChat = async (req, res, next) => {
         if (isFullContextRequired) {
             // LUỒNG 1: Gửi toàn bộ Transcript (không dùng RAG)
             const fullTranscriptText = chunks.map(c => `[${c.start_time} - ${c.end_time}]: ${c.text}`).join('\n');
-            
+
             if (isQuiz) {
                 systemInstruction = `Bạn là Teacher Bee AI 🐝 - một Gia sư AI tận tâm. Nhiệm vụ của bạn là tạo một bài kiểm tra ngắn (quiz) trắc nghiệm 5 câu dựa trên nội dung bài giảng.
 Mỗi câu hỏi phải có 4 đáp án A, B, C, D và MỖI ĐÁP ÁN PHẢI ĐƯỢC XUỐNG DÒNG RIÊNG BIỆT.
@@ -100,9 +100,9 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
             } else {
                 systemInstruction = `Bạn là Teacher Bee AI 🐝 - một Gia sư AI tận tâm. Hãy trả lời yêu cầu của học viên một cách chi tiết, chính xác và có cấu trúc rõ ràng. Trình bày bằng Markdown sạch sẽ, sử dụng danh sách (bullet points) và in đậm các từ khóa quan trọng.`;
             }
-            
+
             promptMessage = `Yêu cầu của học viên: "${message}"\n\nThông tin bài giảng:\nTên khóa học: ${courseName}\nTên bài học: ${lessonTitle}\n\nNội dung bài giảng (Transcript):\n"""\n${fullTranscriptText}\n"""`;
-            
+
         } else {
             // LUỒNG 2: Sử dụng RAG Vector Search cho các câu hỏi cụ thể
             let queryVector = [];
@@ -130,7 +130,7 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
             }
 
             // Sử dụng System Prompt phương pháp Feynman
-            systemInstruction = 
+            systemInstruction =
                 `Bạn là Teacher Bee AI 🐝 - một Gia sư AI tận tâm. Học viên đang có câu hỏi hoặc cần giải thích một khái niệm thuộc bài giảng.\n\n` +
                 `Quy tắc cốt lõi:\n` +
                 `- Sử dụng phương pháp Feynman: Giải thích đơn giản như thể đang nói chuyện với một người mới bắt đầu.\n` +
@@ -139,7 +139,7 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
                 `- Nếu có thể, hãy đưa ra một ví dụ thực tế (analogy) gần gũi để minh họa.\n` +
                 `- Nếu câu hỏi của học viên nằm ngoài phạm vi tài liệu hoặc không liên quan đến bài học, hãy lịch sự từ chối trả lời và hướng họ quay lại bài học.`;
 
-            promptMessage = 
+            promptMessage =
                 `Câu hỏi của học viên: "${message}"\n\n` +
                 `Dựa vào ngữ cảnh (Context) được trích xuất từ bài giảng dưới đây, hãy trả lời học viên:\n\n` +
                 `Tài liệu bài giảng (Context):\n"""\n${contextText}\n"""\n\n` +
@@ -165,10 +165,10 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
         await user.save();
 
         // BƯỚC 5: Trả kết quả về Frontend
-        return res.status(200).json({ 
-            reply, 
+        return res.status(200).json({
+            reply,
             sources,
-            remainingCredits: user.aiCredits 
+            remainingCredits: user.aiCredits
         });
     } catch (error) {
         console.error('Chat error:', error);

@@ -36,7 +36,7 @@ module.exports = {
                 address: 'TP. Hồ Chí Minh',
                 gender: false,
                 image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-                roleId: 'teacher',
+                roleId: 'instructor',
                 isActive: true,
                 provider: 'local',
                 createdAt: new Date(),
@@ -59,7 +59,11 @@ module.exports = {
                 updatedAt: new Date()
             }
         ];
-        await queryInterface.bulkInsert('Users', users);
+        try {
+            await queryInterface.bulkInsert('Users', users);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Users đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 2. UserCourses (Enrollments) ==========
         const userCourses = [
@@ -103,7 +107,11 @@ module.exports = {
                 updatedAt: new Date()
             }
         ];
-        await queryInterface.bulkInsert('UserCourses', userCourses);
+        try {
+            await queryInterface.bulkInsert('UserCourses', userCourses);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu UserCourses đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 3. LessonProgresses ==========
         const progresses = [
@@ -127,7 +135,11 @@ module.exports = {
             { userId: 3, lessonId: 13, courseId: 3, isCompleted: true, completedAt: new Date('2025-05-22'), lastWatchedPosition: 920, createdAt: new Date(), updatedAt: new Date() },
             { userId: 3, lessonId: 14, courseId: 3, isCompleted: true, completedAt: new Date('2025-05-25'), lastWatchedPosition: 765, createdAt: new Date(), updatedAt: new Date() }
         ];
-        await queryInterface.bulkInsert('LessonProgresses', progresses);
+        try {
+            await queryInterface.bulkInsert('LessonProgresses', progresses);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu LessonProgresses đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 4. Certificates ==========
         const certificates = [
@@ -148,7 +160,11 @@ module.exports = {
                 updatedAt: new Date()
             }
         ];
-        await queryInterface.bulkInsert('Certificates', certificates);
+        try {
+            await queryInterface.bulkInsert('Certificates', certificates);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Certificates đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 5. Reviews ==========
         const reviews = [
@@ -169,14 +185,22 @@ module.exports = {
                 updatedAt: new Date('2025-05-26')
             }
         ];
-        await queryInterface.bulkInsert('Reviews', reviews);
+        try {
+            await queryInterface.bulkInsert('Reviews', reviews);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Reviews đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 6. FavoriteCourses ==========
         const favorites = [
             { userId: 3, courseId: 2, createdAt: new Date(), updatedAt: new Date() },
             { userId: 3, courseId: 4, createdAt: new Date(), updatedAt: new Date() }
         ];
-        await queryInterface.bulkInsert('FavoriteCourses', favorites);
+        try {
+            await queryInterface.bulkInsert('FavoriteCourses', favorites);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu FavoriteCourses đã tồn tại, tự động bỏ qua.');
+        }
 
         // ========== 7. Notifications ==========
         const notifications = [
@@ -199,7 +223,11 @@ module.exports = {
                 updatedAt: new Date('2025-06-20')
             }
         ];
-        await queryInterface.bulkInsert('Notifications', notifications);
+        try {
+            await queryInterface.bulkInsert('Notifications', notifications);
+        } catch (error) {
+            console.log('⚠️ Dữ liệu Notifications đã tồn tại, tự động bỏ qua.');
+        }
     },
 
     async down(queryInterface) {

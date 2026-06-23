@@ -24,7 +24,7 @@ module.exports = {
         try {
             await queryInterface.bulkInsert('Certificates', certificates);
         } catch (error) {
-            console.log('Seed certificates warning:', error.message);
+            console.log('⚠️ Dữ liệu Certificates đã tồn tại, tự động bỏ qua.');
         }
     },
 
