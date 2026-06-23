@@ -107,11 +107,13 @@ export const DashboardPage = () => {
 };
 
 // ── Course Player ────
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { userApi } from '../api/userApi';
 import VideoChatbox from '../components/CoursePlayer/VideoChatbox';
 
 export const CoursePlayerPage = () => {
+  const [isChatOpen, setIsChatOpen] = useState(true);
+
   useEffect(() => {
     // Điểm danh và cộng 5 phút học tập mẫu khi mở Course Player
     const logInitialActivity = async () => {
@@ -145,8 +147,8 @@ export const CoursePlayerPage = () => {
         </div>
         
         {/* Phần Chatbox Bên Phải */}
-        <div style={{ width: '400px', flexShrink: 0 }}>
-           <VideoChatbox lessonId={1} /> {/* Mặc định lessonId=1 để test */}
+        <div style={{ width: isChatOpen ? '400px' : '0px', flexShrink: 0, transition: 'width 0.3s ease', overflow: 'visible' }}>
+           <VideoChatbox lessonId={1} onToggle={setIsChatOpen} /> {/* Mặc định lessonId=1 để test */}
         </div>
       </div>
     </div>

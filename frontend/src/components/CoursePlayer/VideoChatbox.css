@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --bg-primary: rgba(15, 23, 42, 0.8);
+  --bg-primary: rgba(30, 41, 59, 0.65); /* Slate 800 với opacity để tạo hiệu ứng kính nổi trên nền đen */
   --bg-secondary: rgba(30, 41, 59, 0.5);
   --accent-color: #6366F1;
   --accent-hover: #4F46E5;

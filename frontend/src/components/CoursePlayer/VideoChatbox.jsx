@@ -12,7 +12,7 @@ const SUGGESTIONS = [
   { label: "❓ Tạo Quiz ôn tập", prompt: "Tạo các bài kiểm tra ngắn (quiz)." }
 ];
 
-const VideoChatbox = ({ lessonId }) => {
+const VideoChatbox = ({ lessonId, onToggle }) => {
   const {
     messages,
     input,
@@ -32,6 +32,11 @@ const VideoChatbox = ({ lessonId }) => {
   const [showHistory, setShowHistory] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+
+  const handleToggle = (val) => {
+    setIsOpen(val);
+    if (onToggle) onToggle(val);
+  };
   
   const messagesEndRef = useRef(null);
 
@@ -42,7 +47,7 @@ const VideoChatbox = ({ lessonId }) => {
   // Nếu đã đóng Chatbox -> Hiện bong bóng nhỏ nổi ở góc màn hình
   if (!isOpen) {
     return (
-      <button className="chatbox-toggle-btn" onClick={() => setIsOpen(true)} title="Mở lại Teacher Bee AI">
+      <button className="chatbox-toggle-btn" onClick={() => handleToggle(true)} title="Mở lại Teacher Bee AI">
         <Bot size={28} />
       </button>
     );
@@ -78,7 +83,7 @@ const VideoChatbox = ({ lessonId }) => {
           </div>
           <button 
             className="action-btn" 
-            onClick={() => setIsOpen(false)}
+            onClick={() => handleToggle(false)}
             title="Thu gọn"
             style={{ marginLeft: '4px' }}
           >
