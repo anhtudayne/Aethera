@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
             duration: DataTypes.STRING,
             order: { type: DataTypes.INTEGER, defaultValue: 0 },
             isFreePreview: { type: DataTypes.BOOLEAN, defaultValue: false },
+            transcript: DataTypes.JSON, // Lưu trữ mảng JSON transcript
+            transcriptStatus: { type: DataTypes.ENUM('pending', 'processing', 'ready', 'failed'), defaultValue: 'pending' },
+            transcriptJobId: DataTypes.STRING, // Lưu ID trả về từ AssemblyAI để webhook map lại
         },
         { sequelize, modelName: 'Lesson' }
     );

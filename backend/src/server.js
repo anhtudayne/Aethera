@@ -26,6 +26,7 @@ import lessonRoutes from './routes/lessonRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from './routes/adminRoutes';
 import statsRoutes from './routes/statsRoutes';
+import webhookRoutes from './routes/webhookRoutes';
 
 const app = express();
 
@@ -72,13 +73,16 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/stats', statsRoutes);
 
+// ===== WEBHOOKS =====
+app.use('/api/webhook', webhookRoutes);
+
 // Error handler
 app.use(errorHandler);
 
 // Database
 connectDB();
 const db = require('./models/index');
-db.sequelize.sync({ alter: true }).then(() => console.log('DB synced')).catch(console.error);
+db.sequelize.authenticate().then(() => console.log('DB connected')).catch(console.error);
 
 // Server
 const port = process.env.PORT || 8089;

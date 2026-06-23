@@ -90,6 +90,14 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            aiCredits: {
+                type: DataTypes.INTEGER,
+                defaultValue: 25,
+            },
+            lastCreditReset: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+            },
         },
         {
             sequelize,

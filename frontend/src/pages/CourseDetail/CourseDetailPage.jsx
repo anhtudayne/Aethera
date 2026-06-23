@@ -14,6 +14,7 @@ import InstructorSection from './InstructorSection';
 import RelatedCourses from './RelatedCourses';
 import FreePreviewModal from './FreePreviewModal';
 import CourseComments from '../../components/common/CourseComments/CourseComments';
+import VideoChatbox from '../../components/CoursePlayer/VideoChatbox';
 import useAuth from '../../hooks/useAuth';
 import './CourseDetailPage.css';
 
@@ -172,6 +173,11 @@ const CourseDetailPage = () => {
             onOpenPreview={handleOpenGeneralPreview}
             initialEnrolled={isEnrolled}
           />
+          
+          {/* Chatbox hiển thị tạm thời để test */}
+          <div style={{ marginTop: '24px' }}>
+            <VideoChatbox lessonId={1} />
+          </div>
         </div>
       </div>
 

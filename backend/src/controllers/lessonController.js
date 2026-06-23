@@ -1,4 +1,5 @@
 import db from '../models';
+import { triggerAssemblyAITranscript } from '../services/transcriptService.js';
 
 export const handleCreateLesson = async (req, res, next) => {
     try {
@@ -17,6 +18,13 @@ export const handleCreateLesson = async (req, res, next) => {
             order: order || 0,
             isFreePreview: isFreePreview || false
         });
+
+        // Kích hoạt bóc băng nếu là video
+        if (lesson.type === 'video' && lesson.videoUrl) {
+            // Không dùng await để tránh block luồng phản hồi
+            triggerAssemblyAITranscript(lesson);
+        }
+
         return res.status(201).json({ status: 201, message: 'Tạo bài học thành công', data: lesson });
     } catch (error) {
         next(error);
@@ -59,6 +67,12 @@ export const handleUpdateLesson = async (req, res, next) => {
             order,
             isFreePreview
         });
+
+        // Nếu cập nhật URL video mới, có thể kích hoạt lại bóc băng (trong thực tế có thể check xem URL có thay đổi không)
+        if (type === 'video' && videoUrl) {
+            triggerAssemblyAITranscript(lesson);
+        }
+
         return res.status(200).json({ status: 200, message: 'Cập nhật bài học thành công', data: lesson });
     } catch (error) {
         next(error);

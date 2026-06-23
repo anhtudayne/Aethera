@@ -109,6 +109,7 @@ export const DashboardPage = () => {
 // ── Course Player ────
 import { useEffect } from 'react';
 import { userApi } from '../api/userApi';
+import VideoChatbox from '../components/CoursePlayer/VideoChatbox';
 
 export const CoursePlayerPage = () => {
   useEffect(() => {
@@ -133,13 +134,19 @@ export const CoursePlayerPage = () => {
   return (
     <div style={{ background: '#0F172A', color: '#F8FAFC', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '16px 24px', borderBottom: '1px solid #1E293B', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Course Player Placeholder</h3>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Course Player</h3>
         <Link to={ROUTES.DASHBOARD} style={{ color: '#6366F1', fontSize: '0.9rem' }}>Back to Dashboard</Link>
       </div>
-      <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '48px' }}>
-        <div style={{ width: '100%', maxWidth: '800px', aspectRatio: '16/9', background: '#1E293B', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ flexGrow: 1, display: 'flex', padding: '24px', gap: '24px', alignItems: 'flex-start' }}>
+        {/* Phần Video Bên Trái */}
+        <div style={{ flexGrow: 1, aspectRatio: '16/9', background: '#1E293B', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
-          <p>Lecture Video and Notes Workspace will render here in Stage F5.</p>
+          <p>Lecture Video Component (Stage F5)</p>
+        </div>
+        
+        {/* Phần Chatbox Bên Phải */}
+        <div style={{ width: '400px', flexShrink: 0 }}>
+           <VideoChatbox lessonId={1} /> {/* Mặc định lessonId=1 để test */}
         </div>
       </div>
     </div>
