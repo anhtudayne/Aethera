@@ -1,29 +1,39 @@
 import { Link } from 'react-router-dom';
 import { Trash2, Star, BookOpen } from 'lucide-react';
-import { formatPrice } from '../../utils/helpers';
+import PriceBadge from '../../components/course/PriceBadge';
 
-const CartItem = ({ item, onRemove }) => {
+const CartItem = ({ item, onRemove, isSelected, onToggleSelect }) => {
   const { id, course } = item;
   const { name, slug, price, salePrice, instructor, thumbnail, rating, level, totalLessons } = course || {};
 
-  // Determine final price (salePrice or price)
-  const hasDiscount = salePrice !== undefined && salePrice !== null && salePrice < price;
+  // Map to format that PriceBadge expects
+  const displayPrice = price ? Number(price) : 0;
+  const displayDiscounted = salePrice ? Number(salePrice) : null;
 
   return (
-    <div className="cart-item-card">
-      <Link to={`/courses/${slug}`} className="cart-item-image-link">
+    <div className={`cart-item-card-neo ${isSelected ? 'item-selected' : ''}`}>
+      <div className="cart-item-checkbox-wrapper-neo">
+        <input 
+          type="checkbox"
+          checked={isSelected}
+          onChange={onToggleSelect}
+          className="cart-checkbox-neo"
+        />
+      </div>
+
+      <Link to={`/courses/${slug}`} className="cart-item-image-link-neo">
         <img
           src={thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&auto=format&fit=crop&q=60'}
           alt={name}
-          className="cart-item-thumbnail"
+          className="cart-item-thumbnail-neo"
         />
       </Link>
 
-      <div className="cart-item-details">
-        <div className="cart-item-header">
-          <span className="cart-item-category-tag">{level || 'All Levels'}</span>
+      <div className="cart-item-details-neo">
+        <div className="cart-item-header-neo">
+          <span className="cart-item-category-tag-neo">{level || 'All Levels'}</span>
           <button 
-            className="cart-item-remove-btn" 
+            className="cart-item-remove-btn-neo" 
             onClick={() => onRemove(id)}
             title="Remove from cart"
           >
@@ -31,37 +41,30 @@ const CartItem = ({ item, onRemove }) => {
           </button>
         </div>
 
-        <Link to={`/courses/${slug}`} className="cart-item-title-link">
-          <h4 className="cart-item-title">{name}</h4>
+        <Link to={`/courses/${slug}`} className="cart-item-title-link-neo">
+          <h4 className="cart-item-title-neo">{name}</h4>
         </Link>
 
-        <p className="cart-item-instructor">By {instructor || 'Aethera Instructor'}</p>
+        <p className="cart-item-instructor-neo">By {instructor || 'Aethera Instructor'}</p>
 
-        <div className="cart-item-meta">
+        <div className="cart-item-meta-neo">
           {rating !== undefined && rating !== null && (
-            <div className="cart-item-rating">
-              <Star size={14} className="star-icon" fill="currentColor" />
+            <div className="cart-item-rating-neo">
+              <Star size={13} className="star-icon-neo" fill="currentColor" />
               <span>{parseFloat(rating).toFixed(1)}</span>
             </div>
           )}
           
           {totalLessons > 0 && (
-            <div className="cart-item-lessons">
-              <BookOpen size={14} className="lessons-icon" />
+            <div className="cart-item-lessons-neo">
+              <BookOpen size={13} className="lessons-icon-neo" />
               <span>{totalLessons} lessons</span>
             </div>
           )}
         </div>
 
-        <div className="cart-item-pricing">
-          {hasDiscount ? (
-            <>
-              <span className="cart-item-sale-price">{formatPrice(salePrice)}</span>
-              <span className="cart-item-original-price">{formatPrice(price)}</span>
-            </>
-          ) : (
-            <span className="cart-item-price">{formatPrice(price)}</span>
-          )}
+        <div className="cart-item-pricing-neo">
+          <PriceBadge price={displayPrice} discountedPrice={displayDiscounted} />
         </div>
       </div>
     </div>

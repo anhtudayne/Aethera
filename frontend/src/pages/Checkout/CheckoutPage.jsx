@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Globe, Lock, CreditCard, Wallet, Landmark, Building } from 'lucide-react';
 import { cartApi } from '../../api/cartApi';
@@ -12,7 +12,10 @@ import './CheckoutPage.css';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { refreshCart } = useCart();
+
+  const selectedCourseIds = location.state?.selectedCourseIds;
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +39,18 @@ const CheckoutPage = () => {
         navigate(ROUTES.CART);
         return;
       }
-      setItems(Array.isArray(cartItems) ? cartItems : []);
+      
+      const filtered = selectedCourseIds && Array.isArray(selectedCourseIds)
+        ? cartItems.filter(item => selectedCourseIds.includes(item.courseId))
+        : cartItems;
+
+      if (filtered.length === 0) {
+        toast.info('No courses selected for checkout.');
+        navigate(ROUTES.CART);
+        return;
+      }
+
+      setItems(filtered);
     } catch (err) {
       console.error('Failed to load cart items for checkout:', err);
       toast.error('Could not load checkout items.');
@@ -44,7 +58,7 @@ const CheckoutPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, selectedCourseIds]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -74,8 +88,28 @@ const CheckoutPage = () => {
 
     setPaying(true);
     try {
+      const ids = selectedCourseIds || items.map(item => item.courseId);
+
+      if (paymentMethod === 'e-wallet') {
+        // MoMo Payment Flow
+        const res = await orderApi.createMoMoPayment(ids);
+        const payUrl = res?.data?.payUrl || res?.payUrl;
+        
+        if (!payUrl) {
+          throw new Error('Failed to retrieve MoMo payment URL.');
+        }
+
+        toast.success('Redirecting to MoMo secure payment gateway...');
+        // Wait a short moment so the user sees the toast
+        setTimeout(() => {
+          window.location.href = payUrl;
+        }, 1000);
+        return;
+      }
+
+      // Default Simulation Flow (Credit Card, etc.)
       // Step 1: Create Order
-      const createRes = await orderApi.createFromCart();
+      const createRes = await orderApi.createFromCart(ids);
       const orderId = createRes?.data?.orderId || createRes?.orderId;
       
       if (!orderId) {
@@ -96,7 +130,10 @@ const CheckoutPage = () => {
       console.error('Checkout error:', err);
       toast.error(err?.message || 'Payment simulation failed. Please try again.');
     } finally {
-      setPaying(false);
+      // Only set paying to false if we are not redirecting away
+      if (paymentMethod !== 'e-wallet') {
+        setPaying(false);
+      }
     }
   };
 
@@ -221,7 +258,7 @@ const CheckoutPage = () => {
                     )}
                   </div>
 
-                  {/* Option 2: Momo / ShopeePay / ZaloPay (E-Wallet) */}
+                  {/* Option 2: MoMo (E-Wallet) */}
                   <div 
                     className={`payment-method-row ${paymentMethod === 'e-wallet' ? 'payment-method-selected' : ''}`}
                     onClick={() => setPaymentMethod('e-wallet')}
@@ -236,12 +273,13 @@ const CheckoutPage = () => {
                         className="payment-radio-input"
                       />
                       <Wallet size={18} className="payment-icon" />
-                      <span className="payment-method-name">Momo / ZaloPay (E-Wallet)</span>
+                      <span className="payment-method-name">Ví điện tử MoMo</span>
+                      <span style={{ backgroundColor: '#a50064', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px', fontWeight: 'bold', letterSpacing: '0.5px' }}>MoMo Sandbox</span>
                     </label>
                     
                     {paymentMethod === 'e-wallet' && (
                       <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
-                        <p>You will be redirected to Momo/ZaloPay secure gateway to scan the QR code and complete your purchase.</p>
+                        <p>Hệ thống sẽ chuyển hướng bạn sang cổng thanh toán thử nghiệm (Sandbox) của MoMo để quét mã QR và xác nhận thanh toán.</p>
                       </div>
                     )}
                   </div>

@@ -18,14 +18,11 @@ const PriceCard = ({ course, onOpenPreview, initialEnrolled = false }) => {
 
   const [enrolled, setEnrolled] = useState(initialEnrolled);
   const [isInCart, setIsInCart] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialEnrolled);
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    // If initialEnrolled is true, we already know they are enrolled.
     if (initialEnrolled) {
-      setEnrolled(true);
-      setLoading(false);
       return;
     }
     
@@ -57,7 +54,7 @@ const PriceCard = ({ course, onOpenPreview, initialEnrolled = false }) => {
       }
     };
     checkStatus();
-  }, [slug, id, isAuthenticated]);
+  }, [slug, id, isAuthenticated, initialEnrolled]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -100,7 +97,7 @@ const PriceCard = ({ course, onOpenPreview, initialEnrolled = false }) => {
           }
         }
       }
-      navigate(ROUTES.CHECKOUT);
+      navigate(ROUTES.CHECKOUT, { state: { selectedCourseIds: [id] } });
     } catch (err) {
       toast.error(err?.message || 'Failed to process checkout');
     } finally {

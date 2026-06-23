@@ -3,12 +3,16 @@ import * as notificationService from './notificationService';
 import * as emailService from './emailService';
 import { createError } from '../utils/helpers';
 
-export const createOrderFromCart = async (userId) => {
+export const createOrderFromCart = async (userId, courseIds) => {
     const transaction = await db.sequelize.transaction();
     try {
         // 1. Lấy giỏ hàng
+        const whereClause = { userId };
+        if (courseIds && Array.isArray(courseIds) && courseIds.length > 0) {
+            whereClause.courseId = courseIds;
+        }
         const cartItems = await db.Cart.findAll({
-            where: { userId },
+            where: whereClause,
             include: [{ model: db.Course, as: 'course' }],
         });
         if (!cartItems || cartItems.length === 0) {

@@ -27,6 +27,7 @@ import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from './routes/adminRoutes';
 import statsRoutes from './routes/statsRoutes';
 import webhookRoutes from './routes/webhookRoutes';
+import paymentRoutes from './routes/paymentRoutes';
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/api', courseRoutes);         // /api/courses, /api/categories
 // ===== CART & ORDERS =====
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // ===== LEARNING EXPERIENCE =====
 app.use('/api/learning', learningRoutes);

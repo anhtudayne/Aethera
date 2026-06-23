@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            momoTransId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         },
         {
             sequelize,

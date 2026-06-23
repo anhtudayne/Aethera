@@ -9,6 +9,7 @@ import './CartPage.css';
 
 const CartPage = () => {
   const [items, setItems] = useState([]);
+  const [selectedCourseIds, setSelectedCourseIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const { refreshCart } = useCart();
 
@@ -17,7 +18,10 @@ const CartPage = () => {
       setLoading(true);
       const res = await cartApi.getCart();
       const cartItems = res?.data || res || [];
-      setItems(Array.isArray(cartItems) ? cartItems : []);
+      const itemsArray = Array.isArray(cartItems) ? cartItems : [];
+      setItems(itemsArray);
+      // Select all by default
+      setSelectedCourseIds(itemsArray.map(item => item.courseId));
     } catch (err) {
       console.error('Failed to load cart:', err);
       toast.error('Could not retrieve your cart items.');
@@ -35,10 +39,17 @@ const CartPage = () => {
 
   const handleRemove = async (itemId) => {
     try {
+      // Find courseId to remove from selection too
+      const removedItem = items.find(item => item.id === itemId);
       const res = await cartApi.removeItem(itemId);
       toast.success(res?.message || 'Item removed from cart');
+      
       // Update state locally first to be snappy
       setItems((prev) => prev.filter((item) => item.id !== itemId));
+      if (removedItem) {
+        setSelectedCourseIds(prev => prev.filter(id => id !== removedItem.courseId));
+      }
+      
       // Refresh Navbar cart badge count
       refreshCart();
     } catch (err) {
@@ -52,10 +63,27 @@ const CartPage = () => {
       const res = await cartApi.clearCart();
       toast.success(res?.message || 'Cart cleared successfully');
       setItems([]);
+      setSelectedCourseIds([]);
       refreshCart();
     } catch (err) {
       console.error('Failed to clear cart:', err);
       toast.error(err?.message || 'Could not clear cart.');
+    }
+  };
+
+  const handleToggleSelect = (courseId) => {
+    setSelectedCourseIds(prev => 
+      prev.includes(courseId)
+        ? prev.filter(id => id !== courseId)
+        : [...prev, courseId]
+    );
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedCourseIds.length === items.length) {
+      setSelectedCourseIds([]);
+    } else {
+      setSelectedCourseIds(items.map(item => item.courseId));
     }
   };
 
@@ -88,19 +116,41 @@ const CartPage = () => {
           <div className="cart-layout-grid">
             {/* Left Column: Items */}
             <div className="cart-items-column">
-              {items.map((item) => (
-                <CartItem 
-                  key={item.id} 
-                  item={item} 
-                  onRemove={handleRemove} 
-                />
-              ))}
+              <div className="cart-select-all-banner-neo">
+                <label className="cart-select-all-label-neo">
+                  <input 
+                    type="checkbox"
+                    checked={items.length > 0 && selectedCourseIds.length === items.length}
+                    onChange={handleToggleSelectAll}
+                    className="cart-checkbox-neo"
+                  />
+                  <span>Select All ({items.length} courses)</span>
+                </label>
+                {selectedCourseIds.length > 0 && (
+                  <span className="cart-selected-count-badge-neo">
+                    Selected {selectedCourseIds.length} course{selectedCourseIds.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              
+              <div className="cart-items-list-neo">
+                {items.map((item) => (
+                  <CartItem 
+                    key={item.id} 
+                    item={item} 
+                    onRemove={handleRemove} 
+                    isSelected={selectedCourseIds.includes(item.courseId)}
+                    onToggleSelect={() => handleToggleSelect(item.courseId)}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Right Column: Order Summary */}
             <div className="cart-summary-column">
               <CartSummary 
                 items={items} 
+                selectedCourseIds={selectedCourseIds}
                 onClear={handleClear} 
               />
             </div>
