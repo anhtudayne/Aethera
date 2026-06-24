@@ -14,4 +14,9 @@ export const instructorApi = {
   createLesson: (data) => axiosClient.post('/lessons', data),
   updateLesson: (id, data) => axiosClient.put(`/lessons/${id}`, data),
   deleteLesson: (id) => axiosClient.delete(`/lessons/${id}`),
+
+  // Upload
+  uploadCourseThumbnail: (formData) => axiosClient.post('/upload/thumbnail', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 };

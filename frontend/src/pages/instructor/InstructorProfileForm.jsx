@@ -130,7 +130,7 @@ const InstructorProfileForm = () => {
               placeholder="https://example.com/avatar.jpg"
               style={{ flex: 1 }}
             />
-            <label className="instructor-submit-btn" style={{ cursor: 'pointer', textAlign: 'center', margin: 0, padding: '12px 24px' }}>
+            <label className="instructor-submit-btn" style={{ color:"white", cursor: 'pointer', textAlign: 'center', margin: 0, padding: '12px 24px' }}>
               Upload Image
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} disabled={loading} />
             </label>

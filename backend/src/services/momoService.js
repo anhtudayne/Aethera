@@ -26,7 +26,8 @@ export const createPaymentRequest = async ({
 }) => {
     try {
         const requestId = orderId;
-        const requestType = 'captureWallet';
+        const requestType = 'payWithATM';
+        // const requestType = 'captureWallet';
 
         // Tạo chuỗi signature thô (phải đúng thứ tự alphabet của các key)
         const rawSignature = [

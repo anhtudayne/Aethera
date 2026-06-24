@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { courseApi } from '../../api/courseApi';
 import { categoryApi } from '../../api/categoryApi';
 import { instructorApi } from '../../api/instructorApi';
 import { ROUTES } from '../../utils/constants';
 import Button from '../../components/common/Button/Button';
-import { Loader2, ArrowLeft, Save, BookOpen } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, BookOpen, Upload } from 'lucide-react';
 
 const InstructorCourseManagePage = () => {
   const { slug } = useParams();
@@ -14,20 +14,24 @@ const InstructorCourseManagePage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
     description: '',
     price: '',
+    salePrice: '',
     categoryId: '',
     level: '',
     language: '',
     whatYouWillLearn: '',
     requirements: '',
-    targetAudience: ''
+    targetAudience: '',
+    thumbnail: ''
   });
 
   useEffect(() => {
@@ -51,12 +55,14 @@ const InstructorCourseManagePage = () => {
           shortDescription: courseData.shortDescription || '',
           description: courseData.description || '',
           price: courseData.price || '',
+          salePrice: courseData.salePrice || '',
           categoryId: courseData.categoryId || '',
           level: courseData.level || 'beginner',
           language: courseData.language || 'Tiếng Việt',
           whatYouWillLearn: Array.isArray(courseData.whatYouWillLearn) ? courseData.whatYouWillLearn.join('\n') : '',
           requirements: Array.isArray(courseData.requirements) ? courseData.requirements.join('\n') : '',
-          targetAudience: Array.isArray(courseData.targetAudience) ? courseData.targetAudience.join('\n') : ''
+          targetAudience: Array.isArray(courseData.targetAudience) ? courseData.targetAudience.join('\n') : '',
+          thumbnail: courseData.thumbnail || ''
         });
 
         const catData = catRes.data?.data || catRes.data;
@@ -76,6 +82,31 @@ const InstructorCourseManagePage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('thumbnail', file);
+      
+      const res = await instructorApi.uploadCourseThumbnail(formDataUpload);
+      // axiosClient already unwraps the response data
+      const imageUrl = res.imageUrl || (res.data && res.data.imageUrl);
+      
+      if (imageUrl) {
+        setFormData(prev => ({ ...prev, thumbnail: imageUrl }));
+        setMessage('Image uploaded successfully! Remember to save the course.');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -87,6 +118,7 @@ const InstructorCourseManagePage = () => {
         ...formData,
         categoryId: parseInt(formData.categoryId),
         price: parseFloat(formData.price),
+        salePrice: formData.salePrice ? parseFloat(formData.salePrice) : null,
         whatYouWillLearn: formData.whatYouWillLearn.split('\n').filter(line => line.trim() !== ''),
         requirements: formData.requirements.split('\n').filter(line => line.trim() !== ''),
         targetAudience: formData.targetAudience.split('\n').filter(line => line.trim() !== '')
@@ -141,6 +173,36 @@ const InstructorCourseManagePage = () => {
       <div style={{ borderTop: '1px solid #d1d7dc', paddingTop: '24px' }}>
         <form style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontWeight: 700, marginBottom: '8px' }}>Course Image / Thumbnail</label>
+              <div style={{ border: '1px solid #d1d7dc', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7f9fa', minHeight: '200px' }}>
+                {formData.thumbnail ? (
+                  <img src={formData.thumbnail} alt="Course Thumbnail" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain', marginBottom: '16px' }} />
+                ) : (
+                  <div style={{ color: '#6a6f73', marginBottom: '16px' }}>No image uploaded</div>
+                )}
+                
+                <input
+                  type="file"
+                  id="thumbnail-upload"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="thumbnail-upload" style={{
+                    display: 'flex', alignItems: 'center', gap: '8px', cursor: uploadingImage ? 'not-allowed' : 'pointer', 
+                    padding: '8px 16px', border: '1px solid #1c1d1f', borderRadius: '0',
+                    fontWeight: 700, backgroundColor: 'transparent', 
+                    opacity: uploadingImage ? 0.7 : 1
+                }}>
+                    {uploadingImage ? <Loader2 className="spinner" size={16} /> : <Upload size={16} />}
+                    {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label style={{ display: 'block', fontWeight: 700, marginBottom: '8px' }}>Course Title</label>
             <input 
@@ -238,16 +300,30 @@ const InstructorCourseManagePage = () => {
               </select>
             </div>
 
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontWeight: 700, marginBottom: '8px' }}>Price (VND)</label>
-              <input 
-                type="number" 
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '12px 16px', border: '1px solid #1c1d1f', fontSize: '15px' }}
-                min="0"
-              />
+            <div style={{ flex: 1, display: 'flex', gap: '16px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', fontWeight: 700, marginBottom: '8px' }}>Price (VND)</label>
+                <input 
+                  type="number" 
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '12px 16px', border: '1px solid #1c1d1f', fontSize: '15px' }}
+                  min="0"
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', fontWeight: 700, marginBottom: '8px' }}>Sale Price (VND)</label>
+                <input 
+                  type="number" 
+                  name="salePrice"
+                  value={formData.salePrice}
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '12px 16px', border: '1px solid #1c1d1f', fontSize: '15px' }}
+                  min="0"
+                  placeholder="Optional"
+                />
+              </div>
             </div>
           </div>
 
