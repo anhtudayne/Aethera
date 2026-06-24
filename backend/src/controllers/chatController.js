@@ -74,7 +74,9 @@ export const handleLessonChat = async (req, res, next) => {
         } catch (e) { }
 
         const genAI = new GoogleGenerativeAI(geminiApiKey);
-        const chatModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        
+        // Sử dụng model gemini-3.5-flash
+        const chatModel = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
         // KIỂM TRA LUỒNG XỬ LÝ
         const isSummary = message.includes("Tóm tắt nội dung");
@@ -153,7 +155,25 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
         }
         chatContents.push({ role: "user", parts: [{ text: promptMessage }] });
 
-        const responseResult = await chatModel.generateContent({
+        // Hàm hỗ trợ retry gọi API Gemini khi gặp 503
+        const generateContentWithRetry = async (model, params, maxRetries = 3) => {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    return await model.generateContent(params);
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= maxRetries || (error.status !== 503 && (!error.message || !error.message.includes('503')))) {
+                        throw error;
+                    }
+                    console.log(`[Gemini] Bị 503 quá tải, đang thử lại lần ${attempt} sau 2 giây...`);
+                    // Đợi 2 giây trước khi gọi lại
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+        };
+
+        const responseResult = await generateContentWithRetry(chatModel, {
             contents: chatContents,
             systemInstruction: { parts: [{ text: systemInstruction }] }
         });
@@ -172,6 +192,14 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
         });
     } catch (error) {
         console.error('Chat error:', error);
-        return res.status(500).json({ message: 'Lỗi khi gọi AI' });
+        
+        // Bắt lỗi 503 Service Unavailable từ Google Gemini API
+        if (error.status === 503 || (error.message && error.message.includes('503'))) {
+             return res.status(503).json({ 
+                 message: 'Teacher Bee AI hiện đang quá tải do có quá nhiều bạn học cùng lúc 🐝💦 Bạn vui lòng ấn Gửi lại sau vài giây nhé!' 
+             });
+        }
+        
+        return res.status(500).json({ message: 'Lỗi khi gọi AI. Vui lòng thử lại sau.' });
     }
 };

@@ -271,7 +271,10 @@ const getRelatedCourses = async (id) => {
 };
 
 const getCategories = async () => {
-    const data = await Category.findAll({ order: [['name', 'ASC']] });
+    const data = await Category.findAll({ 
+        where: { isActive: true },
+        order: [['name', 'ASC']] 
+    });
     return { data };
 };
 

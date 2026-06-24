@@ -9,19 +9,19 @@ const CourseApprovalsPage = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Modal states
   const [modalState, setModalState] = useState({ isOpen: false, courseId: null, courseName: '', action: null });
   const [reason, setReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [historyModal, setHistoryModal] = useState({ isOpen: false, courseId: null, courseName: '', data: [], loading: false });
-  
+
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get('page')) || 1;
   const status = searchParams.get('status') || 'all';
   const search = searchParams.get('search') || '';
-  
+
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 10 });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -167,7 +167,7 @@ const CourseApprovalsPage = () => {
               <span>Status: {getStatusDisplay()}</span>
               <ChevronDown size={16} className="text-gray-700" />
             </button>
-            
+
             {isFilterOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-20 border border-gray-200">
                 {['all', 'pending', 'published', 'rejected', 'suspended', 'draft'].map(s => (
@@ -225,9 +225,9 @@ const CourseApprovalsPage = () => {
               </tr>
             ) : (
               courses.map(course => (
-                <CourseTableRow 
-                  key={course.id} 
-                  course={course} 
+                <CourseTableRow
+                  key={course.id}
+                  course={course}
                   onApprove={handleApproveCourse}
                   onRequestReason={handleOpenReasonModal}
                   onViewHistory={handleViewHistory}
@@ -252,7 +252,7 @@ const CourseApprovalsPage = () => {
             </div>
             <div className="p-4">
               <p className="text-sm text-gray-600 mb-4">
-                You are about to <strong className="text-gray-900">{modalState.action}</strong> the course: <br/>
+                You are about to <strong className="text-gray-900">{modalState.action}</strong> the course: <br />
                 <span className="font-medium text-gray-800">"{modalState.courseName}"</span>
               </p>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -267,14 +267,14 @@ const CourseApprovalsPage = () => {
               />
             </div>
             <div className="px-4 py-3 bg-gray-50 flex justify-end gap-3 border-t border-gray-200">
-              <button 
+              <button
                 onClick={closeReasonModal}
                 disabled={isSubmitting}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleReasonSubmit}
                 disabled={isSubmitting}
                 className={`px-4 py-2 text-sm font-medium text-white rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 ${modalState.action === 'suspended' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-red-600 hover:bg-red-700'}`}
@@ -302,7 +302,7 @@ const CourseApprovalsPage = () => {
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="p-4 overflow-y-auto flex-1 bg-gray-50/50">
               {historyModal.loading ? (
                 <div className="py-12 text-center text-gray-500 flex flex-col items-center">
@@ -345,9 +345,9 @@ const CourseApprovalsPage = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="px-4 py-3 bg-gray-50 flex justify-end gap-3 border-t border-gray-200 shrink-0">
-              <button 
+              <button
                 onClick={closeHistoryModal}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >

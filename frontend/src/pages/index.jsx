@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import { Sparkles, BookOpen, AlertTriangle } from 'lucide-react';
 import { ROUTES } from '../utils/constants';
 import Button from '../components/common/Button/Button';
@@ -111,13 +111,59 @@ export const DashboardPage = () => {
 // ── Course Player ────
 import { useEffect, useState } from 'react';
 import { userApi } from '../api/userApi';
+import { courseApi } from '../api/courseApi';
 import VideoChatbox from '../components/CoursePlayer/VideoChatbox';
 
 export const CoursePlayerPage = () => {
+  const { slug } = useParams();
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeLessonId, setActiveLessonId] = useState(null);
+  
+  // Kiểm tra lessonId từ URL
+  const lessonIdParam = searchParams.get('lessonId');
 
   useEffect(() => {
-    // Điểm danh và cộng 5 phút học tập mẫu khi mở Course Player
+    // 1. Logic lấy bài học đầu tiên nếu URL không có lessonId
+    const fetchCurriculum = async () => {
+      if (lessonIdParam) {
+        setActiveLessonId(parseInt(lessonIdParam, 10));
+        return;
+      }
+      
+      if (slug) {
+        try {
+          const res = await courseApi.getCurriculum(slug);
+          const sections = res.data?.data || res.data;
+          
+          let foundLesson = false;
+          if (sections && sections.length > 0) {
+            for (const section of sections) {
+              if (section.Lessons && section.Lessons.length > 0) {
+                const firstLessonId = section.Lessons[0].id;
+                setActiveLessonId(firstLessonId);
+                setSearchParams({ lessonId: firstLessonId }, { replace: true });
+                foundLesson = true;
+                break;
+              }
+            }
+          }
+          // Nếu không tìm thấy lesson nào trong khóa học này, set tạm 41 để Test UI
+          if (!foundLesson) {
+             setActiveLessonId(41);
+          }
+        } catch (error) {
+          console.error('Lỗi khi tải Curriculum:', error);
+          setActiveLessonId(41); // Fallback để vẫn hiện Chatbox
+        }
+      } else {
+        setActiveLessonId(41); // Fallback nếu không có slug
+      }
+    };
+    
+    fetchCurriculum();
+
+    // 2. Điểm danh và cộng 5 phút học tập mẫu khi mở Course Player
     const logInitialActivity = async () => {
       try {
         await userApi.logStreakActivity(5);
@@ -147,10 +193,14 @@ export const CoursePlayerPage = () => {
           <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
           <p>Lecture Video Component (Stage F5)</p>
         </div>
-        
+
         {/* Phần Chatbox Bên Phải */}
         <div style={{ width: isChatOpen ? '400px' : '0px', flexShrink: 0, transition: 'width 0.3s ease', overflow: 'visible' }}>
-           <VideoChatbox lessonId={1} onToggle={setIsChatOpen} /> {/* Mặc định lessonId=1 để test */}
+          {activeLessonId ? (
+            <VideoChatbox lessonId={activeLessonId} onToggle={setIsChatOpen} />
+          ) : (
+            <VideoChatbox lessonId={41} onToggle={setIsChatOpen} />
+          )}
         </div>
       </div>
     </div>

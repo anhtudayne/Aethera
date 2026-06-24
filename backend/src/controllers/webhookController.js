@@ -44,16 +44,23 @@ export const handleAssemblyAIWebhook = async (req, res, next) => {
             if (geminiApiKey) {
                 try {
                     const genAI = new GoogleGenerativeAI(geminiApiKey);
-                    // Có thể đổi thành gemini-embedding-2 nếu model này không khả dụng với key hiện tại
                     const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-2" });
                     
+                    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
                     for (let chunk of transcripts) {
                         try {
                             const result = await embeddingModel.embedContent(chunk.text);
                             chunk.embedding = result.embedding.values;
+                            // Ngủ 1 giây giữa các request để tránh rate limit của Gemini Free Tier (100req/min)
+                            await delay(1000); 
                         } catch (err) {
                             console.error("Lỗi tạo embedding cho chunk:", err.message);
                             chunk.embedding = null;
+                            // Nếu lỡ bị limit (429), nghỉ 10 giây rồi chạy tiếp
+                            if (err.message.includes('429')) {
+                                await delay(10000);
+                            }
                         }
                     }
                 } catch (e) {

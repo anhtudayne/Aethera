@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react';
 import { adminApi } from '../api/adminApi';
 import { toast } from 'sonner';
+import { useSearchParams } from 'react-router-dom';
 
 export const useMarketingData = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page')) || 1;
+
   const [vouchers, setVouchers] = useState([]);
   const [bannerUrl, setBannerUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, currentPage: 1, limit: 10 });
 
   const fetchVouchers = async () => {
     setLoading(true);
     try {
-      const res = await adminApi.getVouchers({ limit: 50 });
+      const res = await adminApi.getVouchers({ page, limit: 10 });
       setVouchers(res.data || []);
+      if (res.pagination) setPagination(res.pagination);
     } catch (err) {
       console.error('Failed to fetch vouchers:', err);
       toast.error('Không thể tải danh sách voucher. Vui lòng thử lại.');
@@ -23,10 +29,13 @@ export const useMarketingData = () => {
 
   useEffect(() => {
     fetchVouchers();
+  }, [page]);
+
+  useEffect(() => {
     adminApi
       .getSetting('campaign_banner_url')
       .then((res) => { if (res.data) setBannerUrl(res.data); })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleVoucherSubmit = async (formData, id) => {
@@ -78,11 +87,18 @@ export const useMarketingData = () => {
   const handleDeleteBanner = async () => {
     try {
       setBannerUrl(null); // Optimistic UI
-      await adminApi.updateSetting('campaign_banner_url', ''); 
+      await adminApi.updateSetting('campaign_banner_url', '');
       toast.success('Đã gỡ banner chiến dịch!');
     } catch {
       toast.error('Gỡ banner thất bại');
     }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > pagination.totalPages) return;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', newPage.toString());
+    setSearchParams(newParams);
   };
 
   return {
@@ -90,11 +106,13 @@ export const useMarketingData = () => {
     bannerUrl,
     loading,
     isUploading,
+    pagination,
     handlers: {
       submitVoucher: handleVoucherSubmit,
       toggleStatus: handleToggleVoucherStatus,
       uploadBanner: handleUploadBanner,
       deleteBanner: handleDeleteBanner,
+      pageChange: handlePageChange,
     },
   };
 };

@@ -4,7 +4,7 @@ import VoucherSection from '../../components/admin/marketing/VoucherSection';
 import CampaignAssetsSection from '../../components/admin/marketing/CampaignAssetsSection';
 
 const MarketingManagementPage = () => {
-  const { vouchers, bannerUrl, loading, isUploading, handlers } = useMarketingData();
+  const { vouchers, bannerUrl, loading, isUploading, pagination, handlers } = useMarketingData();
 
   return (
     <div className="w-full min-h-full text-gray-900 space-y-8">
@@ -19,6 +19,7 @@ const MarketingManagementPage = () => {
         vouchers={vouchers} 
         isLoading={loading} 
         onAction={handlers} 
+        pagination={pagination}
       />
 
       {/* Campaign Assets Section */}

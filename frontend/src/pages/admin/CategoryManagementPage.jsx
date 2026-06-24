@@ -66,8 +66,8 @@ const CategoryManagementPage = () => {
                 onDelete={handleDeleteCategory}
             />
 
-            {/* Pagination placeholder is already inside CategoryTable for now or we can extract it if needed */}
-            {/* <div className="mt-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+            {/* Pagination Component - Using common PaginationBar */}
+            <div className="mt-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                 <PaginationBar 
                     totalPages={totalPages}
                     currentPage={currentPage}
@@ -76,7 +76,7 @@ const CategoryManagementPage = () => {
                     loading={loading}
                     pageSize={itemsPerPage}
                 />
-            </div> */}
+            </div>
 
             {/* Modal */}
             <CategoryModal 

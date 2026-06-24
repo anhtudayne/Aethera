@@ -19,6 +19,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [banMessage, setBanMessage] = useState('');
 
   const redirectPath = searchParams.get('redirect') || ROUTES.HOME;
 
@@ -51,6 +52,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setBanMessage('');
     if (!validate()) return;
 
     setLoading(true);
@@ -75,8 +77,10 @@ const LoginPage = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      // Handle unverified account
-      if (err?.statusCode === 403 || err?.status === 403 || err?.message?.includes('verify')) {
+      // Handle unverified or banned account
+      if (err?.isBanned) {
+        setBanMessage(err.message);
+      } else if (err?.statusCode === 403 || err?.status === 403 || err?.message?.includes('verify')) {
         toast.warning('Account unverified. Redirecting to OTP Verification...');
         navigate(ROUTES.VERIFY_OTP, { state: { email: formData.email.trim() } });
       } else {
@@ -96,6 +100,14 @@ const LoginPage = () => {
       title="Welcome back"
       subtitle="Please enter your premium credentials to login"
     >
+      {banMessage && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 shadow-sm">
+          <span className="text-xl leading-none">🚫</span>
+          <div className="text-sm text-red-800 font-medium whitespace-pre-line leading-relaxed">
+            {banMessage}
+          </div>
+        </div>
+      )}
       <form onSubmit={handleSubmit} noValidate>
         {/* Email */}
         <div className="auth-input-group">

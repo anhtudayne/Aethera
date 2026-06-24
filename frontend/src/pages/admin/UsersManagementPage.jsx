@@ -4,17 +4,18 @@ import { adminApi } from '../../api/adminApi';
 import UserTableRow from '../../components/admin/users/UserTableRow';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
+import PaginationBar from '../../components/common/PaginationBar';
 
 const UsersManagementPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get('page')) || 1;
   const role = searchParams.get('role') || 'all';
   const search = searchParams.get('search') || '';
-  
+
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 10 });
 
   const fetchUsers = async () => {
@@ -107,7 +108,7 @@ const UsersManagementPage = () => {
 
       {/* Table Container */}
       <div className="bg-white rounded-xl w-full overflow-hidden shadow-sm border border-gray-200">
-        
+
         {/* Tabs */}
         <div className="flex border-b border-gray-200 px-4 pt-2 overflow-x-auto hide-scrollbar bg-gray-50/50">
           <button
@@ -160,9 +161,9 @@ const UsersManagementPage = () => {
                 </tr>
               ) : (
                 users.map(user => (
-                  <UserTableRow 
-                    key={user.id} 
-                    user={user} 
+                  <UserTableRow
+                    key={user.id}
+                    user={user}
                     onToggleStatus={handleToggleStatus}
                   />
                 ))
@@ -172,34 +173,16 @@ const UsersManagementPage = () => {
         </div>
 
         {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="p-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-500 bg-gray-50/50">
-            <div>
-              Showing {((pagination.currentPage - 1) * pagination.limit) + 1} to {Math.min(pagination.currentPage * pagination.limit, pagination.totalItems)} of {pagination.totalItems} entries
-            </div>
-            <div className="flex gap-1">
-              <button
-                onClick={() => handlePageChange(pagination.currentPage - 1)}
-                disabled={pagination.currentPage === 1}
-                className="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors disabled:opacity-50"
-              >
-                <ChevronDown size={16} className="rotate-90" />
-              </button>
-              
-              <button className="w-8 h-8 rounded flex items-center justify-center bg-indigo-50 text-indigo-600 font-medium border border-indigo-100">
-                {pagination.currentPage}
-              </button>
-              
-              <button
-                onClick={() => handlePageChange(pagination.currentPage + 1)}
-                disabled={pagination.currentPage === pagination.totalPages}
-                className="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors disabled:opacity-50"
-              >
-                <ChevronDown size={16} className="-rotate-90" />
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="px-4 pb-4 bg-white">
+          <PaginationBar
+            totalPages={pagination.totalPages}
+            currentPage={pagination.currentPage}
+            setCurrentPage={handlePageChange}
+            totalItems={pagination.totalItems}
+            loading={loading}
+            pageSize={pagination.limit}
+          />
+        </div>
       </div>
     </div>
   );
