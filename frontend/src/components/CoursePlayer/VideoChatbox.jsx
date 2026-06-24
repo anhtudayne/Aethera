@@ -31,7 +31,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = (val) => {
     setIsOpen(val);

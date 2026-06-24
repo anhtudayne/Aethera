@@ -95,18 +95,22 @@ export const getCourseContent = async (userId, slug) => {
         // Update last accessed time
         await enrollment.update({ lastAccessedAt: new Date() });
 
-        // Retrieve sections & lessons
+        // Retrieve sections & lessons without SQL ORDER BY to avoid "Out of sort memory"
         const sections = await db.Section.findAll({
             where: { courseId: course.id },
             include: [{
                 model: db.Lesson,
                 as: 'lessons',
                 attributes: ['id', 'title', 'type', 'content', 'videoUrl', 'duration', 'order', 'isFreePreview'],
-            }],
-            order: [
-                ['order', 'ASC'],
-                [{ model: db.Lesson, as: 'lessons' }, 'order', 'ASC'],
-            ],
+            }]
+        });
+
+        // Sort in JavaScript memory
+        sections.sort((a, b) => a.order - b.order);
+        sections.forEach(section => {
+            if (section.lessons) {
+                section.lessons.sort((a, b) => a.order - b.order);
+            }
         });
 
         // Retrieve lesson progress map
