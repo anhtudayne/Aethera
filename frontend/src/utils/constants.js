@@ -24,6 +24,7 @@ export const ROUTES = {
   MY_REVIEWS: '/dashboard/reviews',
   NOTIFICATIONS: '/dashboard/notifications',
   SETTINGS: '/dashboard/settings',
+  REPORT: '/dashboard/report',
   ADMIN_COURSE_APPROVALS: '/dashboard/approvals',
   ADMIN_USERS: '/dashboard/users',
   ADMIN_PAYOUTS: '/dashboard/payouts',

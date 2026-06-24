@@ -13,7 +13,7 @@ import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../contr
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
 import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory, handleDeleteCategory } from '../controllers/adminCategoryController';
-import { getAllTickets, updateTicketStatus, updateInternalNote } from '../controllers/adminTicketController';
+import { getAllTickets, updateTicketStatus, updateInternalNote, updateAdminResponse } from '../controllers/adminTicketController';
 import uploadCloud from '../middlewares/uploadMiddleware';
 const router = express.Router();
 
@@ -204,6 +204,13 @@ router.patch(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     updateInternalNote
+);
+
+router.patch(
+    '/tickets/:id/response',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    updateAdminResponse
 );
 
 export default router;

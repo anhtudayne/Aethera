@@ -55,6 +55,7 @@ import CertificateVerifyPage from './Certificates/CertificateVerifyPage';
 import MyReviewsPage from './Reviews/MyReviewsPage';
 import NotificationsPage from './Notifications/NotificationsPage';
 import ProfileSettingsPage from './Settings/ProfileSettingsPage';
+import SupportPage from './Support/SupportPage';
 
 export {
   HomePage,
@@ -89,6 +90,7 @@ export {
   MyReviewsPage,
   NotificationsPage,
   ProfileSettingsPage,
+  SupportPage,
 };
 
 // ── DashboardPage: Routes admin to admin, student to student ────

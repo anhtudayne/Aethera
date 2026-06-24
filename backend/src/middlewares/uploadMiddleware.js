@@ -33,5 +33,15 @@ const avatarStorage = new CloudinaryStorage({
 });
 export const uploadAvatar = multer({ storage: avatarStorage });
 
+// 4. Dành cho Ticket Evidence (ảnh định dạng jpg, png...)
+const ticketStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'aethera_tickets_evidence',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+  },
+});
+export const uploadTicketEvidence = multer({ storage: ticketStorage });
+
 // Export default cho banner hoặc tùy chọn import cụ thể
 export default uploadCloud;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { adminApi } from '../../../api/adminApi';
@@ -7,6 +7,7 @@ import { User, Calendar, ReceiptText, Info, Inbox, ZoomIn, Send, Image as ImageI
 
 const TicketDetail = ({ ticket, onTicketUpdated }) => {
   const [internalNotes, setInternalNotes] = useState(ticket?.internalNotes || '');
+  const [adminResponse, setAdminResponse] = useState(ticket?.adminResponse || '');
   const [isUpdating, setIsUpdating] = useState(false);
 
   if (!ticket) {
@@ -25,7 +26,22 @@ const TicketDetail = ({ ticket, onTicketUpdated }) => {
       toast.success('Đã cập nhật ghi chú nội bộ');
       onTicketUpdated();
     } catch (error) {
+      console.error('Error updating note:', error);
       toast.error('Lỗi khi cập nhật ghi chú');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleUpdateResponse = async () => {
+    try {
+      setIsUpdating(true);
+      await adminApi.updateTicketResponse(ticket.id, adminResponse);
+      toast.success('Đã gửi phản hồi đến học viên');
+      onTicketUpdated();
+    } catch (error) {
+      console.error('Error updating response:', error);
+      toast.error('Lỗi khi cập nhật phản hồi');
     } finally {
       setIsUpdating(false);
     }
@@ -38,6 +54,7 @@ const TicketDetail = ({ ticket, onTicketUpdated }) => {
       toast.success(`Đã cập nhật trạng thái thành ${status}`);
       onTicketUpdated();
     } catch (error) {
+      console.error('Error updating status:', error);
       toast.error('Lỗi khi cập nhật trạng thái');
     } finally {
       setIsUpdating(false);
@@ -45,11 +62,16 @@ const TicketDetail = ({ ticket, onTicketUpdated }) => {
   };
 
   let attachments = [];
-  if (ticket.attachments) {
-    try {
-      attachments = typeof ticket.attachments === 'string' ? JSON.parse(ticket.attachments) : ticket.attachments;
-    } catch (e) {
-      console.error('Error parsing attachments:', e);
+  if (ticket?.attachments) {
+    if (Array.isArray(ticket.attachments)) {
+      attachments = ticket.attachments;
+    } else if (typeof ticket.attachments === 'string') {
+      try {
+        const parsed = JSON.parse(ticket.attachments);
+        attachments = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        attachments = [ticket.attachments];
+      }
     }
   }
 
@@ -164,21 +186,45 @@ const TicketDetail = ({ ticket, onTicketUpdated }) => {
         )}
 
         {/* Internal Notes */}
-        <div>
+        <div className="mb-6">
           <h3 className="text-xs font-semibold text-gray-500 mb-4 uppercase tracking-wider">
-            Ghi chú nội bộ
+            Ghi chú nội bộ (Chỉ Admin thấy)
           </h3>
           <div className="relative">
             <textarea
-              className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all min-h-[120px]"
+              className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all min-h-[100px]"
               placeholder="Thêm ghi chú nội bộ cho admin khác..."
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
+              disabled={isUpdating}
             ></textarea>
             <button
               onClick={handleUpdateNote}
               disabled={isUpdating}
               className="absolute bottom-3 right-3 p-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* Admin Response to User */}
+        <div>
+          <h3 className="text-xs font-semibold text-gray-500 mb-4 uppercase tracking-wider">
+            Phản hồi cho học viên (Hiển thị công khai)
+          </h3>
+          <div className="relative">
+            <textarea
+              className="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all min-h-[100px]"
+              placeholder="Nhập nội dung phản hồi chính thức cho học viên..."
+              value={adminResponse}
+              onChange={(e) => setAdminResponse(e.target.value)}
+              disabled={isUpdating}
+            ></textarea>
+            <button
+              onClick={handleUpdateResponse}
+              disabled={isUpdating}
+              className="absolute bottom-3 right-3 p-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center"
             >
               <Send size={18} />
             </button>

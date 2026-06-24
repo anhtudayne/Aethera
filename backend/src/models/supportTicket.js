@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: true,
             },
+            adminResponse: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
             requestedAmount: {
                 type: DataTypes.DECIMAL(12, 0),
                 allowNull: true,

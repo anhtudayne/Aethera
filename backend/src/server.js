@@ -28,6 +28,7 @@ import adminRoutes from './routes/adminRoutes';
 import statsRoutes from './routes/statsRoutes';
 import webhookRoutes from './routes/webhookRoutes';
 import paymentRoutes from './routes/paymentRoutes';
+import ticketRoutes from './routes/ticketRoutes';
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.use('/api/notes', noteRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 // ===== CONTENT MANAGEMENT (Teacher/Admin) =====
 app.use('/api/sections', sectionRoutes);

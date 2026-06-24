@@ -29,6 +29,7 @@ import {
   MyReviewsPage,
   NotificationsPage,
   ProfileSettingsPage,
+  SupportPage,
   NotFoundPage,
   CourseApprovalsPage,
   UsersManagementPage,
@@ -100,6 +101,7 @@ function App() {
           <Route path={ROUTES.CERTIFICATES} element={<MyCertificatesPage />} />
           <Route path={ROUTES.MY_REVIEWS} element={<MyReviewsPage />} />
           <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
+          <Route path={ROUTES.REPORT} element={<SupportPage />} />
           <Route path={ROUTES.SETTINGS} element={<ProfileSettingsPage />} />
         </Route>
       </Route>
