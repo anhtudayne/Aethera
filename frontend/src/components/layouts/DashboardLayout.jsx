@@ -29,6 +29,7 @@ const DashboardLayout = () => {
     { to: ROUTES.CERTIFICATES, label: 'Certificates', icon: Award },
     { to: ROUTES.MY_REVIEWS, label: 'My Reviews', icon: MessageSquare },
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell },
+    { to: ROUTES.REPORT, label: 'Report Issue', icon: LifeBuoy },
     { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
   ];
 

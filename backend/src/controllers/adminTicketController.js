@@ -67,3 +67,22 @@ export const updateInternalNote = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, ticket, 'Cập nhật ghi chú thành công'));
 });
+
+/**
+ * Cập nhật phản hồi cho người dùng (Admin Response)
+ * PATCH /api/v1/admin/tickets/:id/response
+ */
+export const updateAdminResponse = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { adminResponse } = req.body;
+
+    const ticket = await db.SupportTicket.findByPk(id);
+    if (!ticket) {
+        return res.status(404).json({ status: 404, message: 'Không tìm thấy yêu cầu' });
+    }
+
+    ticket.adminResponse = adminResponse;
+    await ticket.save();
+
+    return res.status(200).json(new ApiResponse(200, ticket, 'Cập nhật phản hồi thành công'));
+});

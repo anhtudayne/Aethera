@@ -39,5 +39,6 @@ export const adminApi = {
   // Support Tickets management
   getTickets: (params) => axiosClient.get('/admin/tickets', { params }),
   updateTicketStatus: (id, status) => axiosClient.patch(`/admin/tickets/${id}/status`, { status }),
-  updateTicketNote: (id, internalNotes) => axiosClient.patch(`/admin/tickets/${id}/note`, { internalNotes })
+  updateTicketNote: (id, internalNotes) => axiosClient.patch(`/admin/tickets/${id}/note`, { internalNotes }),
+  updateTicketResponse: (id, adminResponse) => axiosClient.patch(`/admin/tickets/${id}/response`, { adminResponse })
 };

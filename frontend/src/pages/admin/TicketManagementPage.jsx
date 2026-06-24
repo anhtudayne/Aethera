@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import TicketList from '../../components/admin/tickets/TicketList';
 import TicketDetail from '../../components/admin/tickets/TicketDetail';
 import { adminApi } from '../../api/adminApi';
@@ -8,35 +8,49 @@ const TicketManagementPage = () => {
   const [filter, setFilter] = useState('ALL');
   const [selectedTicketId, setSelectedTicketId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const fetchTickets = async () => {
-    try {
-      setLoading(true);
-      const params = {};
-      if (filter !== 'ALL') {
-        params.type = filter;
-      }
-      const res = await adminApi.getTickets(params);
-      setTickets(res.data || []);
-      
-      // Select the first ticket if nothing is selected or if selected ticket is no longer in the list
-      if (res.data && res.data.length > 0) {
-        if (!selectedTicketId || !res.data.find((t) => t.id === selectedTicketId)) {
-          setSelectedTicketId(res.data[0].id);
-        }
-      } else {
-        setSelectedTicketId(null);
-      }
-    } catch (error) {
-      console.error('Error fetching tickets:', error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchTickets = () => {
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   useEffect(() => {
-    fetchTickets();
-  }, [filter]);
+    let active = true;
+    const loadTickets = async () => {
+      try {
+        setLoading(true);
+        const params = {};
+        if (filter !== 'ALL') {
+          params.type = filter;
+        }
+        const res = await adminApi.getTickets(params);
+        if (!active) return;
+        
+        const ticketList = res.data || [];
+        setTickets(ticketList);
+        
+        if (ticketList.length > 0) {
+          setSelectedTicketId((prevId) => {
+            if (!prevId || !ticketList.find((t) => t.id === prevId)) {
+              return ticketList[0].id;
+            }
+            return prevId;
+          });
+        } else {
+          setSelectedTicketId(null);
+        }
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    loadTickets();
+    return () => {
+      active = false;
+    };
+  }, [filter, refreshTrigger]);
 
   const selectedTicket = tickets.find((t) => t.id === selectedTicketId);
 
@@ -76,6 +90,7 @@ const TicketManagementPage = () => {
               onSelectTicket={setSelectedTicketId}
             />
             <TicketDetail
+              key={selectedTicketId || 'none'}
               ticket={selectedTicket}
               onTicketUpdated={fetchTickets}
             />
