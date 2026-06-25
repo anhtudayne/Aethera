@@ -38,9 +38,11 @@ export const handleGetLessons = async (req, res, next) => {
         if (sectionId) where.sectionId = sectionId;
 
         const lessons = await db.Lesson.findAll({
-            where,
-            order: [['order', 'ASC']]
+            where
         });
+        
+        // Sort in JS to prevent Out of sort memory
+        lessons.sort((a, b) => a.order - b.order);
         
         return res.status(200).json({ status: 200, data: lessons });
     } catch (error) {

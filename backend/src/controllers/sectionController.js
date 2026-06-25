@@ -25,11 +25,15 @@ export const handleGetSections = async (req, res, next) => {
             include: [{
                 model: db.Lesson,
                 as: 'lessons',
-            }],
-            order: [
-                ['order', 'ASC'],
-                [{ model: db.Lesson, as: 'lessons' }, 'order', 'ASC']
-            ]
+            }]
+        });
+        
+        // Sort in JavaScript memory to avoid MySQL Out of sort memory
+        sections.sort((a, b) => a.order - b.order);
+        sections.forEach(section => {
+            if (section.lessons) {
+                section.lessons.sort((a, b) => a.order - b.order);
+            }
         });
         
         return res.status(200).json({ status: 200, data: sections });

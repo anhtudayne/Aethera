@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tag, PlusCircle, RefreshCw, Pencil, Copy, Power, PowerOff } from 'lucide-react';
 import { toast } from 'sonner';
 import VoucherFormModal from './VoucherFormModal';
+import PaginationBar from '../../common/PaginationBar';
 
 const formatDate = (dateStr) =>
   dateStr
@@ -28,7 +29,7 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const VoucherSection = ({ vouchers, isLoading, onAction }) => {
+const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVoucher, setEditingVoucher] = useState(null);
 
@@ -204,6 +205,19 @@ const VoucherSection = ({ vouchers, isLoading, onAction }) => {
           </tbody>
         </table>
       </div>
+
+      {pagination && pagination.totalPages > 1 && (
+        <div className="p-4 bg-white border-t border-gray-100">
+          <PaginationBar 
+            totalPages={pagination.totalPages}
+            currentPage={pagination.currentPage}
+            setCurrentPage={onAction.pageChange}
+            totalItems={pagination.totalItems}
+            loading={isLoading}
+            pageSize={pagination.limit}
+          />
+        </div>
+      )}
     </section>
   );
 };

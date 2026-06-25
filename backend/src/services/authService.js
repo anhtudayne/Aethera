@@ -194,7 +194,15 @@ export const loginUser = async (email, password) => {
         }
 
         if (!user.isActive) {
-            return { status: 403, message: 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP.' };
+            if (user.otp) {
+                return { status: 403, message: 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP.' };
+            } else {
+                return {
+                    status: 403,
+                    message: 'Tài khoản của bạn đã bị vô hiệu hóa.\nViệc truy cập vào Aethera đã bị từ chối do hệ thống phát hiện tài khoản này vi phạm nghiêm trọng Chính sách & Tiêu chuẩn Cộng đồng. Nếu bạn cho rằng đây là sự nhầm lẫn, vui lòng liên hệ support@aethera.com để được hỗ trợ.',
+                    isBanned: true
+                };
+            }
         }
 
         // Google-only user trying to login with password
@@ -349,7 +357,15 @@ export const googleLogin = async (idToken) => {
 
         // Check if account is suspended
         if (!user.isActive) {
-            return { status: 403, message: 'Tài khoản đã bị khóa.' };
+            if (user.otp) {
+                return { status: 403, message: 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP.' };
+            } else {
+                return {
+                    status: 403,
+                    message: '🚫 Tài khoản của bạn đã bị vô hiệu hóa.\nViệc truy cập vào Aethera đã bị từ chối do hệ thống phát hiện tài khoản này vi phạm nghiêm trọng Chính sách & Tiêu chuẩn Cộng đồng. Nếu bạn cho rằng đây là sự nhầm lẫn, vui lòng liên hệ support@aethera.com để được hỗ trợ.',
+                    isBanned: true
+                };
+            }
         }
 
         const token = generateToken({ id: user.id, role: user.roleId, email: user.email });

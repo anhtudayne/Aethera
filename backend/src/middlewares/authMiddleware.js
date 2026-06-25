@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-export const verifyToken = (req, res, next) => {
+import db from '../models/index';
+
+export const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
@@ -13,6 +15,17 @@ export const verifyToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Check if user is banned (Force Logout feature)
+        const user = await db.User.findByPk(decoded.id);
+        if (!user || (!user.isActive && !user.otp)) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Tài khoản của bạn đã bị vô hiệu hóa hoặc không tồn tại.',
+                isBanned: true
+            });
+        }
+
         req.user = decoded; // { id, role, ... }
         next();
     } catch (error) {

@@ -28,7 +28,7 @@ axiosClient.interceptors.response.use(
   },
   (error) => {
     const { response } = error;
-    if (response?.status === 401) {
+    if (response?.status === 401 || response?.data?.isBanned) {
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
       

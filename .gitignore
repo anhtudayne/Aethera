@@ -36,3 +36,5 @@ coverage/
 # Project specific
 backend/public/uploads/*
 !backend/public/uploads/.gitkeep
+backend/package-lock.json
+frontend/package-lock.json

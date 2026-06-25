@@ -33,7 +33,16 @@ const avatarStorage = new CloudinaryStorage({
 });
 export const uploadAvatar = multer({ storage: avatarStorage });
 
-// 4. Dành cho Ticket Evidence (ảnh định dạng jpg, png...)
+// 4. Dành cho Course Thumbnails
+const thumbnailStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'aethera_thumbnails',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+  },
+});
+export const uploadThumbnail = multer({ storage: thumbnailStorage });
+// 5. Dành cho Ticket Evidence (ảnh định dạng jpg, png...)
 const ticketStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {

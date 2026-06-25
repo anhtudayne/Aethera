@@ -106,15 +106,7 @@ const CategoryTable = ({ categories, loading, onEdit, onDelete }) => {
                     </tbody>
                 </table>
             </div>
-            {/* Pagination placeholder as in HTML mockup */}
-            <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between bg-white">
-                <span className="text-sm text-gray-500">Showing 1 to {categories.length} of {categories.length} categories</span>
-                <div className="flex gap-1">
-                    <button className="px-3 py-1 border border-gray-200 rounded text-sm bg-white text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50" disabled>Prev</button>
-                    <button className="px-3 py-1 border border-indigo-600 rounded text-sm bg-indigo-600 text-white">1</button>
-                    <button className="px-3 py-1 border border-gray-200 rounded text-sm bg-white text-gray-500 hover:bg-gray-50 transition-colors">Next</button>
-                </div>
-            </div>
+
         </div>
     );
 };

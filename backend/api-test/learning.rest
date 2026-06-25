@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8089/api
-@token = your_access_token_here
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInJvbGUiOiJpbnN0cnVjdG9yIiwiZW1haWwiOiJxdW9jc2Vuc2VpQGdtYWlsLmNvbSIsImlhdCI6MTc4MjI5MDQ2NCwiZXhwIjoxNzgyMzc2ODY0fQ.8alPkU1hOlQMSxdXSzF2OoA2yraGLreJcO7UPya2ZY8
 
 ### ==========================================
 ### 6. LEARNING (/api/learning)
@@ -28,4 +28,8 @@ Content-Type: application/json
 
 ### Lấy bài học tiếp theo
 GET {{baseUrl}}/learning/courses/1/next-lesson
+Authorization: Bearer {{token}}
+
+### 
+GET {{baseUrl}}/sections?courseId=23 
 Authorization: Bearer {{token}}

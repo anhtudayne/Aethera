@@ -30,6 +30,7 @@ import webhookRoutes from './routes/webhookRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import ticketRoutes from './routes/ticketRoutes';
 import refundRoutes from './routes/refundRoutes';
+import qaRoutes from './routes/qaRoutes';
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use('/api/user', dashboardRoutes);
 
 // ===== COURSE BROWSING =====
 app.use('/api', courseRoutes);         // /api/courses, /api/categories
+app.use('/api', qaRoutes);             // /api/courses/:courseId/questions
 
 // ===== CART & ORDERS =====
 app.use('/api/cart', cartRoutes);

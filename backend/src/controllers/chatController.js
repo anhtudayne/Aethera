@@ -74,7 +74,9 @@ export const handleLessonChat = async (req, res, next) => {
         } catch (e) { }
 
         const genAI = new GoogleGenerativeAI(geminiApiKey);
-        const chatModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        // Sử dụng model gemini-3.1-flash-lite-preview (chuyên xử lý tải nặng)
+        const chatModel = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
 
         // KIỂM TRA LUỒNG XỬ LÝ
         const isSummary = message.includes("Tóm tắt nội dung");
@@ -84,10 +86,16 @@ export const handleLessonChat = async (req, res, next) => {
         let systemInstruction = "";
         let promptMessage = "";
         let sources = [];
+        let chatContents = [];
 
         if (isFullContextRequired) {
             // LUỒNG 1: Gửi toàn bộ Transcript (không dùng RAG)
-            const fullTranscriptText = chunks.map(c => `[${c.start_time} - ${c.end_time}]: ${c.text}`).join('\n');
+            let fullTranscriptText = chunks.map(c => `[${c.start_time} - ${c.end_time}]: ${c.text}`).join('\n');
+
+            // Cắt bớt nếu transcript quá dài (> 8000 ký tự) để tránh Google ném lỗi 503 do Payload lớn
+            // if (fullTranscriptText.length > 8000) {
+            //     fullTranscriptText = fullTranscriptText.substring(0, 8000) + "\n... (Nội dung sau đã được rút gọn do quá dài)";
+            // }
 
             if (isQuiz) {
                 systemInstruction = `Bạn là Teacher Bee AI 🐝 - một Gia sư AI tận tâm. Nhiệm vụ của bạn là tạo một bài kiểm tra ngắn (quiz) trắc nghiệm 5 câu dựa trên nội dung bài giảng.
@@ -146,15 +154,51 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
                 `Lưu ý: Hãy xưng "Teacher Bee AI" và gọi học viên là "bạn" một cách thân thiện. Đảm bảo câu trả lời giúp họ áp dụng được kiến thức vào thực hành.`;
         }
 
-        // Nạp lịch sử chat (nếu có) vào mảng contents để AI nhớ ngữ cảnh
-        let chatContents = [];
+        // Nạp lịch sử chat (nếu có)
+        let chatContentsArr = [];
         if (history && Array.isArray(history)) {
-            chatContents = [...history];
+            // Đảm bảo không có 2 role 'user' nằm cạnh nhau (Gemini cấm điều này)
+            history.forEach((msg) => {
+                if (chatContentsArr.length > 0 && chatContentsArr[chatContentsArr.length - 1].role === msg.role) {
+                    chatContentsArr[chatContentsArr.length - 1].parts[0].text += "\n" + msg.parts[0].text;
+                } else {
+                    chatContentsArr.push(msg);
+                }
+            });
         }
-        chatContents.push({ role: "user", parts: [{ text: promptMessage }] });
 
-        const responseResult = await chatModel.generateContent({
-            contents: chatContents,
+        if (chatContentsArr.length > 0 && chatContentsArr[chatContentsArr.length - 1].role === "user") {
+            chatContentsArr[chatContentsArr.length - 1].parts[0].text += "\n\n" + promptMessage;
+        } else {
+            chatContentsArr.push({ role: "user", parts: [{ text: promptMessage }] });
+        }
+
+        // Hợp nhất chatContents hiện tại (từ Tóm tắt/Quiz) vào mảng cuối cùng
+        const finalChatContents = [...chatContentsArr];
+        if (chatContents.length > 0) {
+            finalChatContents.unshift(...chatContents); // Đưa system context của transcript lên đầu
+        }
+
+        // Hàm hỗ trợ retry gọi API Gemini khi gặp 503
+        const generateContentWithRetry = async (model, params, maxRetries = 3) => {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    return await model.generateContent(params);
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= maxRetries || (error.status !== 503 && (!error.message || !error.message.includes('503')))) {
+                        throw error;
+                    }
+                    console.log(`[Gemini] Bị 503 quá tải, đang thử lại lần ${attempt} sau 2 giây...`);
+                    // Đợi 2 giây trước khi gọi lại
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+        };
+
+        const responseResult = await generateContentWithRetry(chatModel, {
+            contents: finalChatContents,
             systemInstruction: { parts: [{ text: systemInstruction }] }
         });
 
@@ -172,6 +216,14 @@ Teacher Bee AI đợi câu trả lời của bạn để chữa bài cho bạn n
         });
     } catch (error) {
         console.error('Chat error:', error);
-        return res.status(500).json({ message: 'Lỗi khi gọi AI' });
+
+        // Bắt lỗi 503 Service Unavailable từ Google Gemini API
+        if (error.status === 503 || (error.message && error.message.includes('503'))) {
+            return res.status(503).json({
+                message: 'Teacher Bee AI hiện đang quá tải do có quá nhiều bạn học cùng lúc 🐝💦 Bạn vui lòng ấn Gửi lại sau vài giây nhé!'
+            });
+        }
+
+        return res.status(500).json({ message: 'Lỗi khi gọi AI. Vui lòng thử lại sau.' });
     }
 };

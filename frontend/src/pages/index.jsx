@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import { Sparkles, BookOpen, AlertTriangle } from 'lucide-react';
 import { ROUTES } from '../utils/constants';
 import Button from '../components/common/Button/Button';
@@ -115,53 +115,8 @@ export const DashboardPage = () => {
 };
 
 // ── Course Player ────
-import { useEffect, useState } from 'react';
-import { userApi } from '../api/userApi';
-import VideoChatbox from '../components/CoursePlayer/VideoChatbox';
-
-export const CoursePlayerPage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(true);
-
-  useEffect(() => {
-    // Điểm danh và cộng 5 phút học tập mẫu khi mở Course Player
-    const logInitialActivity = async () => {
-      try {
-        await userApi.logStreakActivity(5);
-      } catch (err) {
-        console.error('Failed to log streak activity', err);
-      }
-    };
-    logInitialActivity();
-
-    // Trong thực tế, sẽ gọi API mỗi phút khi video đang phát
-    const interval = setInterval(() => {
-      userApi.logStreakActivity(1).catch(console.error);
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div style={{ background: '#0F172A', color: '#F8FAFC', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid #1E293B', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Course Player</h3>
-        <Link to={ROUTES.DASHBOARD} style={{ color: '#6366F1', fontSize: '0.9rem' }}>Back to Dashboard</Link>
-      </div>
-      <div style={{ flexGrow: 1, display: 'flex', padding: '24px', gap: '24px', alignItems: 'flex-start' }}>
-        {/* Phần Video Bên Trái */}
-        <div style={{ flexGrow: 1, aspectRatio: '16/9', background: '#1E293B', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <BookOpen size={48} style={{ color: '#6366F1', marginBottom: '16px' }} />
-          <p>Lecture Video Component (Stage F5)</p>
-        </div>
-        
-        {/* Phần Chatbox Bên Phải */}
-        <div style={{ width: isChatOpen ? '400px' : '0px', flexShrink: 0, transition: 'width 0.3s ease', overflow: 'visible' }}>
-           <VideoChatbox lessonId={1} onToggle={setIsChatOpen} /> {/* Mặc định lessonId=1 để test */}
-        </div>
-      </div>
-    </div>
-  );
-};
+import CoursePlayerPage from './CoursePlayer/CoursePlayerPage';
+export { CoursePlayerPage };
 
 // ── 404 Page ────
 export const NotFoundPage = () => (

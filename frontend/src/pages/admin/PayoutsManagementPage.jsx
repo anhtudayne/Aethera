@@ -4,7 +4,7 @@ import { adminApi } from '../../api/adminApi';
 import PayoutCard from '../../components/admin/payouts/PayoutCard';
 import { toast } from 'sonner';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 8;
 
 import PaginationBar from '../../components/common/PaginationBar';
 

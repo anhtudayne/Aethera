@@ -5,13 +5,13 @@ import { toast } from 'sonner';
 export const useCategoryData = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
-    
+
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const [itemsPerPage] = useState(10);
-    
+
     // Search
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -74,7 +74,7 @@ export const useCategoryData = () => {
 
     const handleDeleteCategory = async (id) => {
         if (!window.confirm('Are you sure you want to delete this category?')) return;
-        
+
         try {
             const res = await adminApi.deleteCategory(id);
             if (res.status === 200) {
