@@ -505,3 +505,30 @@
     gap: 12px;
   }
 }
+
+.checkout-credit-apply-row {
+  margin: 8px 0;
+  padding: 4px 0;
+}
+
+.credit-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1c1d1f;
+  cursor: pointer;
+}
+
+.credit-checkbox-label input {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #5624d0;
+}
+
+.credit-row {
+  color: #196b24;
+  font-weight: 700;
+}

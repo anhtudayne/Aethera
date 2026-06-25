@@ -8,7 +8,7 @@ import db from '../models';
 export const createMoMoPayment = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { courseIds } = req.body;
+        const { courseIds, useCredit } = req.body;
 
         if (courseIds && (!Array.isArray(courseIds) || courseIds.length === 0)) {
             return res.status(400).json({
@@ -17,9 +17,18 @@ export const createMoMoPayment = async (req, res) => {
             });
         }
 
-        // 1. Tạo đơn hàng nháp (pending)
-        const orderResult = await orderService.createOrderFromCart(userId, courseIds);
-        const { orderCode, totalAmount, orderId } = orderResult;
+        // 1. Tạo đơn hàng nháp hoặc thanh toán bằng credit
+        const orderResult = await orderService.createOrderFromCart(userId, courseIds, useCredit);
+        const { orderCode, totalAmount, orderId, isPaid } = orderResult;
+
+        if (isPaid) {
+            return res.status(200).json({
+                success: true,
+                message: 'Thanh toán bằng Credit thành công.',
+                isPaid: true,
+                orderId
+            });
+        }
 
         // 2. Xác định các URL redirect & IPN
         // redirectUrl phải qua backend (ngrok) để xử lý kết quả trước khi chuyển về frontend

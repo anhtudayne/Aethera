@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DECIMAL(12, 0),
                 allowNull: false,
             },
+            creditUsed: {
+                type: DataTypes.DECIMAL(12, 0),
+                defaultValue: 0,
+                allowNull: false,
+            },
             status: {
                 type: DataTypes.ENUM('pending', 'paid', 'cancelled'),
                 defaultValue: 'pending',

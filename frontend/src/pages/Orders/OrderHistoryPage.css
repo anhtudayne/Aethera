@@ -187,3 +187,54 @@
   .orders-table th, .orders-table td { padding: 10px 12px; }
   .order-detail-info { grid-template-columns: 1fr 1fr; }
 }
+
+.refund-button-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b32d2d;
+  background: #ffe3e3;
+  border: 1px solid #f8b4b4;
+  border-radius: var(--radius-md, 4px);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.refund-button-link:hover {
+  background: #fdf2f2;
+  color: #9b1c1c;
+  border-color: #f8b4b4;
+}
+
+.orders-tab-header {
+  display: flex;
+  gap: 16px;
+  border-bottom: 2px solid #e8eaeb;
+  margin-bottom: 24px;
+}
+
+.orders-tab-header .tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #6a6f73;
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
+}
+
+.orders-tab-header .tab-btn:hover {
+  color: #1c1d1f;
+}
+
+.orders-tab-header .tab-btn.active {
+  color: #5624d0;
+  border-bottom-color: #5624d0;
+}

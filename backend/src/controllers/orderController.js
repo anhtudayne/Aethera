@@ -4,8 +4,8 @@ import ApiResponse from '../utils/ApiResponse';
 
 export const handleCreateOrder = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { courseIds } = req.body;
-    const data = await orderService.createOrderFromCart(userId, courseIds);
+    const { courseIds, useCredit } = req.body;
+    const data = await orderService.createOrderFromCart(userId, courseIds, useCredit);
     return res.status(201).json(new ApiResponse(201, data, 'Tạo đơn hàng thành công'));
 });
 

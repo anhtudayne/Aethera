@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.FavoriteCourse, { foreignKey: 'userId', as: 'favoriteCourses' });
             User.hasMany(models.Notification, { foreignKey: 'userId', as: 'notifications' });
             User.hasMany(models.Transaction, { foreignKey: 'userId', as: 'transactions' });
+            User.hasMany(models.RefundRequest, { foreignKey: 'userId', as: 'refundRequests' });
         }
     }
     User.init(
@@ -97,6 +98,11 @@ module.exports = (sequelize, DataTypes) => {
             lastCreditReset: {
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
+            },
+            creditBalance: {
+                type: DataTypes.DECIMAL(12, 0),
+                defaultValue: 0,
+                allowNull: false,
             },
         },
         {

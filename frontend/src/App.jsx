@@ -19,6 +19,9 @@ import {
   CartPage,
   CheckoutPage,
   OrderSuccessPage,
+  RefundRequestPage,
+  RefundSuccessPage,
+  CreditBalancePage,
   CoursePlayerPage,
   DashboardPage,
   MyCoursesPage,
@@ -72,6 +75,8 @@ function App() {
           <Route path={ROUTES.CART} element={<CartPage />} />
           <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
           <Route path={ROUTES.ORDER_SUCCESS} element={<OrderSuccessPage />} />
+          <Route path={ROUTES.REFUND_REQUEST} element={<RefundRequestPage />} />
+          <Route path={ROUTES.REFUND_SUCCESS} element={<RefundSuccessPage />} />
         </Route>
 
         {/* Course video player — minimal design, no footer */}
@@ -103,6 +108,7 @@ function App() {
           <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
           <Route path={ROUTES.REPORT} element={<SupportPage />} />
           <Route path={ROUTES.SETTINGS} element={<ProfileSettingsPage />} />
+          <Route path={ROUTES.CREDIT_BALANCE} element={<CreditBalancePage />} />
         </Route>
       </Route>
 

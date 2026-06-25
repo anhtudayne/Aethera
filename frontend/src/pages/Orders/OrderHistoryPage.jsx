@@ -1,28 +1,41 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight, RotateCcw } from 'lucide-react';
 import { orderApi } from '../../api/orderApi';
+import { refundApi } from '../../api/refundApi';
 import { ROUTES } from '../../utils/constants';
 import './OrderHistoryPage.css';
 
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState([]);
+  const [refunds, setRefunds] = useState([]);
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'refunds'
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await orderApi.getMyOrders({ page: 1, limit: 20 });
-        setOrders(res.data?.orders || res.data || []);
-      } catch {
-        setOrders([]);
+        if (activeTab === 'orders') {
+          const res = await orderApi.getMyOrders({ page: 1, limit: 50 });
+          setOrders(res.data?.orders || res.data || []);
+        } else {
+          const res = await refundApi.getMyRequests();
+          setRefunds(res.data || []);
+        }
+      } catch (err) {
+        console.error('Error fetching history:', err);
+        if (activeTab === 'orders') {
+          setOrders([]);
+        } else {
+          setRefunds([]);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchOrders();
-  }, []);
+    fetchData();
+  }, [activeTab]);
 
   const formatPrice = (price) => {
     if (!price) return '0 ₫';
@@ -44,55 +57,124 @@ const OrderHistoryPage = () => {
     return { label: status, modifier: 'pending' };
   };
 
+  const getRefundStatusDisplay = (status) => {
+    const s = (status || '').toUpperCase();
+    if (s === 'COMPLETED') return { label: '✅ Completed', modifier: 'paid' };
+    if (s === 'PROCESSING') return { label: '⏳ Processing', modifier: 'pending' };
+    return { label: status, modifier: 'pending' };
+  };
+
+  const getRefundMethodDisplay = (method) => {
+    if (method === 'credit') return 'Credit Balance';
+    if (method === 'momo') return 'MoMo Wallet';
+    if (method === 'bank_transfer') return 'Bank Transfer';
+    return method;
+  };
+
   return (
     <div className="orders-page">
-      <h2>Lịch sử đơn hàng 🧾</h2>
+      <h2>History & Transactions 🧾</h2>
+
+      <div className="orders-tab-header">
+        <button
+          className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+        >
+          Order History
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'refunds' ? 'active' : ''}`}
+          onClick={() => setActiveTab('refunds')}
+        >
+          Refund History
+        </button>
+      </div>
 
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
-      ) : orders.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon"><ShoppingBag size={28} /></div>
-          <h4>Chưa có đơn hàng nào</h4>
-          <p>Đơn hàng của bạn sẽ hiển thị ở đây sau khi mua khóa học.</p>
-        </div>
+      ) : activeTab === 'orders' ? (
+        orders.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon"><ShoppingBag size={28} /></div>
+            <h4>No orders yet</h4>
+            <p>Your orders will appear here after you purchase a course.</p>
+          </div>
+        ) : (
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th>Order Code</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order) => {
+                const statusInfo = getStatusDisplay(order.status);
+                return (
+                  <tr key={order.id}>
+                    <td><span className="order-code">#{order.orderCode || order.id}</span></td>
+                    <td>{formatDate(order.createdAt)}</td>
+                    <td style={{ fontWeight: 700 }}>{formatPrice(order.totalAmount || order.total)}</td>
+                    <td>
+                      <span className={`order-status order-status--${statusInfo.modifier}`}>
+                        {statusInfo.label}
+                      </span>
+                    </td>
+                    <td>
+                      <Link to={`${ROUTES.ORDERS}/${order.id}`} className="view-order-btn">
+                        Details <ArrowRight size={14} />
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )
       ) : (
-        <table className="orders-table">
-          <thead>
-            <tr>
-              <th>Mã đơn</th>
-              <th>Ngày đặt</th>
-              <th>Tổng tiền</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => {
-              const statusInfo = getStatusDisplay(order.status);
-              return (
-                <tr key={order.id}>
-                  <td><span className="order-code">#{order.orderCode || order.id}</span></td>
-                  <td>{formatDate(order.createdAt)}</td>
-                  <td style={{ fontWeight: 700 }}>{formatPrice(order.totalAmount || order.total)}</td>
-                  <td>
-                    <span className={`order-status order-status--${statusInfo.modifier}`}>
-                      {statusInfo.label}
-                    </span>
-                  </td>
-                  <td>
-                    <Link to={`${ROUTES.ORDERS}/${order.id}`} className="view-order-btn">
-                      Chi tiết <ArrowRight size={14} />
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        refunds.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon"><RotateCcw size={28} /></div>
+            <h4>No refund requests yet</h4>
+            <p>Your refund transactions will be shown here.</p>
+          </div>
+        ) : (
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Requested Date</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {refunds.map((req) => {
+                const statusInfo = getRefundStatusDisplay(req.status);
+                return (
+                  <tr key={req.id}>
+                    <td style={{ fontWeight: 700 }}>{req.course?.name || 'Course'}</td>
+                    <td>{formatDate(req.createdAt)}</td>
+                    <td style={{ fontWeight: 700 }}>{formatPrice(req.refundAmount)}</td>
+                    <td>{getRefundMethodDisplay(req.method)}</td>
+                    <td>
+                      <span className={`order-status order-status--${statusInfo.modifier}`}>
+                        {statusInfo.label}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )
       )}
     </div>
   );

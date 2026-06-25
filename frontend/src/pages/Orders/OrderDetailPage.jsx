@@ -84,7 +84,7 @@ const OrderDetailPage = () => {
 
   const statusInfo = getStatusDisplay(order.status);
   const isPending = (order.status || '').toLowerCase() === 'pending';
-  const items = order.OrderItems || order.items || [];
+  const items = order.orderItems || order.OrderItems || order.items || [];
 
   return (
     <div className="order-detail-page">
@@ -117,18 +117,32 @@ const OrderDetailPage = () => {
       <div className="order-items-list">
         {items.length > 0 ? items.map((item) => {
           const course = item.Course || item.course || item;
+          const isPaid = (order.status || '').toLowerCase() === 'paid';
+          const orderDate = new Date(order.createdAt);
+          const now = new Date();
+          const diffTime = Math.abs(now - orderDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const isWithin30Days = diffDays <= 30;
+
           return (
             <div key={item.id || course.id} className="order-item-row">
               {course.thumbnail && (
-                <img src={course.thumbnail} alt={course.title} className="order-item-img" />
+                <img src={course.thumbnail} alt={course.name || course.title} className="order-item-img" />
               )}
               <div className="order-item-info">
-                <div className="order-item-title">{course.title}</div>
+                <div className="order-item-title">{course.name || course.title}</div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
                   {course.instructorName || course.instructor?.fullName || ''}
                 </div>
               </div>
               <div className="order-item-price">{formatPrice(item.price || course.price)}</div>
+              {isPaid && isWithin30Days && (
+                <div style={{ marginLeft: 'var(--space-md)' }}>
+                  <Link to={`/refund/${course.id}`} className="refund-button-link">
+                    Request Refund
+                  </Link>
+                </div>
+              )}
             </div>
           );
         }) : (

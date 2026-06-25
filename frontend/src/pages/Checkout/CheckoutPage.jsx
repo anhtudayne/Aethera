@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Globe, Lock, CreditCard, Wallet, Landmark, Building } from 'lucide-react';
 import { cartApi } from '../../api/cartApi';
 import { orderApi } from '../../api/orderApi';
+import { userApi } from '../../api/userApi';
 import useCart from '../../hooks/useCart';
 import OrderReviewItem from './OrderReviewItem';
 import { formatPrice } from '../../utils/helpers';
@@ -20,6 +21,8 @@ const CheckoutPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
+  const [creditBalance, setCreditBalance] = useState(0);
+  const [applyCredit, setApplyCredit] = useState(false);
   
   // Custom checkout states matching Udemy
   const [selectedCountry, setSelectedCountry] = useState('VN');
@@ -61,6 +64,21 @@ const CheckoutPage = () => {
   }, [navigate, selectedCourseIds]);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await userApi.getProfile();
+        const profile = res.user || res.data;
+        if (profile) {
+          setCreditBalance(Number(profile.creditBalance || 0));
+        }
+      } catch (err) {
+        console.error('Failed to fetch user credit balance:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       fetchCart();
     }, 0);
@@ -80,6 +98,8 @@ const CheckoutPage = () => {
   }, 0);
 
   const total = totalOriginalPrice - totalDiscount;
+  const creditUsed = applyCredit ? Math.min(creditBalance, total) : 0;
+  const netTotal = total - creditUsed;
   const discountPercent = totalOriginalPrice > 0 ? Math.round((totalDiscount / totalOriginalPrice) * 100) : 0;
 
   const handlePaymentSubmit = async (e) => {
@@ -90,9 +110,21 @@ const CheckoutPage = () => {
     try {
       const ids = selectedCourseIds || items.map(item => item.courseId);
 
+      // If credit covers the entire purchase
+      if (netTotal === 0) {
+        const res = await orderApi.createMoMoPayment(ids, applyCredit);
+        if (res?.isPaid || res?.data?.isPaid || (res?.success && !res?.payUrl)) {
+          const orderId = res?.orderId || res?.data?.orderId;
+          toast.success('Order completed successfully using Credit!');
+          refreshCart();
+          navigate(`/order-success?orderId=${orderId}`);
+          return;
+        }
+      }
+
       if (paymentMethod === 'e-wallet') {
         // MoMo Payment Flow
-        const res = await orderApi.createMoMoPayment(ids);
+        const res = await orderApi.createMoMoPayment(ids, applyCredit);
         const payUrl = res?.data?.payUrl || res?.payUrl;
         
         if (!payUrl) {
@@ -100,7 +132,6 @@ const CheckoutPage = () => {
         }
 
         toast.success('Redirecting to MoMo secure payment gateway...');
-        // Wait a short moment so the user sees the toast
         setTimeout(() => {
           window.location.href = payUrl;
         }, 1000);
@@ -108,30 +139,26 @@ const CheckoutPage = () => {
       }
 
       // Default Simulation Flow (Credit Card, etc.)
-      // Step 1: Create Order
-      const createRes = await orderApi.createFromCart(ids);
+      const createRes = await orderApi.createFromCart(ids, applyCredit);
       const orderId = createRes?.data?.orderId || createRes?.orderId;
+      const isAlreadyPaid = createRes?.data?.isPaid || createRes?.isPaid;
       
       if (!orderId) {
         throw new Error('Failed to retrieve order ID from server response.');
       }
 
-      // Step 2: Fulfill Order (Instant payment simulation)
-      await orderApi.fulfillOrder(orderId);
+      if (!isAlreadyPaid) {
+        await orderApi.fulfillOrder(orderId);
+      }
 
       toast.success('Payment completed successfully!');
-      
-      // Reset Navbar cart count
       refreshCart();
-
-      // Navigate to success page
       navigate(`/order-success?orderId=${orderId}`);
     } catch (err) {
       console.error('Checkout error:', err);
-      toast.error(err?.message || 'Payment simulation failed. Please try again.');
+      toast.toast ? toast.toast(err?.message) : toast.error(err?.message || 'Payment simulation failed. Please try again.');
     } finally {
-      // Only set paying to false if we are not redirecting away
-      if (paymentMethod !== 'e-wallet') {
+      if (paymentMethod !== 'e-wallet' || netTotal === 0) {
         setPaying(false);
       }
     }
@@ -184,11 +211,11 @@ const CheckoutPage = () => {
             <div className="checkout-section-block">
               <h2 className="checkout-section-heading">Payment method</h2>
               
-              {total === 0 ? (
+              {netTotal === 0 ? (
                 <div className="checkout-no-payment-needed">
                   <h4 className="free-purchase-title">Good news! No payment needed.</h4>
                   <p className="free-purchase-desc">
-                    Your discounts or Aethera credits fully cover this purchase. Enroll now to begin learning.
+                    Your Aethera credits fully cover this purchase. Click complete to begin learning.
                   </p>
                 </div>
               ) : (
@@ -375,9 +402,34 @@ const CheckoutPage = () => {
 
                 <div className="summary-divider"></div>
 
+                {creditBalance > 0 && (
+                  <>
+                    <div className="summary-divider"></div>
+                    <div className="checkout-credit-apply-row">
+                      <label className="credit-checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={applyCredit}
+                          onChange={(e) => setApplyCredit(e.target.checked)}
+                        />
+                        <span>Apply Aethera Credit ({formatPrice(creditBalance)})</span>
+                      </label>
+                    </div>
+                  </>
+                )}
+
+                {applyCredit && creditUsed > 0 && (
+                  <div className="summary-detail-row credit-row">
+                    <span className="summary-label">Credit Applied:</span>
+                    <span className="summary-value">- {formatPrice(creditUsed)}</span>
+                  </div>
+                )}
+
+                <div className="summary-divider"></div>
+
                 <div className="summary-detail-row total-payment-row">
                   <span className="total-label">Total:</span>
-                  <span className="total-value">{formatPrice(total)}</span>
+                  <span className="total-value">{formatPrice(netTotal)}</span>
                 </div>
               </div>
 
@@ -395,7 +447,7 @@ const CheckoutPage = () => {
                 ) : (
                   <>
                     <Lock size={16} className="lock-icon" />
-                    <span>{total === 0 ? 'Enroll now' : 'Complete Payment'}</span>
+                    <span>{netTotal === 0 ? 'Enroll now' : 'Complete Payment'}</span>
                   </>
                 )}
               </button>

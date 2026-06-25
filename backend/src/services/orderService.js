@@ -3,7 +3,7 @@ import * as notificationService from './notificationService';
 import * as emailService from './emailService';
 import { createError } from '../utils/helpers';
 
-export const createOrderFromCart = async (userId, courseIds) => {
+export const createOrderFromCart = async (userId, courseIds, useCredit = false) => {
     const transaction = await db.sequelize.transaction();
     try {
         // 1. Lấy giỏ hàng
@@ -32,28 +32,42 @@ export const createOrderFromCart = async (userId, courseIds) => {
         }
 
         // 3. Tính tổng tiền
-        let totalAmount = 0;
+        let originalTotal = 0;
         const orderItemsData = [];
         for (const item of validItems) {
             const price = item.course.salePrice ? Number(item.course.salePrice) : Number(item.course.price);
-            totalAmount += price;
+            originalTotal += price;
             orderItemsData.push({ courseId: item.courseId, price });
         }
 
-        // 4. Tạo Order
+        // 4. Áp dụng Credit Balance
+        let creditUsed = 0;
+        let finalAmount = originalTotal;
+        const user = await db.User.findByPk(userId, { transaction });
+        if (useCredit && user && Number(user.creditBalance) > 0) {
+            creditUsed = Math.min(Number(user.creditBalance), originalTotal);
+            finalAmount = originalTotal - creditUsed;
+            
+            // Trừ credit balance của user
+            user.creditBalance = Number(user.creditBalance) - creditUsed;
+            await user.save({ transaction });
+        }
+
+        // 5. Tạo Order
         const orderCode = `DH${userId}${Date.now()}`;
         const order = await db.Order.create({
             code: orderCode,
             userId,
-            totalAmount,
-            status: 'pending',  // Luôn pending, thanh toán do bên khác hoặc tay xử lý
+            totalAmount: finalAmount,
+            creditUsed,
+            status: finalAmount === 0 ? 'paid' : 'pending',
         }, { transaction });
 
-        // 5. Tạo OrderItems
+        // 6. Tạo OrderItems
         const items = orderItemsData.map(item => ({ ...item, orderId: order.id }));
         await db.OrderItem.bulkCreate(items, { transaction });
 
-        // 6. Xóa giỏ hàng (chỉ xóa các items hợp lệ)
+        // 7. Xóa giỏ hàng (chỉ xóa các items hợp lệ)
         await db.Cart.destroy({
             where: { userId, courseId: validItems.map(i => i.courseId) },
             transaction,
@@ -61,16 +75,31 @@ export const createOrderFromCart = async (userId, courseIds) => {
 
         await transaction.commit();
 
-        // 7. Notification
+        // 8. Nếu thanh toán xong bằng credit (finalAmount === 0), fulfill đơn hàng ngay
+        if (finalAmount === 0) {
+            await fulfillOrder(order.id);
+        }
+
+        // 9. Notification
         try {
             const courseNames = validItems.map(item => item.course?.name || 'Khóa học');
-            await notificationService.createNotification(
-                userId,
-                'order_created',
-                '📦 Đơn hàng mới đã tạo',
-                `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${totalAmount.toLocaleString('vi-VN')}đ`,
-                { orderId: order.id, orderCode, totalAmount, courseNames }
-            );
+            if (finalAmount === 0) {
+                await notificationService.createNotification(
+                    userId,
+                    'order_paid',
+                    '✅ Đơn hàng thanh toán bằng Credit thành công!',
+                    `Đơn hàng ${orderCode} đã thanh toán thành công bằng Credit. Bạn có thể học ngay!`,
+                    { orderId: order.id, orderCode, totalAmount: finalAmount, creditUsed, courseNames }
+                );
+            } else {
+                await notificationService.createNotification(
+                    userId,
+                    'order_created',
+                    '📦 Đơn hàng mới đã tạo',
+                    `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${finalAmount.toLocaleString('vi-VN')}đ` + (creditUsed > 0 ? ` (Đã dùng ${creditUsed.toLocaleString('vi-VN')}đ credit)` : ''),
+                    { orderId: order.id, orderCode, totalAmount: finalAmount, creditUsed, courseNames }
+                );
+            }
         } catch (e) {
             console.error('Notification error:', e);
         }
@@ -78,8 +107,10 @@ export const createOrderFromCart = async (userId, courseIds) => {
         return {
             orderCode,
             orderId: order.id,
-            totalAmount,
+            totalAmount: finalAmount,
+            creditUsed,
             itemCount: items.length,
+            isPaid: finalAmount === 0,
             items: items.map(i => ({
                 courseId: i.courseId,
                 price: i.price,

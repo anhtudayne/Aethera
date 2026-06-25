@@ -40,5 +40,9 @@ export const adminApi = {
   getTickets: (params) => axiosClient.get('/admin/tickets', { params }),
   updateTicketStatus: (id, status) => axiosClient.patch(`/admin/tickets/${id}/status`, { status }),
   updateTicketNote: (id, internalNotes) => axiosClient.patch(`/admin/tickets/${id}/note`, { internalNotes }),
-  updateTicketResponse: (id, adminResponse) => axiosClient.patch(`/admin/tickets/${id}/response`, { adminResponse })
+  updateTicketResponse: (id, adminResponse) => axiosClient.patch(`/admin/tickets/${id}/response`, { adminResponse }),
+
+  // Refund management
+  getRefundRequests: (params) => axiosClient.get('/admin/refunds', { params }),
+  completeRefundTransfer: (id, adminNote) => axiosClient.patch(`/admin/refunds/${id}/complete`, { adminNote })
 };

@@ -10,7 +10,8 @@ import {
   Settings,
   Tag,
   Layers,
-  LifeBuoy
+  LifeBuoy,
+  Wallet
 } from 'lucide-react';
 import Navbar from '../common/Navbar/Navbar';
 import { ROUTES, STORAGE_KEYS } from '../../utils/constants';
@@ -26,6 +27,7 @@ const DashboardLayout = () => {
     { to: ROUTES.MY_COURSES, label: 'My Courses', icon: BookOpen },
     { to: ROUTES.WISHLIST, label: 'Wishlist', icon: Heart },
     { to: ROUTES.ORDERS, label: 'Purchase History', icon: ShoppingBag },
+    { to: ROUTES.CREDIT_BALANCE, label: 'Credit Balance', icon: Wallet },
     { to: ROUTES.CERTIFICATES, label: 'Certificates', icon: Award },
     { to: ROUTES.MY_REVIEWS, label: 'My Reviews', icon: MessageSquare },
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell },

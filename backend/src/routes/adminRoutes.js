@@ -14,6 +14,7 @@ import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSetti
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
 import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory, handleDeleteCategory } from '../controllers/adminCategoryController';
 import { getAllTickets, updateTicketStatus, updateInternalNote, updateAdminResponse } from '../controllers/adminTicketController';
+import { getRefundRequests, completeRefundTransfer } from '../controllers/adminRefundController';
 import uploadCloud from '../middlewares/uploadMiddleware';
 const router = express.Router();
 
@@ -211,6 +212,21 @@ router.patch(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     updateAdminResponse
+);
+
+// Quản lý Refunds (Admin)
+router.get(
+    '/refunds',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    getRefundRequests
+);
+
+router.patch(
+    '/refunds/:id/complete',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    completeRefundTransfer
 );
 
 export default router;

@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             Course.hasMany(models.Review, { foreignKey: 'courseId', as: 'reviews' });
             Course.hasMany(models.FavoriteCourse, { foreignKey: 'courseId', as: 'favoriteCourses' });
             Course.hasMany(models.CourseStatusHistory, { foreignKey: 'courseId', as: 'statusHistories' });
+            Course.hasMany(models.RefundRequest, { foreignKey: 'courseId', as: 'refundRequests' });
         }
     }
     Course.init(

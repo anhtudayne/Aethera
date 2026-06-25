@@ -28,6 +28,9 @@ import ResetPasswordPage from './Auth/ResetPasswordPage';
 import CartPage from './Cart/CartPage';
 import CheckoutPage from './Checkout/CheckoutPage';
 import OrderSuccessPage from './Checkout/OrderSuccessPage';
+import RefundRequestPage from './Refund/RefundRequestPage';
+import RefundSuccessPage from './Refund/RefundSuccessPage';
+import CreditBalancePage from './CreditBalance/CreditBalancePage';
 
 // Admin pages
 import AdminDashboardPage from './admin/Dashboard';
@@ -70,6 +73,9 @@ export {
   CartPage,
   CheckoutPage,
   OrderSuccessPage,
+  RefundRequestPage,
+  RefundSuccessPage,
+  CreditBalancePage,
   AdminDashboardPage,
   CourseApprovalsPage,
   UsersManagementPage,
