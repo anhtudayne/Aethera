@@ -18,7 +18,9 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
   const visible = mode === 'create' ? isOpen : Boolean(initialData);
 
   const [code, setCode] = useState('');
-  const [discountPercent, setDiscountPercent] = useState('');
+  const [discountType, setDiscountType] = useState('PERCENTAGE');
+  const [discountValue, setDiscountValue] = useState('');
+  const [maxDiscountValue, setMaxDiscountValue] = useState('');
   const [startDate, setStartDate] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [maxUsage, setMaxUsage] = useState('');
@@ -33,14 +35,18 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
     if (isEdit && initialData) {
       // Pre-fill từ dữ liệu hiện có
       setCode(initialData.code ?? '');
-      setDiscountPercent(String(Number(initialData.discountPercent)));
+      setDiscountType(initialData.discountType ?? 'PERCENTAGE');
+      setDiscountValue(String(Number(initialData.discountValue || initialData.discountPercent || 0)));
+      setMaxDiscountValue(initialData.maxDiscountValue != null ? String(Number(initialData.maxDiscountValue)) : '');
       setStartDate(toDateInputValue(initialData.startDate));
       setExpiryDate(toDateInputValue(initialData.expiryDate));
       setMaxUsage(initialData.maxUsage != null ? String(initialData.maxUsage) : '');
     } else {
       // Reset sạch cho form tạo mới
       setCode('');
-      setDiscountPercent('');
+      setDiscountType('PERCENTAGE');
+      setDiscountValue('');
+      setMaxDiscountValue('');
       setStartDate('');
       setExpiryDate('');
       setMaxUsage('');
@@ -88,13 +94,15 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
   // ── Submit ──────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!code || !discountPercent || !expiryDate) return;
+    if (!code || !discountValue || !expiryDate) return;
 
     setIsSubmitting(true);
     try {
       const formData = {
         code,
-        discountPercent,
+        discountType,
+        discountValue: Number(discountValue),
+        maxDiscountValue: discountType === 'PERCENTAGE' && maxDiscountValue ? Number(maxDiscountValue) : undefined,
         startDate: startDate || undefined,
         expiryDate,
         maxUsage: maxUsage || undefined,
@@ -174,28 +182,72 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
             )}
           </div>
 
-          {/* Discount Percentage */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              Giảm giá (%) <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                min="1"
-                max="100"
-                value={discountPercent}
-                onChange={(e) => setDiscountPercent(e.target.value)}
-                placeholder="1 – 100"
-                required
-                autoFocus={isEdit}
-                className={`w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
+          {/* Discount Percentage / Fixed */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                Loại giảm giá <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={discountType}
+                onChange={(e) => setDiscountType(e.target.value)}
+                className={`w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
                             focus:outline-none focus:ring-2 ${theme.ring}
-                            font-mono text-gray-900 transition-all`}
-              />
-              <Percent className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                            text-gray-900 transition-all text-sm`}
+              >
+                <option value="PERCENTAGE">Phần trăm (%)</option>
+                <option value="FIXED">Số tiền cố định (đ)</option>
+              </select>
+            </div>
+            
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                Mức giảm <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  max={discountType === 'PERCENTAGE' ? 100 : undefined}
+                  value={discountValue}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                  placeholder={discountType === 'PERCENTAGE' ? "1 – 100" : "Nhập số tiền..."}
+                  required
+                  autoFocus={isEdit}
+                  className={`w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
+                              focus:outline-none focus:ring-2 ${theme.ring}
+                              font-mono text-gray-900 transition-all`}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none font-bold text-sm">
+                  {discountType === 'PERCENTAGE' ? '%' : 'đ'}
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Max Discount Value (Only for PERCENTAGE) */}
+          {discountType === 'PERCENTAGE' && (
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                Mức giảm tối đa
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  value={maxDiscountValue}
+                  onChange={(e) => setMaxDiscountValue(e.target.value)}
+                  placeholder="Bỏ trống = không giới hạn"
+                  className={`w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
+                              focus:outline-none focus:ring-2 ${theme.ring}
+                              font-mono text-gray-900 transition-all`}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none font-bold text-sm">
+                  đ
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Start Date + Expiry Date – 2 cột */}
           <div className="grid grid-cols-2 gap-4">
@@ -277,7 +329,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || !code || !discountPercent || !expiryDate}
+              disabled={isSubmitting || !code || !discountValue || !expiryDate}
               className={`flex-1 py-2.5 rounded-lg font-medium text-white shadow-sm transition-colors
                           disabled:opacity-60 flex items-center justify-center gap-2 ${theme.submit}`}
             >

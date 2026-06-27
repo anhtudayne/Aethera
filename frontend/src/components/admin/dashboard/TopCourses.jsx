@@ -1,12 +1,15 @@
 import React from 'react';
 import { Image } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../../utils/constants';
+import { formatPrice } from '../../../utils/helpers';
 
 const TopCourses = ({ courses = [] }) => {
     return (
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-gray-900">Top Selling Courses</h3>
-                <button className="text-indigo-600 font-medium hover:underline text-sm">View All</button>
+                <Link to={ROUTES.ADMIN_COURSE_APPROVALS} className="text-indigo-600 font-medium hover:underline text-sm">View All</Link>
             </div>
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -30,11 +33,11 @@ const TopCourses = ({ courses = [] }) => {
                                                 <Image size={16} className="text-gray-400" />
                                             )}
                                         </div>
-                                        <span className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors cursor-pointer line-clamp-1">{course.name}</span>
+                                        <Link to={`/courses/${course.slug || course.id}`} className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors cursor-pointer line-clamp-1">{course.name}</Link>
                                     </div>
                                 </td>
                                 <td className="py-4 px-6 text-emerald-600 font-medium">{course.totalStudents}</td>
-                                <td className="py-4 px-6 text-gray-500">${course.price}</td>
+                                <td className="py-4 px-6 text-gray-500">{formatPrice(course.salePrice || course.price)}</td>
                             </tr>
                         ))}
                         {courses.length === 0 && (

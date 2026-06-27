@@ -1,5 +1,7 @@
 import db from '../models/index';
 import { Op } from 'sequelize';
+import { getReviewCriteriaById } from '../utils/reviewCriteria';
+import { sendCourseRejectionEmail } from '../utils/emailHelper';
 
 const Course = db.Course;
 const Category = db.Category;
@@ -57,13 +59,16 @@ export const getAdminCourses = async (params) => {
  * @param {string} reason - Lý do đổi trạng thái
  * @param {number} adminId - ID admin thực hiện
  */
-export const updateCourseStatus = async (courseId, newStatus, reason = null, adminId = null) => {
+export const updateCourseStatus = async (courseId, newStatus, reasons = [], adminId = null) => {
     const validStatuses = ['draft', 'pending', 'published', 'rejected', 'suspended'];
     if (!validStatuses.includes(newStatus)) {
         return { status: 400, message: 'Trạng thái không hợp lệ.' };
     }
 
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findByPk(courseId, {
+        include: [{ model: db.User, as: 'instructorData' }]
+    });
+    
     if (!course) {
         return { status: 404, message: 'Không tìm thấy khóa học.' };
     }
@@ -72,18 +77,30 @@ export const updateCourseStatus = async (courseId, newStatus, reason = null, adm
     course.status = newStatus;
     await course.save();
 
+    let reasonText = null;
+    if (reasons && reasons.length > 0) {
+        // If reasons is an array, JSON stringify it. If it's a string, use it.
+        reasonText = Array.isArray(reasons) ? JSON.stringify(reasons) : reasons;
+    }
+
     // Lưu vào bảng CourseStatusHistory
     await db.CourseStatusHistory.create({
         courseId: course.id,
         adminId: adminId,
         oldStatus: oldStatus,
         newStatus: newStatus,
-        reason: reason
+        reason: reasonText
     });
 
-    // Giả lập gửi email cho giảng viên nếu bị từ chối hoặc đình chỉ
-    if (newStatus === 'rejected' || newStatus === 'suspended') {
-        console.log(`[EMAIL SIMULATION] Gửi email đến giảng viên của khóa học ${course.name} (ID: ${course.id}).\nTrạng thái mới: ${newStatus}.\nLý do: ${reason || 'Không có lý do cụ thể'}`);
+    // Send email to instructor if rejected
+    if (newStatus === 'rejected') {
+        const reasonArray = Array.isArray(reasons) ? reasons : [reasons];
+        const criteriaDetails = reasonArray.map(r => getReviewCriteriaById(r));
+        const isEmail = course.instructor && course.instructor.includes('@');
+        const instructorEmail = course.instructorData?.email || (isEmail ? course.instructor : 'instructor@example.com');
+        await sendCourseRejectionEmail(instructorEmail, course.name, criteriaDetails);
+    } else if (newStatus === 'suspended') {
+        console.log(`[EMAIL SIMULATION] Gửi email đình chỉ khóa học ${course.name}.`);
     }
 
     return {
@@ -105,7 +122,7 @@ export const getCourseStatusHistory = async (courseId) => {
             {
                 model: db.User,
                 as: 'admin',
-                attributes: ['id', 'username', 'email']
+                attributes: ['id', 'firstName', 'lastName', 'email']
             }
         ]
     });

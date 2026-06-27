@@ -7,7 +7,7 @@ import { authorizeRole } from '../middlewares/authorizeMiddleware';
 import { ROLES } from '../utils/constants';
 import { updateProfileValidation } from '../middlewares/validators/userValidator';
 import { handleValidationErrors } from '../middlewares/validators/authValidator';
-import { handleGetAdminCourses, handleUpdateCourseStatus, handleGetCourseHistory } from '../controllers/adminCourseController';
+import { handleGetAdminCourses, handleUpdateCourseStatus, handleGetCourseHistory, handleGetCoursePreview } from '../controllers/adminCourseController';
 import { handleGetAdminUsers, handleUpdateUserStatus } from '../controllers/adminUserController';
 import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../controllers/adminPayoutController';
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
@@ -56,6 +56,13 @@ router.put(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     handleUpdateUserStatus
+);
+
+router.get(
+    '/courses/:id/preview',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleGetCoursePreview
 );
 
 // Lấy lịch sử thay đổi trạng thái khóa học

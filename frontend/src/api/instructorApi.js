@@ -4,6 +4,7 @@ export const instructorApi = {
   getMyCourses: (params) => axiosClient.get('/instructor/my-courses', { params }),
   createCourse: (data) => axiosClient.post('/courses', data),
   updateCourse: (id, data) => axiosClient.put(`/courses/${id}`, data),
+  submitReview: (id) => axiosClient.put(`/courses/${id}/submit-review`),
 
   // Curriculum Management
   getSections: (courseId) => axiosClient.get(`/sections?courseId=${courseId}`),

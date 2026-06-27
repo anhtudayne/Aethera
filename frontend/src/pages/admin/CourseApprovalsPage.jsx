@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, ChevronDown, RefreshCw, AlertCircle, FolderOpen, X, Loader2 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import CourseTableRow from '../../components/admin/courses/CourseTableRow';
+import AdminCoursePreviewModal from '../../components/admin/courses/AdminCoursePreviewModal';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,10 +13,21 @@ const CourseApprovalsPage = () => {
 
   // Modal states
   const [modalState, setModalState] = useState({ isOpen: false, courseId: null, courseName: '', action: null });
-  const [reason, setReason] = useState('');
+  const [reasons, setReasons] = useState([]);
+  const [otherReason, setOtherReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const REVIEW_CRITERIA_LIST = [
+    { id: 'AUDIO_POOR', label: 'Poor audio quality' },
+    { id: 'VIDEO_WATERMARK', label: 'Video contains unknown watermarks/logos' },
+    { id: 'CONTENT_TOO_SHORT', label: 'Content duration is too short' },
+    { id: 'MISSING_DESCRIPTION', label: 'Missing detailed description' },
+    { id: 'INAPPROPRIATE_CONTENT', label: 'Inappropriate content' },
+    { id: 'MISSING_THUMBNAIL', label: 'Missing course thumbnail' }
+  ];
+
   const [historyModal, setHistoryModal] = useState({ isOpen: false, courseId: null, courseName: '', data: [], loading: false });
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, courseId: null });
 
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get('page')) || 1;
@@ -76,7 +88,7 @@ const CourseApprovalsPage = () => {
 
   const handleApproveCourse = async (courseId) => {
     try {
-      await adminApi.updateCourseStatus(courseId, 'published', null);
+      await adminApi.updateCourseStatus(courseId, { status: 'published' });
       toast.success('Course approved successfully!');
       handleCourseStatusUpdate(courseId, 'published');
     } catch (err) {
@@ -92,14 +104,20 @@ const CourseApprovalsPage = () => {
   const closeReasonModal = () => {
     if (isSubmitting) return;
     setModalState({ isOpen: false, courseId: null, courseName: '', action: null });
-    setReason('');
+    setReasons([]);
+    setOtherReason('');
   };
 
   const handleViewHistory = async (courseId, courseName) => {
     setHistoryModal({ isOpen: true, courseId, courseName, data: [], loading: true });
     try {
       const res = await adminApi.getCourseHistory(courseId);
-      setHistoryModal(prev => ({ ...prev, data: res.data || [], loading: false }));
+      let historyData = [];
+      if (Array.isArray(res)) historyData = res;
+      else if (res && Array.isArray(res.data)) historyData = res.data;
+      else if (res && res.data && Array.isArray(res.data.data)) historyData = res.data.data;
+      else if (res && Array.isArray(res.history)) historyData = res.history; // Just in case
+      setHistoryModal(prev => ({ ...prev, data: historyData, loading: false }));
     } catch (err) {
       toast.error('Failed to load audit log');
       setHistoryModal(prev => ({ ...prev, loading: false }));
@@ -111,13 +129,22 @@ const CourseApprovalsPage = () => {
   };
 
   const handleReasonSubmit = async () => {
-    if (!reason.trim()) {
-      toast.error('Please provide a reason');
+    if (reasons.length === 0 && !otherReason.trim()) {
+      toast.error('Please select at least 1 reason or provide a custom reason');
       return;
     }
+    
+    let finalReasons = [...reasons];
+    if (otherReason.trim()) {
+        finalReasons.push(otherReason.trim());
+    }
+
     setIsSubmitting(true);
     try {
-      await adminApi.updateCourseStatus(modalState.courseId, modalState.action, reason.trim());
+      await adminApi.updateCourseStatus(modalState.courseId, { 
+        status: modalState.action, 
+        reasons: finalReasons 
+      });
       toast.success(`Course ${modalState.action} successfully!`);
       handleCourseStatusUpdate(modalState.courseId, modalState.action);
       closeReasonModal();
@@ -231,6 +258,7 @@ const CourseApprovalsPage = () => {
                   onApprove={handleApproveCourse}
                   onRequestReason={handleOpenReasonModal}
                   onViewHistory={handleViewHistory}
+                  onPreview={() => setPreviewModal({ isOpen: true, courseId: course.id })}
                 />
               ))
             )}
@@ -255,15 +283,36 @@ const CourseApprovalsPage = () => {
                 You are about to <strong className="text-gray-900">{modalState.action}</strong> the course: <br />
                 <span className="font-medium text-gray-800">"{modalState.courseName}"</span>
               </p>
+              <div className="space-y-2 mb-4">
+                {REVIEW_CRITERIA_LIST.map(criteria => (
+                  <label key={criteria.id} className="flex items-start gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="mt-1 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                      checked={reasons.includes(criteria.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setReasons([...reasons, criteria.id]);
+                        } else {
+                          setReasons(reasons.filter(id => id !== criteria.id));
+                        }
+                      }}
+                      disabled={isSubmitting}
+                    />
+                    <span className="text-sm text-gray-700">{criteria.label}</span>
+                  </label>
+                ))}
+              </div>
+              
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reason <span className="text-red-500">*</span>
+                Other Reason (Optional)
               </label>
               <textarea
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
+                value={otherReason}
+                onChange={(e) => setOtherReason(e.target.value)}
                 disabled={isSubmitting}
-                placeholder={`Please provide a detailed reason. This will be emailed to the instructor.`}
-                className="w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none resize-none h-28 disabled:bg-gray-50"
+                placeholder={`Enter another reason if any...`}
+                className="w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none resize-none h-20 disabled:bg-gray-50"
               />
             </div>
             <div className="px-4 py-3 bg-gray-50 flex justify-end gap-3 border-t border-gray-200">
@@ -321,7 +370,7 @@ const CourseApprovalsPage = () => {
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-gray-900">
-                            {log.admin?.username || log.admin?.email || 'System'}
+                            {log.admin ? `${log.admin.firstName || ''} ${log.admin.lastName || ''}`.trim() || log.admin.email : 'System'}
                           </span>
                           <span className="text-sm text-gray-500">changed status</span>
                         </div>
@@ -337,7 +386,24 @@ const CourseApprovalsPage = () => {
                       {log.reason && (
                         <div className="mt-3 p-3 bg-red-50/50 border border-red-100 rounded-md text-sm text-gray-700">
                           <strong className="text-gray-900 block mb-1 text-xs">Reason:</strong>
-                          {log.reason}
+                          {(() => {
+                            try {
+                              const parsed = JSON.parse(log.reason);
+                              if (Array.isArray(parsed)) {
+                                return (
+                                  <ul className="list-disc pl-4 mt-1 space-y-1">
+                                    {parsed.map((r, i) => {
+                                      const criteria = REVIEW_CRITERIA_LIST.find(c => c.id === r);
+                                      return <li key={i}>{criteria ? criteria.label : r}</li>;
+                                    })}
+                                  </ul>
+                                );
+                              }
+                              return log.reason;
+                            } catch (e) {
+                              return log.reason;
+                            }
+                          })()}
                         </div>
                       )}
                     </div>
@@ -358,6 +424,21 @@ const CourseApprovalsPage = () => {
         </div>
       )}
 
+      {/* Preview Modal */}
+      {previewModal.isOpen && (
+        <AdminCoursePreviewModal
+          courseId={previewModal.courseId}
+          onClose={() => setPreviewModal({ isOpen: false, courseId: null })}
+          onApprove={(id) => {
+             handleApproveCourse(id);
+             setPreviewModal({ isOpen: false, courseId: null });
+          }}
+          onReject={(id, name) => {
+             setPreviewModal({ isOpen: false, courseId: null });
+             handleOpenReasonModal(id, name, 'rejected');
+          }}
+        />
+      )}
     </div>
   );
 };

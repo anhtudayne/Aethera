@@ -1,4 +1,4 @@
-import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo } from '../services/courseService';
+import { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo, submitReviewCourse } from '../services/courseService';
 import db from '../models/index';
 
 export const handleGetCourses = async (req, res, next) => {
@@ -85,7 +85,11 @@ export const handleCreateCourse = async (req, res, next) => {
                 instructorName = `${user.firstName} ${user.lastName}`.trim();
             }
         }
-        const courseData = { ...req.body, instructor: instructorName };
+        const courseData = { 
+            ...req.body, 
+            instructor: instructorName,
+            instructorId: req.user && req.user.id ? req.user.id : null
+        };
         const result = await createCourse(courseData);
         return res.status(201).json({ status: 201, message: 'Tạo khóa học thành công', ...result });
     } catch (err) { next(err); }
@@ -114,6 +118,15 @@ export const handlePublishCourse = async (req, res, next) => {
         const result = await publishCourse(req.params.id);
         return res.status(result.status || 200).json(result);
     } catch (err) { next(err); }
+};
+
+export const handleSubmitReview = async (req, res, next) => {
+    try {
+        const result = await submitReviewCourse(req.params.id, req.user.id);
+        return res.status(result.status || 200).json(result);
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const handleToggleFeatured = async (req, res, next) => {

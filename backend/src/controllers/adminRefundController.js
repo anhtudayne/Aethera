@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import ApiResponse from '../utils/ApiResponse';
 import { createError } from '../utils/helpers';
 import * as notificationService from '../services/notificationService';
+import * as momoService from '../services/momoService';
 
 /**
  * Get all refund requests (Admin)
@@ -55,6 +56,40 @@ export const completeRefundTransfer = asyncHandler(async (req, res) => {
 
     if (request.status !== 'PROCESSING') {
         throw createError(400, 'This refund request is already completed');
+    }
+
+    if (request.method === 'momo') {
+        // Fetch original order to get momoTransId
+        const orderItem = await db.OrderItem.findByPk(request.orderItemId, {
+            include: [{ model: db.Order, as: 'order' }]
+        });
+
+        if (!orderItem || !orderItem.order) {
+            throw createError(404, 'Original order not found for this refund request');
+        }
+
+        const momoTransId = orderItem.order.momoTransId;
+
+        if (!momoTransId) {
+            throw createError(400, 'Original MoMo transaction ID not found. Cannot automate refund.');
+        }
+
+        try {
+            const momoResponse = await momoService.refundPayment({
+                orderId: `RF-${request.id}-${Date.now()}`, // Unique refund order ID
+                amount: request.refundAmount,
+                transId: momoTransId,
+                description: `Refund for course ${request.course?.name || request.courseId}`
+            });
+
+            if (momoResponse && momoResponse.resultCode !== 0) {
+                console.error('MoMo Refund API Error:', momoResponse);
+                throw createError(400, `MoMo Refund Failed: ${momoResponse.message}`);
+            }
+        } catch (error) {
+            console.error('Error executing MoMo refund:', error);
+            throw createError(error.status || 500, error.message || 'Error communicating with MoMo for refund');
+        }
     }
 
     request.status = 'COMPLETED';

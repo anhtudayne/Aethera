@@ -343,6 +343,24 @@ const publishCourse = async (id) => {
     return { status: 200, message: 'Đã xuất bản khóa học!', data: course };
 };
 
+const submitReviewCourse = async (id, userId) => {
+    const course = await Course.findByPk(id, { include: [{ model: db.User, as: 'instructorData' }] });
+    if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
+    
+    course.status = 'pending';
+    await course.save();
+    
+    await db.CourseStatusHistory.create({
+        courseId: course.id,
+        adminId: null, // System action triggered by user
+        oldStatus: 'draft',
+        newStatus: 'pending',
+        reason: 'Instructor submitted for review'
+    });
+    
+    return { status: 200, message: 'Course submitted for review successfully', data: course };
+};
+
 const toggleFeaturedCourse = async (id) => {
     const course = await Course.findByPk(id);
     if (!course) return { status: 404, message: 'Không tìm thấy khóa học.' };
@@ -475,4 +493,4 @@ const getInstructorInfo = async (name) => {
     }
 };
 
-module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo };
+module.exports = { getCourses, getFeaturedCourses, getNewArrivals, getBestSellers, getCourseBySlug, getCourseCurriculum, getRelatedCourses, getCategories, createCategory, createCourse, updateCourse, publishCourse, toggleFeaturedCourse, toggleBestSellerCourse, getCoursesByCategory, getTopViewedCourses, incrementViewCount, checkEnrollmentService, getInstructorInfo, submitReviewCourse };

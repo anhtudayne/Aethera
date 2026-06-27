@@ -130,20 +130,18 @@ export const getAdminDashboardStats = async (range = '30') => {
             revenue: monthlyRevenue[month]
         }));
 
-        // 6. Top Courses
         const topCourses = await db.Course.findAll({
-            attributes: ['id', 'name', 'price', 'totalStudents', 'thumbnail'],
+            attributes: ['id', 'name', 'slug', 'price', 'salePrice', 'totalStudents', 'thumbnail'],
             order: [['totalStudents', 'DESC']],
             limit: 5
         });
 
-        // 7. Recent Activities (Mocking by combining latest records)
         const latestUsers = await db.User.findAll({ limit: 2, order: [['createdAt', 'DESC']], attributes: ['id', 'firstName', 'lastName', 'createdAt'] });
-        const latestCourses = await db.Course.findAll({ limit: 2, order: [['createdAt', 'DESC']], attributes: ['id', 'name', 'createdAt'] });
+        const latestCourses = await db.Course.findAll({ limit: 2, order: [['createdAt', 'DESC']], attributes: ['id', 'name', 'slug', 'createdAt'] });
         
         let activities = [
-            ...latestUsers.map(u => ({ id: `u-${u.id}`, title: 'User Onboarded', user: `${u.firstName} ${u.lastName}`, time: u.createdAt, status: 'Completed', type: 'user' })),
-            ...latestCourses.map(c => ({ id: `c-${c.id}`, title: 'Course Created', user: 'System', time: c.createdAt, status: 'Completed', type: 'course' }))
+            ...latestUsers.map(u => ({ id: `u-${u.id}`, title: 'User Onboarded', user: `${u.firstName} ${u.lastName}`, time: u.createdAt, status: 'Completed', type: 'user', url: '/dashboard/users' })),
+            ...latestCourses.map(c => ({ id: `c-${c.id}`, title: 'Course Created', user: 'System', time: c.createdAt, status: 'Completed', type: 'course', url: '/dashboard/approvals' }))
         ];
 
         activities.sort((a, b) => b.time - a.time);

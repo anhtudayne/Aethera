@@ -24,7 +24,7 @@ export const getVouchers = async (query) => {
 
         return {
             status: 200,
-            message: 'Lấy danh sách vouchers thành công',
+            message: 'Vouchers retrieved successfully',
             data: rows,
             pagination: {
                 totalItems: count,
@@ -37,19 +37,19 @@ export const getVouchers = async (query) => {
         console.error('Error in getVouchers:', error);
         return {
             status: 500,
-            message: 'Lỗi server nội bộ. Vui lòng thử lại sau.'
+            message: 'Internal server error. Please try again later.'
         };
     }
 };
 
 export const createVoucher = async (data) => {
     try {
-        const { code, discountPercent, startDate, expiryDate, maxUsage } = data;
+        const { code, discountType, discountValue, maxDiscountValue, startDate, expiryDate, maxUsage } = data;
 
-        if (!code || !discountPercent || !expiryDate) {
+        if (!code || !discountValue || !expiryDate) {
             return {
                 status: 400,
-                message: 'Vui lòng cung cấp đủ code, discountPercent và expiryDate'
+                message: 'Please provide all required fields: code, discountValue, and expiryDate'
             };
         }
 
@@ -57,18 +57,20 @@ export const createVoucher = async (data) => {
         if (existingVoucher) {
             return {
                 status: 400,
-                message: 'Mã voucher này đã tồn tại'
+                message: 'This voucher code already exists'
             };
         }
 
         const now = new Date();
         const parsedExpiry = new Date(expiryDate);
-        // Voucher chỉ ACTIVE nếu chưa hết hạn. startDate không ảnh hưởng đến trạng thái lưu.
+        // Voucher is ACTIVE only if not expired. startDate does not affect the saved status.
         const status = parsedExpiry < now ? 'EXPIRED' : 'ACTIVE';
 
         const voucher = await db.Voucher.create({
             code: code.toUpperCase(),
-            discountPercent,
+            discountType: discountType || 'PERCENTAGE',
+            discountValue: Number(discountValue),
+            maxDiscountValue: maxDiscountValue ? Number(maxDiscountValue) : null,
             startDate: startDate ? new Date(startDate) : now,
             expiryDate: parsedExpiry,
             status,
@@ -78,14 +80,14 @@ export const createVoucher = async (data) => {
 
         return {
             status: 201,
-            message: 'Tạo voucher thành công',
+            message: 'Voucher created successfully',
             data: voucher
         };
     } catch (error) {
         console.error('Error in createVoucher:', error);
         return {
             status: 500,
-            message: 'Lỗi server nội bộ. Vui lòng thử lại sau.'
+            message: 'Internal server error. Please try again later.'
         };
     }
 };
@@ -96,7 +98,7 @@ export const updateVoucherStatus = async (id, status) => {
         if (!voucher) {
             return {
                 status: 404,
-                message: 'Không tìm thấy voucher'
+                message: 'Voucher not found'
             };
         }
 
@@ -105,14 +107,14 @@ export const updateVoucherStatus = async (id, status) => {
 
         return {
             status: 200,
-            message: 'Cập nhật trạng thái voucher thành công',
+            message: 'Voucher status updated successfully',
             data: voucher
         };
     } catch (error) {
         console.error('Error in updateVoucherStatus:', error);
         return {
             status: 500,
-            message: 'Lỗi server nội bộ. Vui lòng thử lại sau.'
+            message: 'Internal server error. Please try again later.'
         };
     }
 };
@@ -123,33 +125,35 @@ export const updateVoucher = async (id, data) => {
         if (!voucher) {
             return {
                 status: 404,
-                message: 'Không tìm thấy voucher'
+                message: 'Voucher not found'
             };
         }
 
-        const { discountPercent, startDate, expiryDate, maxUsage } = data;
+        const { discountType, discountValue, maxDiscountValue, startDate, expiryDate, maxUsage } = data;
 
-        if (!discountPercent || !expiryDate) {
+        if (!discountValue || !expiryDate) {
             return {
                 status: 400,
-                message: 'Vui lòng cung cấp discountPercent và expiryDate'
+                message: 'Please provide discountValue and expiryDate'
             };
         }
 
         const parsedExpiry = new Date(expiryDate);
         const now = new Date();
 
-        // Tự động tính lại status dựa trên ngày hết hạn mới
-        // – Chỉ reset về ACTIVE nếu ngày còn hạn và voucher đang EXPIRED
+        // Automatically recalculate status based on the new expiry date
+        // - Only reset to ACTIVE if the date is valid and the voucher was EXPIRED
         const updatedStatus =
             voucher.status === 'DISABLED'
-                ? 'DISABLED' // Giữ DISABLED nếu Admin đã tắt thủ công
+                ? 'DISABLED' // Keep DISABLED if manually disabled by Admin
                 : parsedExpiry < now
-                ? 'EXPIRED'
-                : 'ACTIVE';
+                    ? 'EXPIRED'
+                    : 'ACTIVE';
 
         await voucher.update({
-            discountPercent,
+            discountType: discountType || voucher.discountType,
+            discountValue: Number(discountValue),
+            maxDiscountValue: maxDiscountValue !== undefined ? (maxDiscountValue ? Number(maxDiscountValue) : null) : voucher.maxDiscountValue,
             startDate: startDate ? new Date(startDate) : voucher.startDate,
             expiryDate: parsedExpiry,
             maxUsage: maxUsage !== undefined ? (maxUsage ? parseInt(maxUsage, 10) : null) : voucher.maxUsage,
@@ -158,15 +162,14 @@ export const updateVoucher = async (id, data) => {
 
         return {
             status: 200,
-            message: 'Cập nhật voucher thành công',
+            message: 'Voucher updated successfully',
             data: voucher
         };
     } catch (error) {
         console.error('Error in updateVoucher:', error);
         return {
             status: 500,
-            message: 'Lỗi server nội bộ. Vui lòng thử lại sau.'
+            message: 'Internal server error. Please try again later.'
         };
     }
 };
-

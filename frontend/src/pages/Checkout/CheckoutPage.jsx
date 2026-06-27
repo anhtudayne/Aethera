@@ -24,6 +24,10 @@ const CheckoutPage = () => {
   const [creditBalance, setCreditBalance] = useState(0);
   const [applyCredit, setApplyCredit] = useState(false);
   
+  const [voucherCodeInput, setVoucherCodeInput] = useState('');
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const [validatingVoucher, setValidatingVoucher] = useState(false);
+  
   // Custom checkout states matching Udemy
   const [selectedCountry, setSelectedCountry] = useState('VN');
   const [paymentMethod, setPaymentMethod] = useState('credit-card');
@@ -98,9 +102,34 @@ const CheckoutPage = () => {
   }, 0);
 
   const total = totalOriginalPrice - totalDiscount;
-  const creditUsed = applyCredit ? Math.min(creditBalance, total) : 0;
-  const netTotal = total - creditUsed;
+  const voucherDiscountAmount = appliedVoucher ? appliedVoucher.discountAmount : 0;
+  let amountAfterVoucher = total - voucherDiscountAmount;
+  if (amountAfterVoucher < 0) amountAfterVoucher = 0;
+
+  const creditUsed = applyCredit ? Math.min(creditBalance, amountAfterVoucher) : 0;
+  const netTotal = amountAfterVoucher - creditUsed;
   const discountPercent = totalOriginalPrice > 0 ? Math.round((totalDiscount / totalOriginalPrice) * 100) : 0;
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCodeInput.trim()) return;
+    setValidatingVoucher(true);
+    try {
+      const res = await orderApi.validateVoucher(voucherCodeInput, total);
+      setAppliedVoucher(res.data || res);
+      toast.success('Voucher applied successfully!');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || 'Invalid voucher code.');
+      setAppliedVoucher(null);
+    } finally {
+      setValidatingVoucher(false);
+    }
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherCodeInput('');
+  };
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
@@ -112,7 +141,7 @@ const CheckoutPage = () => {
 
       // If credit covers the entire purchase
       if (netTotal === 0) {
-        const res = await orderApi.createMoMoPayment(ids, applyCredit);
+        const res = await orderApi.createMoMoPayment(ids, applyCredit, appliedVoucher?.code);
         if (res?.isPaid || res?.data?.isPaid || (res?.success && !res?.payUrl)) {
           const orderId = res?.orderId || res?.data?.orderId;
           toast.success('Order completed successfully using Credit!');
@@ -124,7 +153,7 @@ const CheckoutPage = () => {
 
       if (paymentMethod === 'e-wallet') {
         // MoMo Payment Flow
-        const res = await orderApi.createMoMoPayment(ids, applyCredit);
+        const res = await orderApi.createMoMoPayment(ids, applyCredit, appliedVoucher?.code);
         const payUrl = res?.data?.payUrl || res?.payUrl;
         
         if (!payUrl) {
@@ -139,7 +168,7 @@ const CheckoutPage = () => {
       }
 
       // Default Simulation Flow (Credit Card, etc.)
-      const createRes = await orderApi.createFromCart(ids, applyCredit);
+      const createRes = await orderApi.createFromCart(ids, applyCredit, appliedVoucher?.code);
       const orderId = createRes?.data?.orderId || createRes?.orderId;
       const isAlreadyPaid = createRes?.data?.isPaid || createRes?.isPaid;
       
@@ -380,6 +409,37 @@ const CheckoutPage = () => {
             <div className="checkout-order-summary-card">
               <h2 className="checkout-summary-title">Order summary</h2>
               
+              <div className="checkout-voucher-section mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 className="text-sm font-semibold mb-2">Have a voucher code?</h3>
+                {appliedVoucher ? (
+                  <div className="flex items-center justify-between bg-emerald-50 text-emerald-700 p-2 rounded border border-emerald-200">
+                    <div>
+                      <span className="font-bold">{appliedVoucher.code}</span>
+                      <span className="ml-2 text-xs">is applied</span>
+                    </div>
+                    <button onClick={handleRemoveVoucher} className="text-emerald-700 hover:text-emerald-900 font-bold">✕</button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Enter code" 
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 uppercase"
+                      value={voucherCodeInput}
+                      onChange={(e) => setVoucherCodeInput(e.target.value.toUpperCase())}
+                      disabled={validatingVoucher}
+                    />
+                    <button 
+                      onClick={handleApplyVoucher} 
+                      disabled={validatingVoucher || !voucherCodeInput.trim()}
+                      className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 disabled:opacity-50"
+                    >
+                      {validatingVoucher ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="checkout-summary-details">
                 <div className="summary-detail-row">
                   <span className="summary-label">Original Price:</span>
@@ -399,6 +459,13 @@ const CheckoutPage = () => {
                   <span className="summary-label">Subtotal:</span>
                   <span className="summary-value">{formatPrice(total)}</span>
                 </div>
+
+                {appliedVoucher && (
+                  <div className="summary-detail-row discount-row">
+                    <span className="summary-label">Voucher applied:</span>
+                    <span className="summary-value">- {formatPrice(voucherDiscountAmount)}</span>
+                  </div>
+                )}
 
                 <div className="summary-divider"></div>
 
