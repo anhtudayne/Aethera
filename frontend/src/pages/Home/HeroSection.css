@@ -1,7 +1,7 @@
 .hero-section {
   position: relative;
   background: linear-gradient(135deg, #FFFDF9 0%, #EEF2FF 45%, #FAFBFC 100%);
-  padding: 120px 0 140px 0;
+  padding: 60px 0 70px 0;
   overflow: hidden;
 }
 
@@ -59,7 +59,7 @@
 /* Hero Visual Section */
 .hero-visual {
   position: relative;
-  height: 400px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;

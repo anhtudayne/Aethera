@@ -23,7 +23,7 @@ const SearchBar = () => {
       </button>
       <input
         type="text"
-        placeholder="Tìm kiếm nội dung bất kỳ..."
+        placeholder="Search for anything..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="nav-search-input"

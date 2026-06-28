@@ -45,16 +45,16 @@ const ProfileSettingsPage = () => {
     setProfileSuccess('');
     setProfileError('');
     if (!fullName.trim()) {
-      setProfileError('Vui lòng nhập họ tên.');
+      setProfileError('Please enter your full name.');
       return;
     }
     try {
       setProfileLoading(true);
       await userApi.updateProfile({ fullName: fullName.trim(), phone: phone.trim() });
       updateUser({ fullName: fullName.trim(), phone: phone.trim() });
-      setProfileSuccess('Cập nhật hồ sơ thành công!');
+      setProfileSuccess('Profile updated successfully!');
     } catch (err) {
-      setProfileError(err?.message || 'Cập nhật thất bại. Vui lòng thử lại.');
+      setProfileError(err?.message || 'Failed to update profile. Please try again.');
     } finally {
       setProfileLoading(false);
     }
@@ -65,26 +65,26 @@ const ProfileSettingsPage = () => {
     setPasswordSuccess('');
     setPasswordError('');
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError('Vui lòng điền đầy đủ các trường.');
+      setPasswordError('Please fill in all fields.');
       return;
     }
     if (newPassword.length < 6) {
-      setPasswordError('Mật khẩu mới phải có ít nhất 6 ký tự.');
+      setPasswordError('New password must be at least 6 characters.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      setPasswordError('Mật khẩu xác nhận không khớp.');
+      setPasswordError('Passwords do not match.');
       return;
     }
     try {
       setPasswordLoading(true);
       await authApi.changePassword({ currentPassword, newPassword, confirmPassword });
-      setPasswordSuccess('Đổi mật khẩu thành công!');
+      setPasswordSuccess('Password changed successfully!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
-      setPasswordError(err?.message || 'Đổi mật khẩu thất bại. Vui lòng kiểm tra lại mật khẩu hiện tại.');
+      setPasswordError(err?.message || 'Failed to change password. Please check your current password.');
     } finally {
       setPasswordLoading(false);
     }
@@ -97,11 +97,11 @@ const ProfileSettingsPage = () => {
 
   return (
     <div className="settings-page">
-      <h2>Cài đặt hồ sơ ⚙️</h2>
+      <h2>Profile Settings ⚙️</h2>
 
       {/* Profile Section */}
       <div className="settings-section">
-        <h3>Thông tin cá nhân</h3>
+        <h3>Personal Information</h3>
 
         <div className="profile-header">
           <div className="profile-avatar">
@@ -112,8 +112,8 @@ const ProfileSettingsPage = () => {
             )}
           </div>
           <div className="profile-header-info">
-            <h4>{fullName || 'Học viên'}</h4>
-            <p>{user?.email || 'email@example.com'} (không thể thay đổi)</p>
+            <h4>{fullName || 'Student'}</h4>
+            <p>{user?.email || 'email@example.com'} (cannot be changed)</p>
           </div>
         </div>
 
@@ -126,66 +126,66 @@ const ProfileSettingsPage = () => {
             <input type="email" value={user?.email || ''} readOnly />
           </div>
           <div className="form-group">
-            <label>Họ và tên</label>
+            <label>Full Name</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Nhập họ và tên"
+              placeholder="Enter your full name"
             />
           </div>
           <div className="form-group">
-            <label>Số điện thoại</label>
+            <label>Phone Number</label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Nhập số điện thoại"
+              placeholder="Enter your phone number"
             />
           </div>
           <button type="submit" className="settings-save-btn" disabled={profileLoading}>
-            {profileLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {profileLoading ? 'Saving...' : 'Save Changes'}
           </button>
         </form>
       </div>
 
       {/* Change Password Section */}
       <div className="settings-section">
-        <h3>Đổi mật khẩu</h3>
+        <h3>Change Password</h3>
 
         {passwordSuccess && <div className="settings-success">{passwordSuccess}</div>}
         {passwordError && <div className="settings-error">{passwordError}</div>}
 
         <form className="settings-form" onSubmit={handlePasswordSubmit}>
           <div className="form-group">
-            <label>Mật khẩu hiện tại</label>
+            <label>Current Password</label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Nhập mật khẩu hiện tại"
+              placeholder="Enter current password"
             />
           </div>
           <div className="form-group">
-            <label>Mật khẩu mới</label>
+            <label>New Password</label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+              placeholder="Enter new password (at least 6 characters)"
             />
           </div>
           <div className="form-group">
-            <label>Xác nhận mật khẩu mới</label>
+            <label>Confirm New Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Nhập lại mật khẩu mới"
+              placeholder="Confirm new password"
             />
           </div>
           <button type="submit" className="settings-save-btn" disabled={passwordLoading}>
-            {passwordLoading ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+            {passwordLoading ? 'Updating...' : 'Update Password'}
           </button>
         </form>
       </div>

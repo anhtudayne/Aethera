@@ -11,14 +11,14 @@ const HeroSection = () => {
         <div className="hero-content">
           <div className="hero-badge">
             <Sparkles size={16} />
-            <span>Nâng tầm tri thức mỗi ngày</span>
+            <span>Elevate knowledge every day</span>
           </div>
           <h1 className="hero-title">
             Where Knowledge is Refined & <br />
             <span className="text-gradient">Experience is Elevated</span>
           </h1>
           <p className="hero-description">
-            Hành trình học tập của bạn bắt đầu từ đây. Trải nghiệm nền tảng học trực tuyến cao cấp, chọn lọc và tập trung tối đa vào sự tiến bộ của bạn.
+            Your learning journey starts here. Experience a premium, curated, and focused e-learning environment tailored for your progress.
           </p>
           <div className="hero-cta-group">
             <Link to={ROUTES.COURSES}>
@@ -42,14 +42,14 @@ const HeroSection = () => {
             <div className="visual-card-icon">🧠</div>
             <div>
               <h4>Refined Content</h4>
-              <p>Chắt lọc tinh túy</p>
+              <p>Curated quality</p>
             </div>
           </div>
           <div className="hero-visual-card card-2">
             <div className="visual-card-icon">⭐</div>
             <div>
               <h4>Premium Rating</h4>
-              <p>Đánh giá vượt trội</p>
+              <p>Outstanding reviews</p>
             </div>
           </div>
         </div>

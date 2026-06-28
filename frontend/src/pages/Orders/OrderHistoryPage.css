@@ -238,3 +238,12 @@
   color: #5624d0;
   border-bottom-color: #5624d0;
 }
+
+.course-refund-link {
+  transition: color 0.2s ease;
+}
+
+.course-refund-link:hover {
+  color: var(--color-accent, #5624d0) !important;
+  text-decoration: underline !important;
+}

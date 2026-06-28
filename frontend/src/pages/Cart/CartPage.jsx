@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { cartApi } from '../../api/cartApi';
 import useCart from '../../hooks/useCart';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
@@ -8,66 +7,39 @@ import EmptyCart from './EmptyCart';
 import './CartPage.css';
 
 const CartPage = () => {
-  const [items, setItems] = useState([]);
+  const { items, loading, loadCart, removeItem, clearCart } = useCart();
   const [selectedCourseIds, setSelectedCourseIds] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { refreshCart } = useCart();
-
-  const fetchCart = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await cartApi.getCart();
-      const cartItems = res?.data || res || [];
-      const itemsArray = Array.isArray(cartItems) ? cartItems : [];
-      setItems(itemsArray);
-      // Select all by default
-      setSelectedCourseIds(itemsArray.map(item => item.courseId));
-    } catch (err) {
-      console.error('Failed to load cart:', err);
-      toast.error('Could not retrieve your cart items.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchCart();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [fetchCart]);
+    loadCart().unwrap?.().then((cartItems) => {
+      if (Array.isArray(cartItems)) {
+        setSelectedCourseIds(cartItems.map(item => item.courseId));
+      }
+    }).catch(() => {});
+  }, [loadCart]);
 
   const handleRemove = async (itemId) => {
     try {
-      // Find courseId to remove from selection too
       const removedItem = items.find(item => item.id === itemId);
-      const res = await cartApi.removeItem(itemId);
-      toast.success(res?.message || 'Item removed from cart');
-      
-      // Update state locally first to be snappy
-      setItems((prev) => prev.filter((item) => item.id !== itemId));
+      await removeItem(itemId);
+      toast.success('Item removed from cart');
       if (removedItem) {
         setSelectedCourseIds(prev => prev.filter(id => id !== removedItem.courseId));
       }
-      
-      // Refresh Navbar cart badge count
-      refreshCart();
     } catch (err) {
       console.error('Failed to remove item:', err);
-      toast.error(err?.message || 'Could not remove item.');
+      toast.error('Could not remove item.');
     }
   };
 
   const handleClear = async () => {
     try {
-      const res = await cartApi.clearCart();
-      toast.success(res?.message || 'Cart cleared successfully');
-      setItems([]);
+      await clearCart();
+      toast.success('Cart cleared successfully');
       setSelectedCourseIds([]);
-      refreshCart();
     } catch (err) {
       console.error('Failed to clear cart:', err);
-      toast.error(err?.message || 'Could not clear cart.');
+      toast.error('Could not clear cart.');
     }
   };
 
