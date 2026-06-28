@@ -1,7 +1,6 @@
 import React from 'react';
 import { useMarketingData } from '../../hooks/useMarketingData';
 import VoucherSection from '../../components/admin/marketing/VoucherSection';
-import CampaignAssetsSection from '../../components/admin/marketing/CampaignAssetsSection';
 
 const MarketingManagementPage = () => {
   const { vouchers, bannerUrl, loading, isUploading, pagination, handlers } = useMarketingData();
@@ -22,13 +21,6 @@ const MarketingManagementPage = () => {
         pagination={pagination}
       />
 
-      {/* Campaign Assets Section */}
-      <CampaignAssetsSection 
-        bannerUrl={bannerUrl} 
-        isUploading={isUploading}
-        onUpload={handlers.uploadBanner} 
-        onDelete={handlers.deleteBanner}
-      />
     </div>
   );
 };

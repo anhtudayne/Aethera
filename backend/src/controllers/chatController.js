@@ -122,7 +122,8 @@ export const handleLessonChat = async (req, res, next) => {
         // KIỂM TRA LUỒNG XỬ LÝ
         const isSummary = message.includes("Summarize content");
         const isQuiz = message.includes("Create quizzes");
-        const isFullContextRequired = isSummary || isQuiz || isAnsweringQuiz;
+        const isExplain = message.includes("Explain the important concepts");
+        const isFullContextRequired = isSummary || isQuiz || isAnsweringQuiz || isExplain;
 
         let systemInstruction = "";
         let promptMessage = "";

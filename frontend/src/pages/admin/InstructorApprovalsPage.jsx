@@ -80,8 +80,8 @@ const InstructorApprovalsPage = () => {
             }`}
           >
             {status === 'PENDING' ? 'Waiting for approval' : 
-             status === 'APPROVED' ? 'Đã duyệt' : 
-             status === 'REJECTED' ? 'Refused' : 'Tất cả'}
+             status === 'APPROVED' ? 'Approved' : 
+             status === 'REJECTED' ? 'Refused' : 'All'}
           </button>
         ))}
       </div>
@@ -103,9 +103,9 @@ const InstructorApprovalsPage = () => {
                   <th className="py-4 px-6 font-medium">User</th>
                   <th className="py-4 px-6 font-medium">Expertise</th>
                   <th className="py-4 px-6 font-medium">Experience</th>
-                  <th className="py-4 px-6 font-medium text-center">Bằng cấp</th>
-                  <th className="py-4 px-6 font-medium">Ngày nộp</th>
-                  <th className="py-4 px-6 font-medium text-right">Thao tác</th>
+                  <th className="py-4 px-6 font-medium text-center">Certificate</th>
+                  <th className="py-4 px-6 font-medium">Date Submitted</th>
+                  <th className="py-4 px-6 font-medium text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -139,11 +139,11 @@ const InstructorApprovalsPage = () => {
                           <img src={app.certificateImage} alt="Certificate" className="w-16 h-12 object-cover rounded shadow-sm border border-gray-200 hover:opacity-80 transition-opacity" />
                         </div>
                       ) : (
-                        <span className="text-gray-400 text-sm italic">Không có</span>
+                        <span className="text-gray-400 text-sm italic">None</span>
                       )}
                     </td>
                     <td className="py-4 px-6 text-gray-500 text-sm">
-                      {new Date(app.createdAt).toLocaleDateString('vi-VN')}
+                      {new Date(app.createdAt).toLocaleDateString('en-US')}
                     </td>
                     <td className="py-4 px-6 text-right">
                       {app.status === 'PENDING' ? (
@@ -152,7 +152,7 @@ const InstructorApprovalsPage = () => {
                             onClick={() => handleApprove(app.id)}
                             className="px-3 py-1.5 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg text-sm font-medium transition-colors"
                           >
-                            Duyệt
+                            Approve
                           </button>
                           <button
                             onClick={() => {
@@ -161,7 +161,7 @@ const InstructorApprovalsPage = () => {
                             }}
                             className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm font-medium transition-colors"
                           >
-                            Từ chối
+                            Reject
                           </button>
                         </div>
                       ) : (
@@ -208,13 +208,13 @@ const InstructorApprovalsPage = () => {
                 }}
                 className="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors"
               >
-                Hủy
+                Cancel
               </button>
               <button
                 onClick={handleReject}
                 className="px-5 py-2.5 bg-red-600 text-white font-medium hover:bg-red-700 rounded-xl transition-colors"
               >
-                Confirmed refusal
+                Confirm Rejection
               </button>
             </div>
           </div>
