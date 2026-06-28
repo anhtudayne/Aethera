@@ -7,7 +7,7 @@ import {
     handleUpdateWatchPosition,
     handleGetNextLesson,
 } from '../controllers/learningController';
-import { handleLessonChat } from '../controllers/chatController.js';
+import { handleLessonChat, handleGetChatCredits } from '../controllers/chatController.js';
 
 const router = express.Router();
 
@@ -19,5 +19,6 @@ router.get('/courses/:courseId/next-lesson', verifyToken, handleGetNextLesson);
 
 // Chat với AI dựa trên video transcript
 router.post('/chat', verifyToken, handleLessonChat);
+router.get('/chat/credits', verifyToken, handleGetChatCredits);
 
 export default router;

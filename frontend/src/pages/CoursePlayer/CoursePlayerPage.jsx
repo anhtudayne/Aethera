@@ -17,6 +17,7 @@ export const CoursePlayerPage = () => {
   const [curriculum, setCurriculum] = useState([]);
   const [courseDetails, setCourseDetails] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeRightTab, setActiveRightTab] = useState('curriculum');
   
   const activeLesson = useMemo(() => {
     if (!curriculum || curriculum.length === 0) return null;
@@ -138,17 +139,45 @@ export const CoursePlayerPage = () => {
           </div>
         </div>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar Wrapper */}
         {isSidebarOpen && (
-          <CourseSidebar 
-            curriculum={curriculum}
-            activeLessonId={activeLessonId}
-            setActiveLessonId={(id) => {
-              setActiveLessonId(id);
-              setSearchParams({ lessonId: id });
-            }}
-            onClose={() => setIsSidebarOpen(false)}
-          />
+          <div className="w-full md:w-80 lg:w-[400px] border-l border-gray-200 bg-white flex flex-col h-full z-40 relative">
+            {/* Header Tabs */}
+            <div className="flex border-b border-gray-200 bg-white sticky top-0 z-10">
+              <button 
+                onClick={() => setActiveRightTab('curriculum')}
+                className={`flex-1 py-4 px-2 font-semibold text-sm text-center transition-colors ${activeRightTab === 'curriculum' ? 'text-[#a435f0] border-b-2 border-[#a435f0]' : 'text-gray-500 hover:text-gray-800'}`}
+              >
+                Course Content
+              </button>
+              <button 
+                onClick={() => setActiveRightTab('chat')}
+                className={`flex-1 py-4 px-2 font-semibold text-sm text-center transition-colors flex items-center justify-center gap-2 ${activeRightTab === 'chat' ? 'text-[#a435f0] border-b-2 border-[#a435f0]' : 'text-gray-500 hover:text-gray-800'}`}
+              >
+                Teacher Bee AI
+              </button>
+              <button onClick={() => setIsSidebarOpen(false)} className="p-4 text-gray-400 hover:text-gray-800 border-l border-gray-100 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-hidden relative flex flex-col">
+              {activeRightTab === 'curriculum' ? (
+                <CourseSidebar 
+                  curriculum={curriculum}
+                  activeLessonId={activeLessonId}
+                  setActiveLessonId={(id) => {
+                    setActiveLessonId(id);
+                    setSearchParams({ lessonId: id });
+                  }}
+                  onClose={() => setIsSidebarOpen(false)}
+                />
+              ) : (
+                <VideoChatbox lessonId={activeLessonId || 41} />
+              )}
+            </div>
+          </div>
         )}
 
         {/* Floating Sidebar Toggle (Visible when sidebar is closed) */}
@@ -158,14 +187,9 @@ export const CoursePlayerPage = () => {
             className="absolute top-4 right-4 z-50 bg-gray-900 text-white p-2 rounded shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-bold"
           >
             <Menu size={20} />
-            <span className="hidden md:inline">Course content</span>
+            <span className="hidden md:inline">Menu</span>
           </button>
         )}
-
-        {/* Floating Chatbox */}
-        <div className="fixed bottom-6 right-6 z-[999]">
-          <VideoChatbox lessonId={activeLessonId || 41} />
-        </div>
       </div>
     </div>
   );
