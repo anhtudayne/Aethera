@@ -43,7 +43,9 @@ import {
   InstructorCourseManagePage,
   InstructorCourseCurriculumPage,
   CategoryManagementPage,
-  TicketManagementPage
+  TicketManagementPage,
+  InstructorRegistrationPage,
+  InstructorApprovalsPage
 } from './pages';
 import './App.css';
 
@@ -95,6 +97,7 @@ function App() {
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.ADMIN_COURSE_APPROVALS} element={<CourseApprovalsPage />} />
           <Route path={ROUTES.ADMIN_USERS} element={<UsersManagementPage />} />
+          <Route path={ROUTES.ADMIN_INSTRUCTOR_APPROVALS} element={<InstructorApprovalsPage />} />
           <Route path={ROUTES.ADMIN_CATEGORIES} element={<CategoryManagementPage />} />
           <Route path={ROUTES.ADMIN_PAYOUTS} element={<PayoutsManagementPage />} />
           <Route path={ROUTES.ADMIN_MARKETING} element={<MarketingManagementPage />} />
@@ -108,6 +111,7 @@ function App() {
           <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
           <Route path={ROUTES.REPORT} element={<SupportPage />} />
           <Route path={ROUTES.SETTINGS} element={<ProfileSettingsPage />} />
+          <Route path={ROUTES.INSTRUCTOR_REGISTRATION} element={<InstructorRegistrationPage />} />
           <Route path={ROUTES.CREDIT_BALANCE} element={<CreditBalancePage />} />
         </Route>
       </Route>

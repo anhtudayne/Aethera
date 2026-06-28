@@ -34,6 +34,8 @@ export const ROUTES = {
   ADMIN_MARKETING: '/dashboard/marketing',
   ADMIN_CATEGORIES: '/dashboard/categories',
   ADMIN_TICKETS: '/dashboard/tickets',
+  ADMIN_INSTRUCTOR_APPROVALS: '/dashboard/instructor-approvals',
+  INSTRUCTOR_REGISTRATION: '/dashboard/become-instructor',
 };
 
 export const STORAGE_KEYS = {

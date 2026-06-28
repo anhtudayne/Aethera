@@ -8,7 +8,7 @@ import { ROLES } from '../utils/constants';
 import { updateProfileValidation } from '../middlewares/validators/userValidator';
 import { handleValidationErrors } from '../middlewares/validators/authValidator';
 import { handleGetAdminCourses, handleUpdateCourseStatus, handleGetCourseHistory } from '../controllers/adminCourseController';
-import { handleGetAdminUsers, handleUpdateUserStatus } from '../controllers/adminUserController';
+import { handleGetAdminUsers, handleUpdateUserStatus, handleGetInstructorApplications, handleUpdateInstructorApplication } from '../controllers/adminUserController';
 import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../controllers/adminPayoutController';
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
@@ -58,6 +58,21 @@ router.put(
     handleUpdateUserStatus
 );
 
+// Quản lý đơn đăng ký giảng viên
+router.get(
+    '/instructor-applications',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleGetInstructorApplications
+);
+
+router.put(
+    '/instructor-applications/:id',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleUpdateInstructorApplication
+);
+
 // Lấy lịch sử thay đổi trạng thái khóa học
 router.get(
     '/courses/:id/history',
@@ -80,6 +95,14 @@ router.get(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     handleGetPayouts
+);
+
+import { handleBulkPayout } from '../controllers/bulkPayoutController';
+router.post(
+    '/payouts/bulk',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleBulkPayout
 );
 
 router.put(

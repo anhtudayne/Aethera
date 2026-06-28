@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             PayoutRequest.belongsTo(models.User, { foreignKey: 'instructorId', as: 'instructor' });
             PayoutRequest.belongsTo(models.User, { foreignKey: 'adminId', as: 'admin' });
+            PayoutRequest.belongsTo(models.PayoutBatch, { foreignKey: 'batchId', as: 'payoutBatch' });
         }
     }
     PayoutRequest.init({
@@ -46,6 +47,11 @@ module.exports = (sequelize, DataTypes) => {
         receiptUrl: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        batchId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: { model: 'PayoutBatches', key: 'id' }
         }
     }, {
         sequelize,

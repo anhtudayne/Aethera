@@ -11,7 +11,8 @@ import {
   Tag,
   Layers,
   LifeBuoy,
-  Wallet
+  Wallet,
+  Briefcase
 } from 'lucide-react';
 import Navbar from '../common/Navbar/Navbar';
 import { ROUTES, STORAGE_KEYS } from '../../utils/constants';
@@ -31,6 +32,7 @@ const DashboardLayout = () => {
     { to: ROUTES.CERTIFICATES, label: 'Certificates', icon: Award },
     { to: ROUTES.MY_REVIEWS, label: 'My Reviews', icon: MessageSquare },
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell },
+    { to: ROUTES.INSTRUCTOR_REGISTRATION, label: 'Trở thành Giảng viên', icon: Briefcase },
     { to: ROUTES.REPORT, label: 'Report Issue', icon: LifeBuoy },
     { to: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
   ];
@@ -39,6 +41,7 @@ const DashboardLayout = () => {
     { to: ROUTES.DASHBOARD, label: 'Admin Dashboard', icon: LayoutDashboard, end: true },
     { to: ROUTES.ADMIN_USERS, label: 'Users Management', icon: Heart },
     { to: ROUTES.ADMIN_COURSE_APPROVALS, label: 'Course Approvals', icon: BookOpen },
+    { to: ROUTES.ADMIN_INSTRUCTOR_APPROVALS, label: 'Duyệt Giảng viên', icon: Briefcase },
     { to: ROUTES.ADMIN_PAYOUTS, label: 'Payouts', icon: ShoppingBag },
     { to: ROUTES.ADMIN_CATEGORIES, label: 'Categories', icon: Layers },
     { to: ROUTES.ADMIN_MARKETING, label: 'Marketing', icon: Tag },

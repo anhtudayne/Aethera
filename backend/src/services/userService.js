@@ -210,3 +210,58 @@ export const logUserActivity = async (userId, minutesWatched = 0) => {
     }
 };
 
+export const applyInstructor = async (userId, data) => {
+    try {
+        const { expertise, experience, certificateImage } = data;
+        const user = await User.findByPk(userId);
+        if (!user) return { status: 404, message: 'User not found' };
+
+        // Check if already applied
+        const existingApp = await db.InstructorApplication.findOne({ where: { userId } });
+        if (existingApp) {
+            if (existingApp.status === 'PENDING') {
+                return { status: 400, message: 'Bạn đã nộp đơn đăng ký và đang chờ duyệt.' };
+            }
+            if (existingApp.status === 'APPROVED') {
+                return { status: 400, message: 'Bạn đã là giảng viên.' };
+            }
+            // If REJECTED, we can update the existing one
+            existingApp.expertise = expertise;
+            existingApp.experience = experience;
+            if (certificateImage !== undefined) {
+                existingApp.certificateImage = certificateImage;
+            }
+            existingApp.status = 'PENDING';
+            existingApp.reason = null;
+            await existingApp.save();
+            return { status: 200, message: 'Đơn đăng ký của bạn đã được cập nhật và gửi lại.' };
+        }
+
+        // Create new application
+        await db.InstructorApplication.create({
+            userId,
+            expertise,
+            experience,
+            certificateImage,
+            status: 'PENDING'
+        });
+
+        return { status: 201, message: 'Đơn đăng ký làm giảng viên đã được gửi thành công.' };
+    } catch (error) {
+        console.error('Lỗi applyInstructor:', error);
+        throw error;
+    }
+};
+
+export const getInstructorApplicationStatus = async (userId) => {
+    try {
+        const app = await db.InstructorApplication.findOne({ where: { userId } });
+        if (!app) {
+            return { status: 200, data: null };
+        }
+        return { status: 200, data: app };
+    } catch (error) {
+        console.error('Lỗi getInstructorApplicationStatus:', error);
+        throw error;
+    }
+};

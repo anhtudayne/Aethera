@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Notification, { foreignKey: 'userId', as: 'notifications' });
             User.hasMany(models.Transaction, { foreignKey: 'userId', as: 'transactions' });
             User.hasMany(models.RefundRequest, { foreignKey: 'userId', as: 'refundRequests' });
+            User.hasOne(models.InstructorApplication, { foreignKey: 'userId', as: 'instructorApplication' });
+            User.hasMany(models.Course, { foreignKey: 'instructorId', as: 'courses' });
         }
     }
     User.init(

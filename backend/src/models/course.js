@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     class Course extends Model {
         static associate(models) {
             Course.belongsTo(models.Category, { foreignKey: 'categoryId', as: 'category' });
+            Course.belongsTo(models.User, { foreignKey: 'instructorId', as: 'instructorUser' });
             Course.hasMany(models.CourseImage, { foreignKey: 'courseId', as: 'images' });
             Course.hasMany(models.Section, { foreignKey: 'courseId', as: 'sections' });
             Course.hasMany(models.Cart, { foreignKey: 'courseId', as: 'cartItems' });
@@ -42,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
             categoryId: {
                 type: DataTypes.INTEGER,
                 references: { model: 'Categories', key: 'id' },
+            },
+            instructorId: {
+                type: DataTypes.INTEGER,
+                references: { model: 'Users', key: 'id' },
             },
             viewCount: { type: DataTypes.INTEGER, defaultValue: 0 },
             requirements: DataTypes.TEXT,           // JSON array string

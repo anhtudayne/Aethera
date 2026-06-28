@@ -136,12 +136,12 @@ const OrderSuccessPage = () => {
               variant="primary"
               fullWidth
               className="success-btn-cta"
+              icon={PlayCircle}
             >
-              <PlayCircle size={20} style={{ marginRight: '8px' }} />
               Start Learning
             </Button>
           ) : (
-            <Link to={ROUTES.CART} style={{ width: '100%' }}>
+            <Link to={ROUTES.CART} style={{ width: '100%', display: 'block' }}>
               <Button
                 variant="primary"
                 fullWidth
@@ -153,9 +153,8 @@ const OrderSuccessPage = () => {
             </Link>
           )}
 
-          <Link to={ROUTES.MY_COURSES} style={{ width: '100%' }}>
-            <Button variant="ghost" fullWidth className="success-btn-sec">
-              <BookOpen size={16} style={{ marginRight: '8px' }} />
+          <Link to={ROUTES.MY_COURSES} style={{ width: '100%', display: 'block' }}>
+            <Button variant="ghost" fullWidth className="success-btn-sec" icon={BookOpen}>
               Go to My Dashboard
             </Button>
           </Link>

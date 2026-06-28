@@ -8,7 +8,7 @@ import db from '../models';
 export const createMoMoPayment = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { courseIds, useCredit } = req.body;
+        const { courseIds, useCredit, requestType } = req.body;
 
         if (courseIds && (!Array.isArray(courseIds) || courseIds.length === 0)) {
             return res.status(400).json({
@@ -43,6 +43,7 @@ export const createMoMoPayment = async (req, res) => {
         console.log('Amount:', totalAmount);
         console.log('Redirect URL:', redirectUrl);
         console.log('IPN URL (Webhook):', ipnUrl);
+        console.log('Request Type:', requestType);
 
         // 3. Gọi dịch vụ MoMo để lấy link thanh toán
         const momoResponse = await momoService.createPaymentRequest({
@@ -51,6 +52,7 @@ export const createMoMoPayment = async (req, res) => {
             orderInfo: `Thanh toan don hang ${orderCode} tren UTELearn`,
             redirectUrl,
             ipnUrl,
+            requestType: requestType || 'captureWallet',
         });
 
         if (momoResponse && momoResponse.resultCode === 0) {

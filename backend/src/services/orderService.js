@@ -226,7 +226,11 @@ export const fulfillOrder = async (orderId) => {
     const transaction = await db.sequelize.transaction();
     try {
         const order = await db.Order.findByPk(orderId, {
-            include: [{ model: db.OrderItem, as: 'orderItems' }],
+            include: [{ 
+                model: db.OrderItem, 
+                as: 'orderItems',
+                include: [{ model: db.Course, as: 'course' }]
+            }],
             transaction,
         });
         if (!order) throw createError(404, 'Không tìm thấy đơn hàng');
@@ -234,6 +238,13 @@ export const fulfillOrder = async (orderId) => {
 
         // 1. Cập nhật trạng thái
         await order.update({ status: 'paid' }, { transaction });
+
+        // Lấy commission rate từ settings
+        let commissionRate = 15; // default
+        const setting = await db.SystemSetting.findOne({ where: { key: 'default_commission_rate' }, transaction });
+        if (setting && setting.value) {
+            commissionRate = parseFloat(setting.value);
+        }
 
         // 2. Đăng ký các khóa học trong đơn hàng
         for (const item of order.orderItems) {
@@ -274,6 +285,24 @@ export const fulfillOrder = async (orderId) => {
 
                 // 4. Tăng student count cho khóa học
                 await db.Course.increment('totalStudents', { by: 1, where: { id: item.courseId }, transaction });
+
+                // 4.5. Tạo Payout Request nếu khóa học có giảng viên
+                if (item.course && item.course.instructorId) {
+                    const instructor = await db.User.findByPk(item.course.instructorId, { transaction });
+                    if (instructor) {
+                        const netEarnings = parseFloat(item.price) * (1 - (commissionRate / 100));
+                        if (netEarnings > 0) {
+                            await db.PayoutRequest.create({
+                                instructorId: instructor.id,
+                                amount: netEarnings,
+                                bankName: 'MoMo Wallet',
+                                accountNumber: instructor.phoneNumber || 'N/A',
+                                accountName: `${instructor.firstName} ${instructor.lastName}`.trim(),
+                                status: 'PENDING'
+                            }, { transaction });
+                        }
+                    }
+                }
             }
         }
 

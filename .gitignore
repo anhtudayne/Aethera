@@ -30,11 +30,16 @@ Thumbs.db
 *.swp
 *.swo
 
+bao-cao
+
+
 # Testing
 coverage/
 
 # Project specific
 backend/public/uploads/*
+backend/api-test/momo/momo-batch-disbursement.rest
+backend/api-test/momo/generate-signature.js
 !backend/public/uploads/.gitkeep
 backend/package-lock.json
 frontend/package-lock.json

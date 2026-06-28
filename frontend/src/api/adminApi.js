@@ -12,10 +12,15 @@ export const adminApi = {
   getUsers: (params) => axiosClient.get('/admin/users', { params }),
   updateUserStatus: (id, isActive) => axiosClient.put(`/admin/users/${id}/status`, { isActive }),
   
+  // Instructor applications
+  getInstructorApplications: (params) => axiosClient.get('/admin/instructor-applications', { params }),
+  updateInstructorApplication: (id, status, reason) => axiosClient.put(`/admin/instructor-applications/${id}`, { status, reason }),
+  
   // Payouts management
   getPayouts: (params) => axiosClient.get('/admin/payouts', { params }),
   markPayoutAsPaid: (id) => axiosClient.put(`/admin/payouts/${id}/complete`),
   rejectPayout: (id, note) => axiosClient.put(`/admin/payouts/${id}/reject`, { note }),
+  createBulkPayout: () => axiosClient.post('/admin/payouts/bulk'),
   
   // System Settings
   getSetting: (key) => axiosClient.get(`/admin/settings/${key}`),

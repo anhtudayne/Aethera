@@ -132,7 +132,7 @@ const PayoutsManagementPage = () => {
       if (type === 'complete') {
         await adminApi.markPayoutAsPaid(payout.id);
         toast.success(
-          `Successfully paid $${Number(payout.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })} to ${payout.instructor.firstName}`
+          `Successfully paid ${Number(payout.amount).toLocaleString('vi-VN')} đ to ${payout.instructor.firstName}`
         );
       } else {
         await adminApi.rejectPayout(payout.id, rejectNote);
@@ -161,9 +161,30 @@ const PayoutsManagementPage = () => {
   return (
     <div className="w-full min-h-full text-gray-900 sm:p-2 relative">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">Financial Management</h2>
-        <p className="text-lg text-gray-500">Manage platform rates and process pending instructor payouts.</p>
+      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">Financial Management</h2>
+          <p className="text-lg text-gray-500">Manage platform rates and process pending instructor payouts.</p>
+        </div>
+        <button
+          onClick={async () => {
+            if (window.confirm('Are you sure you want to process all PENDING payouts via MoMo Bulk Payout?')) {
+              try {
+                const toastId = toast.loading('Initiating MoMo Bulk Payout...');
+                await adminApi.createBulkPayout();
+                toast.success('Bulk payout initiated successfully!', { id: toastId });
+                // Force a page reload or state update to refresh the table
+                setTimeout(() => window.location.reload(), 1500);
+              } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to initiate bulk payout');
+              }
+            }
+          }}
+          className="px-4 py-2 bg-[#a50064] text-white rounded-lg shadow-sm hover:bg-[#80004d] font-medium transition-colors flex items-center gap-2"
+        >
+          <RefreshCw size={16} className={isProcessing ? 'animate-spin' : ''} />
+          Bulk Payout (MoMo)
+        </button>
       </div>
 
       {/* Tabs */}
@@ -389,7 +410,7 @@ const PayoutsManagementPage = () => {
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-500">Amount:</span>
                   <span className="font-mono font-bold text-emerald-600">
-                    ${Number(activeModal.payout.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {Number(activeModal.payout.amount).toLocaleString('vi-VN')} đ
                   </span>
                 </div>
                 <div className="flex justify-between">

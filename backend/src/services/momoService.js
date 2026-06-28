@@ -23,11 +23,10 @@ export const createPaymentRequest = async ({
     redirectUrl,
     ipnUrl,
     extraData = '',
+    requestType = 'captureWallet',
 }) => {
     try {
         const requestId = orderId;
-        const requestType = 'payWithATM';
-        // const requestType = 'captureWallet';
 
         // Tạo chuỗi signature thô (phải đúng thứ tự alphabet của các key)
         const rawSignature = [

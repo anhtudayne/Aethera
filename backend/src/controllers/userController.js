@@ -1,4 +1,4 @@
-import { updateUserProfile, getUserProfile, getUserStreak, logUserActivity } from '../services/userService';
+import { updateUserProfile, getUserProfile, getUserStreak, logUserActivity, applyInstructor as applyInstructorService, getInstructorApplicationStatus as getInstructorAppStatusService } from '../services/userService';
 
 export const getProfile = async (req, res) => {
     try {
@@ -53,6 +53,29 @@ export const logActivity = async (req, res) => {
         return res.status(result.status).json(result);
     } catch (error) {
         console.error('Controller - Lỗi log activity:', error);
+        return res.status(500).json({ status: 500, message: 'Lỗi server nội bộ' });
+    }
+};
+
+export const applyInstructor = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const data = req.body;
+        const result = await applyInstructorService(userId, data);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi applyInstructor:', error);
+        return res.status(500).json({ status: 500, message: 'Lỗi server nội bộ' });
+    }
+};
+
+export const getInstructorApplicationStatus = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const result = await getInstructorAppStatusService(userId);
+        return res.status(result.status).json(result);
+    } catch (error) {
+        console.error('Controller - Lỗi getInstructorApplicationStatus:', error);
         return res.status(500).json({ status: 500, message: 'Lỗi server nội bộ' });
     }
 };

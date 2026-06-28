@@ -122,9 +122,10 @@ const CheckoutPage = () => {
         }
       }
 
-      if (paymentMethod === 'e-wallet') {
+      if (paymentMethod === 'momo-wallet' || paymentMethod === 'momo-atm') {
         // MoMo Payment Flow
-        const res = await orderApi.createMoMoPayment(ids, applyCredit);
+        const requestType = paymentMethod === 'momo-wallet' ? 'captureWallet' : 'payWithATM';
+        const res = await orderApi.createMoMoPayment(ids, applyCredit, requestType);
         const payUrl = res?.data?.payUrl || res?.payUrl;
         
         if (!payUrl) {
@@ -158,7 +159,7 @@ const CheckoutPage = () => {
       console.error('Checkout error:', err);
       toast.toast ? toast.toast(err?.message) : toast.error(err?.message || 'Payment simulation failed. Please try again.');
     } finally {
-      if (paymentMethod !== 'e-wallet' || netTotal === 0) {
+      if ((paymentMethod !== 'momo-wallet' && paymentMethod !== 'momo-atm') || netTotal === 0) {
         setPaying(false);
       }
     }
@@ -285,28 +286,54 @@ const CheckoutPage = () => {
                     )}
                   </div>
 
-                  {/* Option 2: MoMo (E-Wallet) */}
+                  {/* Option 2: MoMo (E-Wallet - QR Code) */}
                   <div 
-                    className={`payment-method-row ${paymentMethod === 'e-wallet' ? 'payment-method-selected' : ''}`}
-                    onClick={() => setPaymentMethod('e-wallet')}
+                    className={`payment-method-row ${paymentMethod === 'momo-wallet' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('momo-wallet')}
                   >
                     <label className="payment-radio-label">
                       <input
                         type="radio"
                         name="payment-method"
-                        value="e-wallet"
-                        checked={paymentMethod === 'e-wallet'}
-                        onChange={() => setPaymentMethod('e-wallet')}
+                        value="momo-wallet"
+                        checked={paymentMethod === 'momo-wallet'}
+                        onChange={() => setPaymentMethod('momo-wallet')}
                         className="payment-radio-input"
                       />
                       <Wallet size={18} className="payment-icon" />
-                      <span className="payment-method-name">Ví điện tử MoMo</span>
+                      <span className="payment-method-name">Ví điện tử MoMo (Quét mã QR)</span>
                       <span style={{ backgroundColor: '#a50064', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px', fontWeight: 'bold', letterSpacing: '0.5px' }}>MoMo Sandbox</span>
                     </label>
                     
-                    {paymentMethod === 'e-wallet' && (
+                    {paymentMethod === 'momo-wallet' && (
                       <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
                         <p>Hệ thống sẽ chuyển hướng bạn sang cổng thanh toán thử nghiệm (Sandbox) của MoMo để quét mã QR và xác nhận thanh toán.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Option 2b: MoMo (ATM) */}
+                  <div 
+                    className={`payment-method-row ${paymentMethod === 'momo-atm' ? 'payment-method-selected' : ''}`}
+                    onClick={() => setPaymentMethod('momo-atm')}
+                  >
+                    <label className="payment-radio-label">
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        value="momo-atm"
+                        checked={paymentMethod === 'momo-atm'}
+                        onChange={() => setPaymentMethod('momo-atm')}
+                        className="payment-radio-input"
+                      />
+                      <Wallet size={18} className="payment-icon" />
+                      <span className="payment-method-name">Ví điện tử MoMo (Thẻ ATM nội địa)</span>
+                      <span style={{ backgroundColor: '#a50064', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px', fontWeight: 'bold', letterSpacing: '0.5px' }}>MoMo Sandbox</span>
+                    </label>
+                    
+                    {paymentMethod === 'momo-atm' && (
+                      <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
+                        <p>Hệ thống sẽ chuyển hướng bạn sang cổng thanh toán thử nghiệm (Sandbox) của MoMo để thanh toán bằng thẻ ATM nội địa (payWithATM).</p>
                       </div>
                     )}
                   </div>

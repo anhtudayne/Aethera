@@ -41,6 +41,10 @@ import MarketingManagementPage from './admin/MarketingManagementPage';
 import CategoryManagementPage from './admin/CategoryManagementPage';
 import TicketManagementPage from './admin/TicketManagementPage';
 
+// Instructor Registration & Admin Approvals
+import InstructorRegistrationPage from './InstructorRegistration/InstructorRegistrationPage';
+import InstructorApprovalsPage from './admin/InstructorApprovalsPage';
+
 // Instructor pages
 import InstructorDashboardPage from './instructor/InstructorDashboardPage';
 import InstructorCourseCreatePage from './instructor/InstructorCourseCreatePage';
@@ -83,6 +87,8 @@ export {
   MarketingManagementPage,
   CategoryManagementPage,
   TicketManagementPage,
+  InstructorRegistrationPage,
+  InstructorApprovalsPage,
   InstructorDashboardPage,
   InstructorCourseCreatePage,
   InstructorCourseManagePage,

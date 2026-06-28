@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateProfile, getProfile, getStreak, logActivity } from '../controllers/userController';
+import { updateProfile, getProfile, getStreak, logActivity, applyInstructor, getInstructorApplicationStatus } from '../controllers/userController';
 import { updateProfileLimiter } from '../middlewares/rateLimiter';
 import { verifyToken } from '../middlewares/authMiddleware';
 import { authorizeRole } from '../middlewares/authorizeMiddleware';
@@ -13,5 +13,8 @@ router.get('/profile', verifyToken, getProfile);
 
 router.get('/streak', verifyToken, getStreak);
 router.post('/streak/activity', verifyToken, logActivity);
+
+router.post('/apply-instructor', verifyToken, applyInstructor);
+router.get('/instructor-application', verifyToken, getInstructorApplicationStatus);
 
 export default router;

@@ -40,6 +40,7 @@ const InstructorDashboardPage = () => {
       <div className="instructor-courses-tabs">
         <div className={`instructor-tab ${activeTab === 'courses' ? 'active' : ''}`} onClick={() => setActiveTab('courses')}>Courses</div>
         <div className={`instructor-tab ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</div>
+        <div className={`instructor-tab ${activeTab === 'payouts' ? 'active' : ''}`} onClick={() => setActiveTab('payouts')}>Payouts & Policy</div>
         <div className="instructor-tab">Course bundles</div>
         <div className="instructor-tab">
           Course cloning <span className="instructor-tab-badge">Beta</span>
@@ -123,6 +124,45 @@ const InstructorDashboardPage = () => {
 
       {activeTab === 'profile' && (
         <InstructorProfileForm />
+      )}
+
+      {activeTab === 'payouts' && (
+        <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: '#1c1d1f' }}>
+            Aethera Payout Policy
+          </h2>
+          <div style={{ backgroundColor: '#f7f9fa', padding: '24px', borderRadius: '8px', border: '1px solid #d1d7dc', marginBottom: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', color: '#1c1d1f' }}>
+              Revenue Share
+            </h3>
+            <p style={{ color: '#1c1d1f', marginBottom: '16px', lineHeight: '1.5' }}>
+              Instructors receive a standard <strong>85% revenue share</strong> on all course sales generated organically through Aethera. 
+              The remaining 15% is retained by Aethera to cover platform hosting, marketing, and payment processing fees.
+            </p>
+            
+            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', color: '#1c1d1f' }}>
+              Payout Schedule
+            </h3>
+            <p style={{ color: '#1c1d1f', marginBottom: '16px', lineHeight: '1.5' }}>
+              Payouts are processed automatically on the <strong>3rd day of every month</strong>. 
+              Only earnings from the previous calendar month that have cleared the 30-day refund period are eligible for payout.
+            </p>
+
+            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', color: '#1c1d1f' }}>
+              Payment Methods
+            </h3>
+            <p style={{ color: '#1c1d1f', marginBottom: '0', lineHeight: '1.5' }}>
+              We currently support bulk payouts directly to your <strong>MoMo Wallet</strong> or linked bank accounts. 
+              Please ensure your payment details are up-to-date in your Profile settings to avoid delays.
+            </p>
+          </div>
+          
+          <div style={{ padding: '16px', backgroundColor: '#e6f2ff', borderLeft: '4px solid #0056d2' }}>
+            <p style={{ margin: 0, color: '#0056d2', fontWeight: '500' }}>
+              Your current available balance: <strong>${user?.creditBalance || '0.00'}</strong>
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
