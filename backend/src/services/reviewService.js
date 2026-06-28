@@ -63,8 +63,8 @@ export const createReview = async (userId, courseId, rating, comment) => {
             await notificationService.createNotification(
                 userId,
                 'new_review',
-                '⭐ Đánh giá thành công!',
-                `Bạn đã đánh giá khóa học "${courseName?.name || 'Khóa học'}".`,
+                '⭐ Review Submitted!',
+                `You have successfully reviewed the course "${courseName?.name || 'Course'}".`,
                 { courseId, courseName: courseName?.name, reviewId: review.id }
             );
         } catch (notifErr) {

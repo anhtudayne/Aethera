@@ -97,11 +97,11 @@ const ProfileSettingsPage = () => {
 
   return (
     <div className="settings-page">
-      <h2>Profile settings ⚙️</h2>
+      <h2>Profile Settings ⚙️</h2>
 
       {/* Profile Section */}
       <div className="settings-section">
-        <h3>Personal information</h3>
+        <h3>Personal Information</h3>
 
         <div className="profile-header">
           <div className="profile-avatar">
@@ -126,39 +126,39 @@ const ProfileSettingsPage = () => {
             <input type="email" value={user?.email || ''} readOnly />
           </div>
           <div className="form-group">
-            <label>Full name</label>
+            <label>Full Name</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter first and last name"
+              placeholder="Enter your full name"
             />
           </div>
           <div className="form-group">
-            <label>Phone number</label>
+            <label>Phone Number</label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter phone number"
+              placeholder="Enter your phone number"
             />
           </div>
           <button type="submit" className="settings-save-btn" disabled={profileLoading}>
-            {profileLoading ? 'Saving...' : 'Saving changes'}
+            {profileLoading ? 'Saving...' : 'Save Changes'}
           </button>
         </form>
       </div>
 
       {/* Change Password Section */}
       <div className="settings-section">
-        <h3>Change password</h3>
+        <h3>Change Password</h3>
 
         {passwordSuccess && <div className="settings-success">{passwordSuccess}</div>}
         {passwordError && <div className="settings-error">{passwordError}</div>}
 
         <form className="settings-form" onSubmit={handlePasswordSubmit}>
           <div className="form-group">
-            <label>Current password</label>
+            <label>Current Password</label>
             <input
               type="password"
               value={currentPassword}
@@ -167,7 +167,7 @@ const ProfileSettingsPage = () => {
             />
           </div>
           <div className="form-group">
-            <label>New password</label>
+            <label>New Password</label>
             <input
               type="password"
               value={newPassword}
@@ -176,16 +176,16 @@ const ProfileSettingsPage = () => {
             />
           </div>
           <div className="form-group">
-            <label>Confirm new password</label>
+            <label>Confirm New Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Re-enter the new password"
+              placeholder="Confirm new password"
             />
           </div>
           <button type="submit" className="settings-save-btn" disabled={passwordLoading}>
-            {passwordLoading ? 'Updating...' : 'Updating password'}
+            {passwordLoading ? 'Updating...' : 'Update Password'}
           </button>
         </form>
       </div>

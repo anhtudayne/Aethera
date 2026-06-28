@@ -46,7 +46,7 @@ const Navbar = () => {
                 isActive ? 'nav-link nav-link-active' : 'nav-link'
               }
             >
-              Browse Courses
+              Explore Courses
             </NavLink>
             <NavLink
               to={ROUTES.CERTIFICATE_VERIFY}
@@ -123,7 +123,7 @@ const Navbar = () => {
                   <button className="nav-btn nav-btn-secondary">Log in</button>
                 </Link>
                 <Link to={ROUTES.REGISTER}>
-                  <button className="nav-btn nav-btn-primary">Đăng ký</button>
+                  <button className="nav-btn nav-btn-primary">Sign up</button>
                 </Link>
               </div>
             </>

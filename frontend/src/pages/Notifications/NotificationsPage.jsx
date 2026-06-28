@@ -70,11 +70,11 @@ const NotificationsPage = () => {
     const d = new Date(dateStr);
     const now = new Date();
     const diff = Math.floor((now - d) / 1000);
-    if (diff < 60) return 'Vừa xong';
-    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
-    return d.toLocaleDateString('vi-VN');
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return d.toLocaleDateString('en-US');
   };
 
   const unreadCount = notifications.filter(isUnread).length;
@@ -82,7 +82,7 @@ const NotificationsPage = () => {
   return (
     <div className="notifications-page">
       <div className="notifications-header">
-        <h2>Notification 🔔 {unreadCount > 0 && <span style={{ fontSize: '0.9rem', color: 'var(--color-accent)' }}>({unreadCount} unread)</span>}</h2>
+        <h2>Notifications 🔔 {unreadCount > 0 && <span style={{ fontSize: '0.9rem', color: 'var(--color-accent)' }}>({unreadCount} unread)</span>}</h2>
         {unreadCount > 0 && (
           <button className="mark-all-btn" onClick={handleMarkAllRead}>
             <CheckCheck size={16} /> Mark all as read
@@ -98,8 +98,8 @@ const NotificationsPage = () => {
       ) : notifications.length === 0 ? (
         <EmptyState
           icon={Bell}
-          title="Không có thông báo nào"
-          description="New notifications will appear here when updates are available."
+          title="No notifications"
+          description="New notifications will appear here when there are updates."
         />
       ) : (
         <div className="notifications-list">
@@ -127,7 +127,7 @@ const NotificationsPage = () => {
                 <button
                   className="notification-action-btn delete"
                   onClick={(e) => { e.stopPropagation(); handleDelete(n.id); }}
-                  title="Xóa"
+                  title="Delete"
                 >
                   <Trash2 size={16} />
                 </button>

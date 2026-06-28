@@ -148,21 +148,21 @@ export const createOrderFromCart = async (userId, courseIds, useCredit = false, 
 
         // 9. Notification
         try {
-            const courseNames = validItems.map(item => item.course?.name || 'Khóa học');
+            const courseNames = validItems.map(item => item.course?.name || 'Course');
             if (finalAmount === 0) {
                 await notificationService.createNotification(
                     userId,
                     'order_paid',
-                    '✅ Đơn hàng thanh toán bằng Credit thành công!',
-                    `Đơn hàng ${orderCode} đã thanh toán thành công bằng Credit. Bạn có thể học ngay!`,
+                    '✅ Order paid successfully via Credit!',
+                    `Order ${orderCode} has been paid successfully via Credit. You can start learning now!`,
                     { orderId: order.id, orderCode, totalAmount: finalAmount, creditUsed, courseNames }
                 );
             } else {
                 await notificationService.createNotification(
                     userId,
                     'order_created',
-                    '📦 Đơn hàng mới đã tạo',
-                    `Đơn hàng ${orderCode} đang chờ thanh toán. Tổng: ${finalAmount.toLocaleString('vi-VN')}đ` + (creditUsed > 0 ? ` (Đã dùng ${creditUsed.toLocaleString('vi-VN')}đ credit)` : ''),
+                    '📦 New order created',
+                    `Order ${orderCode} is pending payment. Total: ${finalAmount.toLocaleString('vi-VN')}₫` + (creditUsed > 0 ? ` (Used ${creditUsed.toLocaleString('vi-VN')}₫ credit)` : ''),
                     { orderId: order.id, orderCode, totalAmount: finalAmount, creditUsed, courseNames }
                 );
             }
@@ -383,8 +383,8 @@ export const fulfillOrder = async (orderId) => {
         await notificationService.createNotification(
             order.userId,
             'order_paid',
-            '✅ Thanh toán thành công!',
-            `Đơn hàng ${order.code} đã thanh toán thành công. Bạn có thể học ngay!`,
+            '✅ Payment Successful!',
+            `Order ${order.code} has been paid successfully. You can start learning now!`,
             { orderId: order.id, orderCode: order.code, courseNames }
         );
 

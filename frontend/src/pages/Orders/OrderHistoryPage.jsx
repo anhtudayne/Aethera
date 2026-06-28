@@ -107,6 +107,7 @@ const OrderHistoryPage = () => {
             <thead>
               <tr>
                 <th>Order Code</th>
+                <th>Courses</th>
                 <th>Date</th>
                 <th>Total</th>
                 <th>Status</th>
@@ -116,9 +117,33 @@ const OrderHistoryPage = () => {
             <tbody>
               {orders.map((order) => {
                 const statusInfo = getStatusDisplay(order.status);
+                const items = order.orderItems || order.OrderItems || order.items || [];
                 return (
                   <tr key={order.id}>
                     <td><span className="order-code">#{order.orderCode || order.id}</span></td>
+                    <td>
+                      <div className="order-courses-cell" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {items.map((item) => {
+                          const course = item.course || item.Course || item;
+                          return (
+                            <div key={item.id || course.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <img 
+                                src={course.thumbnail || '/placeholder-course.png'} 
+                                alt={course.name || course.title} 
+                                style={{ width: '48px', height: '32px', borderRadius: '3px', objectFit: 'cover', flexShrink: 0 }} 
+                              />
+                              <Link 
+                                to={`/courses/${course.slug}`} 
+                                style={{ fontWeight: 700, fontSize: '0.88rem', color: 'inherit', textDecoration: 'none' }}
+                                className="course-refund-link"
+                              >
+                                {course.name || course.title || 'Course'}
+                              </Link>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </td>
                     <td>{formatDate(order.createdAt)}</td>
                     <td style={{ fontWeight: 700 }}>{formatPrice(order.totalAmount || order.total)}</td>
                     <td>
@@ -160,7 +185,25 @@ const OrderHistoryPage = () => {
                 const statusInfo = getRefundStatusDisplay(req.status);
                 return (
                   <tr key={req.id}>
-                    <td style={{ fontWeight: 700 }}>{req.course?.name || 'Course'}</td>
+                    <td>
+                      <div className="refund-course-cell" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <img 
+                          src={req.course?.thumbnail || '/placeholder-course.png'} 
+                          alt={req.course?.name} 
+                          className="order-item-img" 
+                          style={{ width: '64px', height: '42px', borderRadius: '4px', objectFit: 'cover', margin: 0 }}
+                        />
+                        <div>
+                          <Link 
+                            to={`/courses/${req.course?.slug}`} 
+                            style={{ fontWeight: 700, color: 'inherit', textDecoration: 'none' }}
+                            className="course-refund-link"
+                          >
+                            {req.course?.name || 'Course'}
+                          </Link>
+                        </div>
+                      </div>
+                    </td>
                     <td>{formatDate(req.createdAt)}</td>
                     <td style={{ fontWeight: 700 }}>{formatPrice(req.refundAmount)}</td>
                     <td>{getRefundMethodDisplay(req.method)}</td>

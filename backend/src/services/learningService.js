@@ -227,8 +227,8 @@ export const markLessonComplete = async (userId, lessonId) => {
                 await createNotification(
                     userId,
                     'certificate_issued',
-                    '🎓 Chúc mừng! Bạn đã nhận chứng chỉ!',
-                    `Bạn đã hoàn thành khóa học "${course?.name}" và nhận được chứng chỉ ${certificateCode}.`,
+                    '🎓 Congratulations! Certificate Issued!',
+                    `You have completed the course "${course?.name}" and received certificate ${certificateCode}.`,
                     { courseId, certificateCode }
                 );
             }
