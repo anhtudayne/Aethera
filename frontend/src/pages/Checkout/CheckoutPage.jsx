@@ -330,13 +330,13 @@ const CheckoutPage = () => {
                         className="payment-radio-input"
                       />
                       <Wallet size={18} className="payment-icon" />
-                      <span className="payment-method-name">Ví điện tử MoMo (Quét mã QR)</span>
+                      <span className="payment-method-name">MoMo e-wallet (Scan QR code)</span>
                       <span style={{ backgroundColor: '#a50064', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px', fontWeight: 'bold', letterSpacing: '0.5px' }}>MoMo Sandbox</span>
                     </label>
                     
                     {paymentMethod === 'momo-wallet' && (
                       <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
-                        <p>Hệ thống sẽ chuyển hướng bạn sang cổng thanh toán thử nghiệm (Sandbox) của MoMo để quét mã QR và xác nhận thanh toán.</p>
+                        <p>The system will redirect you to MoMo's test payment portal (Sandbox) to scan the QR code and confirm payment.</p>
                       </div>
                     )}
                   </div>
@@ -356,13 +356,13 @@ const CheckoutPage = () => {
                         className="payment-radio-input"
                       />
                       <Wallet size={18} className="payment-icon" />
-                      <span className="payment-method-name">Ví điện tử MoMo (Thẻ ATM nội địa)</span>
+                      <span className="payment-method-name">MoMo e-wallet (Domestic ATM card)</span>
                       <span style={{ backgroundColor: '#a50064', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px', fontWeight: 'bold', letterSpacing: '0.5px' }}>MoMo Sandbox</span>
                     </label>
                     
                     {paymentMethod === 'momo-atm' && (
                       <div className="payment-method-instruction" onClick={(e) => e.stopPropagation()}>
-                        <p>Hệ thống sẽ chuyển hướng bạn sang cổng thanh toán thử nghiệm (Sandbox) của MoMo để thanh toán bằng thẻ ATM nội địa (payWithATM).</p>
+                        <p>The system will redirect you to MoMo's test payment portal (Sandbox) to pay with a domestic ATM card (payWithATM).</p>
                       </div>
                     )}
                   </div>

@@ -36,7 +36,7 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
 
   const handleCopyCode = (code) => {
     navigator.clipboard.writeText(code);
-    toast.success(`Đã sao chép: ${code}`);
+    toast.success(`Copied: ${code}`);
   };
 
   const handleEdit = (voucher) => {
@@ -61,8 +61,8 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
       <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
         <div className="flex items-center gap-2">
           <Tag className="text-indigo-600" size={20} />
-          <h3 className="text-xl font-semibold text-gray-900">Danh sách Voucher</h3>
-          <span className="ml-2 text-sm text-gray-400 font-normal">{vouchers.length} mã</span>
+          <h3 className="text-xl font-semibold text-gray-900">List of Vouchers</h3>
+          <span className="ml-2 text-sm text-gray-400 font-normal">{vouchers.length} code</span>
         </div>
 
         <button
@@ -73,7 +73,7 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
                      shadow-sm shadow-indigo-600/30 transition-all"
         >
           <PlusCircle size={17} />
-          Tạo Voucher Mới
+          Create New Voucher
         </button>
       </div>
 
@@ -85,9 +85,9 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
               <th className="py-4 px-6 font-semibold">Giảm</th>
               <th className="py-4 px-6 font-semibold whitespace-nowrap">Ngày BĐ</th>
               <th className="py-4 px-6 font-semibold whitespace-nowrap">Ngày HH</th>
-              <th className="py-4 px-6 font-semibold min-w-[160px]">Lượt dùng</th>
-              <th className="py-4 px-6 font-semibold">Trạng thái</th>
-              <th className="py-4 px-6 font-semibold text-right">Hành động</th>
+              <th className="py-4 px-6 font-semibold min-w-[160px]">Number of uses</th>
+              <th className="py-4 px-6 font-semibold">Status</th>
+              <th className="py-4 px-6 font-semibold text-right">Act</th>
             </tr>
           </thead>
           <tbody className="text-sm font-medium divide-y divide-gray-50">
@@ -95,13 +95,13 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
               <tr>
                 <td colSpan="7" className="py-16 text-center text-gray-400">
                   <RefreshCw className="animate-spin inline-block mr-2" size={20} />
-                  Đang tải danh sách voucher...
+                  Loading voucher list...
                 </td>
               </tr>
             ) : vouchers.length === 0 ? (
               <tr>
                 <td colSpan="7" className="py-16 text-center text-gray-400">
-                  Chưa có voucher nào.{' '}
+                  No vouchers yet.{' '}
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="text-indigo-600 hover:underline font-semibold"
@@ -142,7 +142,7 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
                             <span>{`${Number(voucher.discountValue || voucher.discountPercent)}%`}</span>
                             {voucher.maxDiscountValue && (
                               <span className="text-xs text-gray-500 font-normal">
-                                Tối đa {formatPrice(Number(voucher.maxDiscountValue))}
+                                Maximum {formatPrice(Number(voucher.maxDiscountValue))}
                               </span>
                             )}
                           </div>
@@ -184,14 +184,14 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => handleEdit(voucher)}
-                          title="Chỉnh sửa voucher"
+                          title="Edit vouchers"
                           className="p-1.5 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                         >
                           <Pencil size={15} />
                         </button>
                         <button
                           onClick={() => handleCopyCode(voucher.code)}
-                          title="Sao chép mã"
+                          title="Copy the code"
                           className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
                         >
                           <Copy size={15} />
@@ -199,7 +199,7 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
                         {!isExpired && (
                           <button
                             onClick={() => onAction.toggleStatus(voucher)}
-                            title={voucher.status === 'ACTIVE' ? 'Tắt voucher' : 'Bật voucher'}
+                            title={voucher.status === 'ACTIVE' ? 'Turn off vouchers' : 'Turn on the voucher'}
                             className={`p-1.5 rounded-lg transition-colors ${
                               voucher.status === 'ACTIVE'
                                 ? 'text-gray-400 hover:text-red-500 hover:bg-red-50'

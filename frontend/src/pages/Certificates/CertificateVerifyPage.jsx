@@ -22,7 +22,7 @@ const CertificateVerifyPage = () => {
       if (err?.status === 404) {
         setResult({ valid: false });
       } else {
-        setError(err?.message || 'Đã xảy ra lỗi khi xác thực.');
+        setError(err?.message || 'An error occurred while authenticating.');
       }
     } finally {
       setLoading(false);
@@ -32,20 +32,20 @@ const CertificateVerifyPage = () => {
   return (
     <div className="cert-verify-page">
       <div className="cert-verify-container">
-        <h2>🔍 Xác thực chứng chỉ</h2>
-        <p>Nhập mã chứng chỉ để kiểm tra tính xác thực của chứng chỉ Aethera.</p>
+        <h2>🔍 Certificate authentication</h2>
+        <p>Enter the certificate code to check the authenticity of the Aethera certificate.</p>
 
         <form onSubmit={handleVerify}>
           <div className="cert-verify-input-group">
             <input
               type="text"
               className="cert-verify-input"
-              placeholder="Nhập mã chứng chỉ (VD: CERT-XXXX)"
+              placeholder="Enter the certificate code (eg: CERT-XXXX)"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
             <button type="submit" className="cert-verify-btn" disabled={loading || !code.trim()}>
-              {loading ? 'Đang kiểm tra...' : 'Xác thực'}
+              {loading ? 'Checking...' : 'Verifying'}
             </button>
           </div>
         </form>
@@ -57,20 +57,20 @@ const CertificateVerifyPage = () => {
             {result.valid ? (
               <>
                 <CheckCircle size={40} style={{ color: 'var(--color-success)', marginBottom: 'var(--space-sm)' }} />
-                <h3 style={{ color: 'var(--color-success)' }}>✅ Chứng chỉ hợp lệ</h3>
+                <h3 style={{ color: 'var(--color-success)' }}>✅ Valid certificate</h3>
                 <div className="cert-verify-detail">
-                  {result.studentName && <p><strong>Học viên:</strong> {result.studentName}</p>}
-                  {result.courseName && <p><strong>Khóa học:</strong> {result.courseName}</p>}
+                  {result.studentName && <p><strong>Students:</strong> {result.studentName}</p>}
+                  {result.courseName && <p><strong>Course:</strong> {result.courseName}</p>}
                   {(result.issuedAt || result.createdAt) && (
-                    <p><strong>Ngày cấp:</strong> {new Date(result.issuedAt || result.createdAt).toLocaleDateString('vi-VN')}</p>
+                    <p><strong>Date of issue:</strong> {new Date(result.issuedAt || result.createdAt).toLocaleDateString('vi-VN')}</p>
                   )}
                 </div>
               </>
             ) : (
               <>
                 <XCircle size={40} style={{ color: 'var(--color-error)', marginBottom: 'var(--space-sm)' }} />
-                <h3 style={{ color: 'var(--color-error)' }}>❌ Chứng chỉ không hợp lệ</h3>
-                <p>Không tìm thấy chứng chỉ với mã này. Vui lòng kiểm tra lại.</p>
+                <h3 style={{ color: 'var(--color-error)' }}>❌ Invalid certificate</h3>
+                <p>No certificate found with this code. Please check again.</p>
               </>
             )}
           </div>

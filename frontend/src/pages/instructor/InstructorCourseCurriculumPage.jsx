@@ -24,7 +24,7 @@ const InstructorCourseCurriculumPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Tính thời lượng video trực tiếp từ file ở frontend
+    // Calculate video duration directly from the file in the frontend
     const videoElement = document.createElement('video');
     videoElement.preload = 'metadata';
     let localDuration = '';
@@ -35,7 +35,7 @@ const InstructorCourseCurriculumPage = () => {
         const m = Math.floor(durationSec / 60);
         const s = Math.floor(durationSec % 60);
         localDuration = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        // Cập nhật duration ngay lập tức trên UI
+        // Update duration immediately on UI
         setEditingLesson(prev => ({ ...prev, duration: localDuration }));
       }
     };
@@ -60,7 +60,7 @@ const InstructorCourseCurriculumPage = () => {
         setEditingLesson(prev => ({ 
           ...prev, 
           videoUrl: resData.data.url,
-          // Ưu tiên duration từ backend (nếu có), không thì dùng localDuration, nếu không có nữa thì giữ nguyên prev.duration
+          // Prioritize duration from the backend (if available), otherwise use localDuration, if not available then keep prev.duration
           duration: resData.data.duration || localDuration || prev.duration
         }));
       } else {

@@ -70,9 +70,9 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
         ring: 'focus:border-amber-500 focus:ring-amber-500/20',
         submit: 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/25',
         submitIcon: <Save size={16} />,
-        submitLabel: 'Lưu thay đổi',
-        submittingLabel: 'Đang lưu...',
-        title: 'Chỉnh sửa Voucher',
+        submitLabel: 'Save changes',
+        submittingLabel: 'Saving...',
+        title: 'Edit Voucher',
         subtitle: (
           <span>
             Mã:{' '}
@@ -86,9 +86,9 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
         submit: 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20',
         submitIcon: <PlusCircle size={16} />,
         submitLabel: 'Tạo mã',
-        submittingLabel: 'Đang tạo...',
-        title: 'Tạo Voucher Mới',
-        subtitle: 'Điền đầy đủ thông tin để tạo mã giảm giá.',
+        submittingLabel: 'Creating...',
+        title: 'Create New Voucher',
+        subtitle: 'Fill in all information to create a discount code.',
       };
 
   // ── Submit ──────────────────────────────────────────────────────────────
@@ -161,7 +161,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
               <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <Tag size={16} className="text-gray-400 shrink-0" />
                 <span className="font-mono font-bold text-gray-800">{initialData?.code}</span>
-                <span className="ml-auto text-xs text-gray-400 italic">Không thể đổi</span>
+                <span className="ml-auto text-xs text-gray-400 italic">Cannot be exchanged</span>
               </div>
             ) : (
               // Create mode: input bình thường
@@ -186,7 +186,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Loại giảm giá <span className="text-red-500">*</span>
+                Discount type <span className="text-red-500">*</span>
               </label>
               <select
                 value={discountType}
@@ -195,14 +195,14 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                             focus:outline-none focus:ring-2 ${theme.ring}
                             text-gray-900 transition-all text-sm`}
               >
-                <option value="PERCENTAGE">Phần trăm (%)</option>
-                <option value="FIXED">Số tiền cố định (đ)</option>
+                <option value="PERCENTAGE">Percent (%)</option>
+                <option value="FIXED">Fixed amount (d)</option>
               </select>
             </div>
             
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Mức giảm <span className="text-red-500">*</span>
+                Reduced level <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -211,7 +211,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                   max={discountType === 'PERCENTAGE' ? 100 : undefined}
                   value={discountValue}
                   onChange={(e) => setDiscountValue(e.target.value)}
-                  placeholder={discountType === 'PERCENTAGE' ? "1 – 100" : "Nhập số tiền..."}
+                  placeholder={discountType === 'PERCENTAGE' ? "1 – 100" : "Enter amount..."}
                   required
                   autoFocus={isEdit}
                   className={`w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
@@ -219,7 +219,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                               font-mono text-gray-900 transition-all`}
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none font-bold text-sm">
-                  {discountType === 'PERCENTAGE' ? '%' : 'đ'}
+                  {discountType === 'PERCENTAGE' ? '%' : 'D'}
                 </span>
               </div>
             </div>
@@ -229,7 +229,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
           {discountType === 'PERCENTAGE' && (
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Mức giảm tối đa
+                Maximum reduction
               </label>
               <div className="relative">
                 <input
@@ -237,7 +237,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                   min="1"
                   value={maxDiscountValue}
                   onChange={(e) => setMaxDiscountValue(e.target.value)}
-                  placeholder="Bỏ trống = không giới hạn"
+                  placeholder="Leave blank = unlimited"
                   className={`w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
                               focus:outline-none focus:ring-2 ${theme.ring}
                               font-mono text-gray-900 transition-all`}
@@ -253,7 +253,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Ngày bắt đầu
+                Start date
               </label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
@@ -266,12 +266,12 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                               text-gray-900 transition-all text-sm`}
                 />
               </div>
-              {!isEdit && <p className="text-xs text-gray-400">Bỏ trống = ngay lập tức.</p>}
+              {!isEdit && <p className="text-xs text-gray-400">Leave blank = immediately.</p>}
             </div>
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Ngày hết hạn <span className="text-red-500">*</span>
+                Expiration date <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
@@ -291,7 +291,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
           {/* Ghi chú gia hạn – chỉ hiện khi sửa voucher EXPIRED */}
           {isEdit && initialData?.status === 'EXPIRED' && (
             <p className="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2.5">
-              💡 Đặt ngày hết hạn trong tương lai để voucher tự động chuyển lại về{' '}
+              💡 Set an expiration date in the future so the voucher will automatically revert to {' '}
               <strong>ACTIVE</strong>.
             </p>
           )}
@@ -299,7 +299,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
           {/* Usage Limit */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              Giới hạn lượt dùng
+              Limit usage
             </label>
             <div className="relative">
               <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
@@ -308,7 +308,7 @@ const VoucherFormModal = ({ isOpen, mode = 'create', initialData = null, onClose
                 min="1"
                 value={maxUsage}
                 onChange={(e) => setMaxUsage(e.target.value)}
-                placeholder="Bỏ trống = không giới hạn (∞)"
+                placeholder="Leave blank = unlimited (∞)"
                 className={`w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg
                             focus:outline-none focus:ring-2 ${theme.ring}
                             font-mono text-gray-900 transition-all`}

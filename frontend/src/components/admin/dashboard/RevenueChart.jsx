@@ -15,7 +15,7 @@ const RevenueChart = ({ data }) => {
                 {(!data || data.length === 0) ? (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
                         <Activity size={48} className="opacity-20 mb-4" />
-                        <p className="text-sm">Chưa có dữ liệu giao dịch trong khoảng thời gian này</p>
+                        <p className="text-sm">There are no transaction data available for this period</p>
                     </div>
                 ) : (
                     <ResponsiveContainer width="100%" height="100%">

@@ -51,7 +51,7 @@ const ReportSection = () => {
           setEnrolledCourses(coursesList);
         } catch (err) {
           console.error('Error fetching enrolled courses:', err);
-          toast.error('Không thể tải danh sách khóa học của bạn.');
+          toast.error('Your course list could not be loaded.');
         } finally {
           setCoursesLoading(false);
         }
@@ -70,7 +70,7 @@ const ReportSection = () => {
           setTickets(res.data || res || []);
         } catch (err) {
           console.error('Error fetching tickets:', err);
-          toast.error('Không thể tải lịch sử báo cáo.');
+          toast.error('Unable to load report history.');
         } finally {
           setTicketsLoading(false);
         }
@@ -85,7 +85,7 @@ const ReportSection = () => {
     if (!selectedFiles.length) return;
 
     if (attachments.length + selectedFiles.length > 2) {
-      toast.error('Bạn chỉ được tải lên tối đa 2 hình ảnh minh chứng.');
+      toast.error('You can only upload a maximum of 2 proof images.');
       return;
     }
 
@@ -100,10 +100,10 @@ const ReportSection = () => {
       const uploadedUrls = res.urls || res.data?.urls || [];
       
       setAttachments((prev) => [...prev, ...uploadedUrls].slice(0, 2));
-      toast.success('Tải ảnh minh chứng lên thành công!');
+      toast.success('Upload photo proof successfully!');
     } catch (err) {
       console.error('Upload error:', err);
-      toast.error(err?.response?.data?.message || err?.message || 'Lỗi khi tải ảnh lên.');
+      toast.error(err?.response?.data?.message || err?.message || 'Error uploading photo.');
     } finally {
       setUploadingImage(false);
       // Clear value so the same file can be selected again
@@ -120,12 +120,12 @@ const ReportSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !message.trim()) {
-      toast.error('Vui lòng nhập đầy đủ tiêu đề và nội dung.');
+      toast.error('Please enter full title and content.');
       return;
     }
 
     if (reportType === 'course' && !selectedCourseId) {
-      toast.error('Vui lòng chọn khóa học cần báo cáo.');
+      toast.error('Please select the course to report.');
       return;
     }
 
@@ -139,7 +139,7 @@ const ReportSection = () => {
       };
 
       await ticketApi.createTicket(payload);
-      toast.success('Đã gửi báo cáo của bạn thành công!');
+      toast.success('Your report has been sent successfully!');
       
       // Reset form
       setTitle('');
@@ -148,7 +148,7 @@ const ReportSection = () => {
       setAttachments([]);
     } catch (err) {
       console.error('Submit ticket error:', err);
-      toast.error(err?.response?.data?.message || err?.message || 'Gửi báo cáo thất bại.');
+      toast.error(err?.response?.data?.message || err?.message || 'Submit failure report.');
     } finally {
       setSubmitting(false);
     }
@@ -172,13 +172,13 @@ const ReportSection = () => {
   const getStatusText = (status) => {
     switch (status) {
       case 'OPEN':
-        return 'Đang chờ xử lý';
+        return 'Pending';
       case 'IN_PROGRESS':
-        return 'Đang xử lý';
+        return 'Processing';
       case 'RESOLVED':
-        return 'Đã giải quyết';
+        return 'Resolved';
       case 'DISMISSED':
-        return 'Đã từ chối';
+        return 'Refused';
       default:
         return status;
     }
@@ -191,7 +191,7 @@ const ReportSection = () => {
   return (
     <div className="settings-section">
       <div className="report-section-header">
-        <h3>Báo cáo sự cố & Góp ý</h3>
+        <h3>Report problems & Suggestions</h3>
         {!showHistory && (
           <button 
             type="button" 
@@ -199,7 +199,7 @@ const ReportSection = () => {
             onClick={() => setShowHistory(true)}
           >
             <History size={16} />
-            <span>Xem lịch sử báo cáo</span>
+            <span>View report history</span>
           </button>
         )}
       </div>
@@ -208,7 +208,7 @@ const ReportSection = () => {
         <form className="report-form" onSubmit={handleSubmit}>
           {/* Report Type Selector */}
           <div className="form-group">
-            <label>Loại báo cáo</label>
+            <label>Report type</label>
             <div className="report-type-group">
               <label className="radio-label">
                 <input
@@ -228,7 +228,7 @@ const ReportSection = () => {
                   checked={reportType === 'course'}
                   onChange={() => setReportType('course')}
                 />
-                Báo cáo về Khóa học & Giảng viên
+                Báo cáo về Khóa học & Lecturer
               </label>
             </div>
           </div>
@@ -236,11 +236,11 @@ const ReportSection = () => {
           {/* Enrolled Courses Dropdown (Only if Report Type is Course) */}
           {reportType === 'course' && (
             <div className="form-group">
-              <label>Chọn khóa học đã mua</label>
+              <label>Select the purchased course</label>
               {coursesLoading ? (
                 <div className="upload-loading">
                   <Loader2 size={16} className="animate-spin" />
-                  <span>Đang tải danh sách khóa học...</span>
+                  <span>Loading course list...</span>
                 </div>
               ) : (
                 <select
@@ -249,7 +249,7 @@ const ReportSection = () => {
                   disabled={submitting}
                   required
                 >
-                  <option value="">-- Chọn khóa học bạn muốn báo cáo --</option>
+                  <option value="">-- Select the course you want to report --</option>
                   {enrolledCourses.map((course) => (
                     <option key={course.id} value={course.id}>
                       {course.name} ({course.instructor})
@@ -259,7 +259,7 @@ const ReportSection = () => {
               )}
               {enrolledCourses.length === 0 && !coursesLoading && (
                 <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
-                  <AlertCircle size={14} /> Bạn chưa mua hoặc đăng ký khóa học nào trên hệ thống.
+                  <AlertCircle size={14} /> You have not purchased or registered for any courses on the system.
                 </p>
               )}
             </div>
@@ -272,7 +272,7 @@ const ReportSection = () => {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Nhập tiêu đề báo cáo ngắn gọn (ví dụ: Lỗi tải video, Bài học bị thiếu tài liệu)"
+              placeholder="Enter a brief report title (e.g. Video loading error, Lesson missing materials)"
               disabled={submitting}
               required
             />
@@ -280,7 +280,7 @@ const ReportSection = () => {
 
           {/* Message Content */}
           <div className="form-group">
-            <label>Nội dung chi tiết</label>
+            <label>Detailed content</label>
             <textarea
               rows={5}
               value={message}
@@ -293,7 +293,7 @@ const ReportSection = () => {
 
           {/* Evidence Image Uploader (Max 2) */}
           <div className="form-group uploader-container">
-            <label>Hình ảnh minh chứng (Tối đa 2 ảnh)</label>
+            <label>Proof images (Maximum 2 photos)</label>
             
             <label 
               className={`uploader-trigger ${attachments.length >= 2 || uploadingImage || submitting ? 'disabled' : ''}`}
@@ -309,13 +309,13 @@ const ReportSection = () => {
               {uploadingImage ? (
                 <>
                   <Loader2 size={24} className="animate-spin text-indigo-600" />
-                  <span className="text-sm font-semibold text-indigo-600">Đang tải ảnh lên...</span>
+                  <span className="text-sm font-semibold text-indigo-600">Uploading photos...</span>
                 </>
               ) : (
                 <>
                   <Upload size={24} className="text-gray-400" />
-                  <span className="text-sm font-semibold text-gray-700">Tải ảnh minh chứng lên</span>
-                  <p>Hỗ trợ JPG, PNG, WEBP (Tối đa 2 ảnh. Đã tải: {attachments.length}/2)</p>
+                  <span className="text-sm font-semibold text-gray-700">Upload proof photos</span>
+                  <p>Supports JPG, PNG, WEBP (Maximum 2 images. Loaded: {attachments.length}/2)</p>
                 </>
               )}
             </label>
@@ -330,7 +330,7 @@ const ReportSection = () => {
                       type="button"
                       className="delete-preview-btn"
                       onClick={() => handleRemoveImage(index)}
-                      title="Xóa hình ảnh này"
+                      title="Delete this image"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -349,9 +349,9 @@ const ReportSection = () => {
             {submitting ? (
               <span className="flex items-center gap-2">
                 <Loader2 size={16} className="animate-spin" />
-                Đang gửi báo cáo...
+                Sending report...
               </span>
-            ) : 'Gửi báo cáo'}
+            ): 'Send report'}
           </button>
         </form>
       ) : (
@@ -363,18 +363,18 @@ const ReportSection = () => {
             onClick={() => setShowHistory(false)}
           >
             <ChevronLeft size={16} />
-            <span>Quay lại trang gửi báo cáo</span>
+            <span>Return to the report submission page</span>
           </button>
 
           {ticketsLoading ? (
             <div className="flex items-center justify-center py-8 text-indigo-600 font-semibold gap-2">
               <Loader2 size={20} className="animate-spin" />
-              <span>Đang tải lịch sử báo cáo...</span>
+              <span>Loading report history...</span>
             </div>
           ) : tickets.length === 0 ? (
             <div className="no-tickets-state">
               <FileText size={48} className="mx-auto text-gray-300 mb-3" />
-              <p>Bạn chưa gửi báo cáo nào.</p>
+              <p>You have not submitted any reports yet.</p>
             </div>
           ) : (
             <div className="history-list">
@@ -391,7 +391,7 @@ const ReportSection = () => {
                         <div className="history-item-title">{ticket.title}</div>
                         <div className="history-item-meta">
                           <span>
-                            Loại: {ticket.ticketType === 'REPORT' ? 'Khóa học' : 'Hệ thống'}
+                            Type: {ticket.ticketType === 'REPORT' ? 'Course' : 'System'}
                           </span>
                           <span>•</span>
                           <span>
@@ -413,17 +413,17 @@ const ReportSection = () => {
                         {/* Course metadata if applicable */}
                         {ticket.course && (
                           <div className="details-content-box">
-                            <div className="details-label">Khóa học liên quan</div>
+                            <div className="details-label">Related courses</div>
                             <div className="details-course-info">
                               <span className="font-semibold text-gray-900">{ticket.course.name}</span>
-                              <span className="text-xs text-gray-500">Giảng viên: {ticket.course.instructor}</span>
+                              <span className="text-xs text-gray-500">Instructor: {ticket.course.instructor}</span>
                             </div>
                           </div>
                         )}
 
                         {/* Report Detail Content */}
                         <div className="details-content-box">
-                          <div className="details-label">Chi tiết nội dung báo cáo</div>
+                          <div className="details-label">Detailed report content</div>
                           <p className="details-message">{ticket.message}</p>
                         </div>
 
@@ -444,7 +444,7 @@ const ReportSection = () => {
                             
                             return parsedAttachments.length > 0 && (
                               <div className="details-evidence">
-                                <div className="details-label">Ảnh minh chứng đính kèm</div>
+                                <div className="details-label">Photo proof attached</div>
                                 <div className="details-evidence-grid">
                                   {parsedAttachments.map((imgUrl, idx) => (
                                     <a 
@@ -468,7 +468,7 @@ const ReportSection = () => {
                           <div className="admin-response-box">
                             <MessageSquare className="response-icon" size={18} />
                             <div className="response-details">
-                              <h4>Phản hồi từ Ban quản trị</h4>
+                              <h4>Response from the Board of Directors</h4>
                               <p className="response-text">{ticket.adminResponse}</p>
                             </div>
                           </div>
@@ -476,8 +476,8 @@ const ReportSection = () => {
                           <div className="admin-response-box no-response">
                             <HelpCircle className="response-icon" size={18} />
                             <div className="response-details">
-                              <h4>Chưa có phản hồi</h4>
-                              <p className="response-text">Ban quản trị đang xem xét báo cáo của bạn.</p>
+                              <h4>No response yet</h4>
+                              <p className="response-text">The administration is reviewing your report.</p>
                             </div>
                           </div>
                         )}

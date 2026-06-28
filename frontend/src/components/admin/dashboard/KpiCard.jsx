@@ -18,7 +18,7 @@ const KpiCard = ({ title, value, icon: Icon, colorClass, bgClass, trendText, isP
             
             <div className="mt-auto relative z-10 flex flex-col items-center justify-center gap-1 w-full pt-4 pb-2 text-center">
                 <div className="text-3xl font-bold text-gray-900">{value}</div>
-                {(value === '$0' || value === '0' || value === '0 đ') ? (
+                {(value === '$0' || value === '0' || value === '0 pt') ? (
                     <div className="text-sm font-medium text-gray-400">--</div>
                 ) : trendText && (
                     <div className={`flex items-center gap-1 text-sm font-medium ${isPositive ? 'text-emerald-600' : 'text-amber-600'}`}>

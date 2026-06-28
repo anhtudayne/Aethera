@@ -110,7 +110,7 @@ const VideoArea = ({ lesson }) => {
       setHasCompleted(true);
       setShowCompletionConfirm(false);
     } catch (error) {
-      console.error("Lỗi khi ghi nhận hoàn thành bài học", error);
+      console.error("Error recording lesson completion", error);
     }
   };
 
@@ -167,15 +167,15 @@ const VideoArea = ({ lesson }) => {
       {showCheatWarning && (
         <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-10 backdrop-blur-sm">
           <AlertTriangle size={48} className="text-yellow-500 mb-4" />
-          <h3 className="text-xl font-bold mb-2">Phát hiện tua nhanh (Gian lận)</h3>
+          <h3 className="text-xl font-bold mb-2">Fast Forward Detection (Cheating)</h3>
           <p className="text-gray-300 mb-6 max-w-md text-center">
-            Hệ thống phát hiện bạn đã tua băng qua phần nội dung chưa xem. Để đảm bảo chất lượng học tập, vui lòng không tua quá 10 giây.
+            The system detects that you have skipped past unwatched content. To ensure learning quality, please do not rewind more than 10 seconds.
           </p>
           <button 
             onClick={handleRewindToValid}
             className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md font-semibold transition-colors"
           >
-            Quay lại thời điểm hợp lệ
+            Back to the valid time
           </button>
         </div>
       )}
@@ -184,9 +184,9 @@ const VideoArea = ({ lesson }) => {
       {showIncompleteWarning && (
         <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-10 backdrop-blur-sm">
           <AlertTriangle size={48} className="text-red-500 mb-4" />
-          <h3 className="text-xl font-bold mb-2">Chưa đủ điều kiện hoàn thành</h3>
+          <h3 className="text-xl font-bold mb-2">Not yet eligible for completion</h3>
           <p className="text-gray-300 mb-6 max-w-md text-center">
-            Bạn đã tua đến cuối video nhưng tổng thời lượng xem thực tế chưa đạt 90%. Bài học này sẽ chưa được tính là hoàn thành.
+            You've fast forwarded to the end of the video but the total actual viewing time hasn't reached 90%. This lesson will not be counted as completed.
           </p>
           <div className="flex gap-4">
             <button 
@@ -212,22 +212,22 @@ const VideoArea = ({ lesson }) => {
       {showCompletionConfirm && (
         <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-10 backdrop-blur-sm animate-in fade-in">
           <CheckCircle size={56} className="text-green-500 mb-4" />
-          <h3 className="text-2xl font-bold mb-2">Chúc mừng bạn!</h3>
+          <h3 className="text-2xl font-bold mb-2">Congratulation!</h3>
           <p className="text-gray-300 mb-8 max-w-md text-center text-lg">
-            Bạn đã xem trọn vẹn bài học này. Bạn có muốn đánh dấu hoàn thành bài học để tiếp tục tiến độ không?
+            You have watched this lesson in its entirety. Do you want to mark the lesson as complete to continue your progress?
           </p>
           <div className="flex gap-4">
             <button 
               onClick={handleReplay}
               className="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition-colors border border-gray-600"
             >
-              Xem lại bài học
+              Review the lesson
             </button>
             <button 
               onClick={confirmCompletion}
               className="px-6 py-2.5 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors shadow-lg shadow-green-900/50"
             >
-              Đánh dấu hoàn thành
+              Mark complete
             </button>
           </div>
         </div>
@@ -237,15 +237,15 @@ const VideoArea = ({ lesson }) => {
       {showAlreadyCompleted && (
         <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-10 backdrop-blur-sm animate-in fade-in">
           <CheckCircle size={56} className="text-blue-500 mb-4" />
-          <h3 className="text-2xl font-bold mb-2">Bài học đã hoàn thành</h3>
+          <h3 className="text-2xl font-bold mb-2">Lesson completed</h3>
           <p className="text-gray-300 mb-8 max-w-md text-center text-lg">
-            Bạn đã xem xong video của bài học này. Bạn có muốn xem lại từ đầu không?
+            You have finished watching the video for this lesson. Do you want to watch it again from the beginning?
           </p>
           <button 
             onClick={handleReplay}
             className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors shadow-lg shadow-blue-900/50"
           >
-            Xem lại bài học
+            Review the lesson
           </button>
         </div>
       )}

@@ -42,18 +42,18 @@ const WishlistPage = () => {
 
   return (
     <div className="wishlist-page">
-      <h2>Danh sách yêu thích ❤️</h2>
+      <h2>Favorites list ❤️</h2>
 
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
       ) : courses.length === 0 ? (
         <EmptyState
           icon={Heart}
           title="Chưa có khóa học yêu thích"
-          description="Nhấn biểu tượng ❤️ trên các khóa học để thêm vào danh sách yêu thích."
+          description="Click the ❤️ icon on courses to add to your favorites list."
         />
       ) : (
         <div className="wishlist-grid">
@@ -69,12 +69,12 @@ const WishlistPage = () => {
                     <div className="wishlist-card-title">{course.name}</div>
                   </Link>
                   <div className="wishlist-card-instructor">
-                    {course.instructor || 'Giảng viên'}
+                    {course.instructor || 'Lecturer'}
                   </div>
                   <div className="wishlist-card-price">{formatPrice(course.price)}</div>
                   <div className="wishlist-card-actions">
                     <button className="remove-wish-btn" onClick={() => handleRemove(course.id)}>
-                      <HeartOff size={14} /> Bỏ yêu thích
+                      <HeartOff size={14} /> Unfavourite
                     </button>
                   </div>
                 </div>

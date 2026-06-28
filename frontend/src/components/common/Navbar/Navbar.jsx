@@ -46,7 +46,7 @@ const Navbar = () => {
                 isActive ? 'nav-link nav-link-active' : 'nav-link'
               }
             >
-              Tìm khóa học
+              Browse Courses
             </NavLink>
             <NavLink
               to={ROUTES.CERTIFICATE_VERIFY}
@@ -54,7 +54,7 @@ const Navbar = () => {
                 isActive ? 'nav-link nav-link-active' : 'nav-link'
               }
             >
-              Đạt được chứng chỉ
+              Earn Certificate
             </NavLink>
           </nav>
         </div>
@@ -71,24 +71,24 @@ const Navbar = () => {
               {/* Instructor link */}
               {(user?.role === 'instructor' || user?.roleId === 'instructor') ? (
                 <Link to={ROUTES.INSTRUCTOR_DASHBOARD} className="nav-text-link">
-                  Giảng viên
+                  Lecturer
                 </Link>
               ) : (
                 <Link to="/" className="nav-text-link">
-                  Giảng dạy trên Aethera
+                  Teaching on Aethera
                 </Link>
               )}
 
               {/* Admin link if applicable */}
               {(user?.roleId === 'admin' || user?.role === 'admin') && (
                 <Link to={ROUTES.ADMIN_DASHBOARD} className="nav-text-link">
-                  Quản trị
+                  Admin
                 </Link>
               )}
 
               {/* My Learning link */}
               <Link to={ROUTES.MY_COURSES} className="nav-text-link">
-                Học tập
+                My Learning
               </Link>
 
               {/* Wishlist Link */}
@@ -113,14 +113,14 @@ const Navbar = () => {
                 Aethera Business
               </Link>
               <Link to={ROUTES.LOGIN} className="nav-text-link">
-                Giảng dạy trên Aethera
+                Teaching on Aethera
               </Link>
 
               <CartIcon />
 
               <div className="nav-auth-buttons">
                 <Link to={ROUTES.LOGIN}>
-                  <button className="nav-btn nav-btn-secondary">Đăng nhập</button>
+                  <button className="nav-btn nav-btn-secondary">Log in</button>
                 </Link>
                 <Link to={ROUTES.REGISTER}>
                   <button className="nav-btn nav-btn-primary">Đăng ký</button>

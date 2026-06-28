@@ -133,7 +133,7 @@ const PayoutsManagementPage = () => {
       if (type === 'complete') {
         await adminApi.markPayoutAsPaid(payout.id);
         toast.success(
-          `Successfully paid ${Number(payout.amount).toLocaleString('vi-VN')} đ to ${payout.instructor.firstName}`
+          `Successfully paid ${Number(payout.amount).toLocaleString('vi-VN')} to ${payout.instructor.firstName}`
         );
       } else {
         await adminApi.rejectPayout(payout.id, rejectNote);
@@ -368,7 +368,7 @@ const PayoutsManagementPage = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Lọc theo tháng */}
+              {/* Filter by month */}
               <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all">
                 <Calendar size={16} className="text-gray-500" />
                 <input
@@ -458,7 +458,7 @@ const PayoutsManagementPage = () => {
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-500">Amount:</span>
                   <span className="font-mono font-bold text-emerald-600">
-                    {Number(activeModal.payout.amount).toLocaleString('vi-VN')} đ
+                    {Number(activeModal.payout.amount).toLocaleString('en-US')}
                   </span>
                 </div>
                 <div className="flex justify-between">

@@ -32,7 +32,7 @@ const AuthLayout = () => {
             Refine Knowledge.<br />Elevate Experience.
           </h2>
           <p className="auth-illustration-desc">
-            Hành trình học tập của bạn bắt đầu từ đây. Trải nghiệm nền tảng học trực tuyến cao cấp và tinh tế nhất.
+            Your learning journey starts here. Experience the most advanced and sophisticated online learning platform.
           </p>
           <div className="auth-illustration-features">
             <div className="auth-feature-item">

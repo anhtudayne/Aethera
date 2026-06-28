@@ -20,7 +20,7 @@ const DashboardPage = () => {
         const res = await dashboardApi.getDashboard();
         setData(res.data);
       } catch (err) {
-        setError(err?.message || 'Không thể tải dashboard');
+        setError(err?.message || 'Unable to load dashboard');
       } finally {
         setLoading(false);
       }
@@ -32,7 +32,7 @@ const DashboardPage = () => {
     return (
       <div className="dashboard-loading">
         <div className="loading-spinner" />
-        <span>Đang tải dữ liệu...</span>
+        <span>Loading data...</span>
       </div>
     );
   }
@@ -48,16 +48,16 @@ const DashboardPage = () => {
   }
 
   const stats = [
-    { label: 'Khóa học đã đăng ký', value: data?.stats?.totalEnrolled ?? 0, icon: BookOpen, modifier: 'enrolled' },
-    { label: 'Đã hoàn thành', value: data?.stats?.completedCourses ?? 0, icon: CheckCircle, modifier: 'completed' },
-    { label: 'Chứng chỉ', value: data?.stats?.totalCertificates ?? 0, icon: Award, modifier: 'certs' },
+    { label: 'Registered course', value: data?.stats?.totalEnrolled ?? 0, icon: BookOpen, modifier: 'enrolled' },
+    { label: 'Completed', value: data?.stats?.completedCourses ?? 0, icon: CheckCircle, modifier: 'completed' },
+    { label: 'Certificate', value: data?.stats?.totalCertificates ?? 0, icon: Award, modifier: 'certs' },
   ];
 
   return (
     <div className="dashboard-page">
       <div className="dashboard-welcome">
-        <h2>Chào mừng trở lại, {user?.fullName || user?.name || 'Học viên'} 👋</h2>
-        <p>Đây là tổng quan hoạt động học tập của bạn.</p>
+        <h2>Welcome back, {user?.fullName || user?.name || 'Student'} 👋</h2>
+        <p>This is an overview of your study activities.</p>
       </div>
 
       {/* Stats Cards */}
@@ -78,8 +78,8 @@ const DashboardPage = () => {
 
       {/* Recent Courses */}
       <div className="section-header">
-        <h3>Khóa học gần đây</h3>
-        <Link to={ROUTES.MY_COURSES}>Xem tất cả <ArrowRight size={14} /></Link>
+        <h3>Recent courses</h3>
+        <Link to={ROUTES.MY_COURSES}>See all <ArrowRight size={14} /></Link>
       </div>
       {data?.coursesInProgress?.length > 0 ? (
         <div className="recent-courses-grid">
@@ -90,12 +90,12 @@ const DashboardPage = () => {
               <Link key={item.courseId || course.id} to={`/learn/${course.slug || course.id}`} className="recent-course-card">
                 <div className="recent-course-title">{course.name}</div>
                 <div className="recent-course-instructor">
-                  {course.instructor || 'Giảng viên'}
+                  {course.instructor || 'Lecturer'}
                 </div>
                 <div className="progress-bar-container">
                   <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
                 </div>
-                <div className="progress-text">{progress}% hoàn thành</div>
+                <div className="progress-text">{progress}% complete</div>
               </Link>
             );
           })}
@@ -104,14 +104,14 @@ const DashboardPage = () => {
         <EmptyState
           icon={BookOpen}
           title="Chưa có khóa học nào"
-          description="Bắt đầu hành trình học tập của bạn ngay hôm nay!"
+          description="Start your learning journey today!"
         />
       )}
 
       {/* Recent Certificates */}
       <div className="section-header">
-        <h3>Chứng chỉ gần đây</h3>
-        <Link to={ROUTES.CERTIFICATES}>Xem tất cả <ArrowRight size={14} /></Link>
+        <h3>Recent certification</h3>
+        <Link to={ROUTES.CERTIFICATES}>See all <ArrowRight size={14} /></Link>
       </div>
       {data?.recentCertificates?.length > 0 ? (
         <div className="recent-certs-grid">
@@ -120,9 +120,9 @@ const DashboardPage = () => {
             return (
               <div key={cert.id} className="recent-cert-card">
                 <div className="cert-trophy">🏆</div>
-                <div className="cert-course-name">{course.name || 'Chứng chỉ khóa học'}</div>
+                <div className="cert-course-name">{course.name || 'Course certificate'}</div>
                 <div className="cert-date">
-                  Cấp ngày: {new Date(cert.issuedAt || cert.createdAt).toLocaleDateString('vi-VN')}
+                  Issue date: {new Date(cert.issuedAt || cert.createdAt).toLocaleDateString('vi-VN')}
                 </div>
               </div>
             );
@@ -131,8 +131,8 @@ const DashboardPage = () => {
       ) : (
         <EmptyState
           icon={Award}
-          title="Chưa có chứng chỉ"
-          description="Hoàn thành khóa học để nhận chứng chỉ đầu tiên!"
+          title="No certificate yet"
+          description="Complete the course to receive your first certificate!"
         />
       )}
     </div>

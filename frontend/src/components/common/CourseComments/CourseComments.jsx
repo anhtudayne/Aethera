@@ -22,7 +22,7 @@ const CourseComments = ({ courseId }) => {
       const res = await courseApi.getComments(courseId);
       setComments(res.data?.data || res.data || []);
     } catch (error) {
-      console.error('Lỗi tải bình luận:', error);
+      console.error('Error loading comments:', error);
     } finally {
       setLoading(false);
     }
@@ -38,16 +38,16 @@ const CourseComments = ({ courseId }) => {
       const postedComment = res.data?.data || res.data;
       setComments([postedComment, ...comments]);
       setNewComment('');
-      toast.success('Đã gửi bình luận');
+      toast.success('Comment sent');
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Lỗi khi gửi bình luận');
+      toast.error(error?.response?.data?.message || 'Error submitting comment');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleReplyAdded = (parentId, newReply) => {
-    // Đệ quy tìm comment cha và thêm vào mảng replies
+    // Recursively find the parent comment and add it to the replies array
     const addReplyToTree = (list, parentId, newReply) => {
       return list.map(c => {
         if (c.id === parentId) {
@@ -63,14 +63,14 @@ const CourseComments = ({ courseId }) => {
   };
 
   if (loading) {
-    return <div className="comments-loading">Đang tải bình luận...</div>;
+    return <div className="comments-loading">Loading comments...</div>;
   }
 
   return (
     <div className="course-comments-section">
       <div className="comments-header">
         <MessageSquare size={24} />
-        <h3>Hỏi đáp & Thảo luận</h3>
+        <h3>Q&A & Discussion</h3>
       </div>
 
       <form className="comment-form-root" onSubmit={handlePostRootComment}>
@@ -85,21 +85,21 @@ const CourseComments = ({ courseId }) => {
         </div>
         <div className="comment-input-wrapper">
           <textarea
-            placeholder="Bạn có câu hỏi hoặc muốn thảo luận gì về khóa học này?"
+            placeholder="Do you have questions or want to discuss anything about this course?"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             disabled={submitting}
             rows={2}
           />
           <button type="submit" disabled={!newComment.trim() || submitting} className="comment-submit-btn">
-            {submitting ? 'Đang gửi...' : <Send size={18} />}
+            {submitting ? 'Sending...' : <Send size={18} />}
           </button>
         </div>
       </form>
 
       <div className="comments-list">
         {comments.length === 0 ? (
-          <p className="no-comments-msg">Chưa có bình luận nào. Hãy là người đầu tiên bắt đầu cuộc thảo luận!</p>
+          <p className="no-comments-msg">There are no comments yet. Be the first to start the discussion!</p>
         ) : (
           comments.map(c => (
             <CommentItem 

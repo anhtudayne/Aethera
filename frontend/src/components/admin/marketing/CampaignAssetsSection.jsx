@@ -9,7 +9,7 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('File vượt quá giới hạn 5MB');
+      toast.error('File exceeds the 5MB limit');
       return;
     }
     onUpload(file).finally(() => {
@@ -19,7 +19,7 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
 
   const handleDeleteClick = (e) => {
     e.stopPropagation(); // prevent clicking the upload wrapper
-    if (window.confirm('Bạn có chắc chắn muốn gỡ banner này không?')) {
+    if (window.confirm('Are you sure you want to remove this banner?')) {
       onDelete();
     }
   };
@@ -31,7 +31,7 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
           <ImageIcon className="text-emerald-600" size={20} />
           Campaign Assets
         </h3>
-        <p className="text-sm text-gray-500 mt-1">Tải lên banner và ảnh hero cho chiến dịch.</p>
+        <p className="text-sm text-gray-500 mt-1">Upload banners and hero images for the campaign.</p>
       </header>
 
       <div
@@ -43,7 +43,7 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
         {isUploading ? (
           <div className="flex flex-col items-center">
             <RefreshCw className="animate-spin text-indigo-500 mb-4" size={32} />
-            <p className="font-medium text-gray-900">Đang tải lên Cloudinary...</p>
+            <p className="font-medium text-gray-900">Uploading to Cloudinary...</p>
           </div>
         ) : bannerUrl ? (
           <div className="w-full relative rounded-lg overflow-hidden group-hover:opacity-90 transition-opacity max-h-60">
@@ -56,7 +56,7 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
                 onClick={handleDeleteClick}
                 className="text-white font-medium flex items-center gap-2 bg-red-600/80 px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
               >
-                <Trash2 size={20} /> Xóa Banner
+                <Trash2 size={20} /> Delete Banners
               </button>
             </div>
           </div>
@@ -65,12 +65,12 @@ const CampaignAssetsSection = ({ bannerUrl, isUploading, onUpload, onDelete }) =
             <div className="h-16 w-16 rounded-full bg-white border border-gray-200 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-indigo-200 group-hover:shadow-md transition-all duration-300 text-indigo-500">
               <UploadCloud size={32} />
             </div>
-            <h4 className="text-base font-semibold text-gray-900 mb-2">Kéo & Thả file vào đây</h4>
+            <h4 className="text-base font-semibold text-gray-900 mb-2">Drag & Drop files here</h4>
             <p className="text-sm text-gray-500 max-w-sm mb-6">
-              Định dạng hỗ trợ: PNG, JPG, WebP. Tối đa 5MB. Khuyến nghị 1920×1080px.
+              Supported formats: PNG, JPG, WebP. Maximum 5MB. Recommended 1920×1080px.
             </p>
             <button className="px-6 py-2.5 rounded-lg font-medium bg-indigo-50 text-indigo-700 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-              Chọn file
+              Select files
             </button>
           </>
         )}

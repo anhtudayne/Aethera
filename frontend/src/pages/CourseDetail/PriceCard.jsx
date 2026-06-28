@@ -91,7 +91,7 @@ const PriceCard = ({ course, onOpenPreview, initialEnrolled = false }) => {
           refreshCart();
         } catch (postErr) {
           const errMsg = postErr?.message || postErr?.response?.data?.message || '';
-          const isAlreadyInCart = errMsg.includes('có trong giỏ hàng') || errMsg.includes('already in cart');
+          const isAlreadyInCart = errMsg.includes('available in cart') || errMsg.includes('already in cart');
           if (!isAlreadyInCart) {
             throw postErr;
           }

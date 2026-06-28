@@ -11,7 +11,7 @@ const LearningStreak = () => {
     const fetchStreak = async () => {
       try {
         const res = await userApi.getStreak();
-        // Cập nhật visit cho lần đăng nhập hôm nay nếu chưa (hoặc được backend xử lý ngầm, ta có thể gọi log activity 0 phút)
+        // Update visit for today's login if not already (or is handled implicitly by the backend, we can call log activity 0 minutes)
         const logRes = await userApi.logStreakActivity(0); 
         setStreakData(logRes.data?.data || logRes.data);
       } catch (error) {
@@ -32,12 +32,12 @@ const LearningStreak = () => {
   const isVisitGoalMet = weeklyVisits >= targetVisits;
   const isTimeGoalMet = weeklyMinutes >= targetMinutes;
 
-  // Tính % cho vòng tròn
+  // Calculate % for circle
   const percentMinutes = Math.min((weeklyMinutes / targetMinutes) * 100, 100);
   const circleCircumference = 2 * Math.PI * 24; // r=24
   const strokeDashoffset = circleCircumference - (percentMinutes / 100) * circleCircumference;
 
-  // Render ngày (VD: Jun 21 - 27)
+  // Render date (eg: Jun 21 - 27)
   const now = new Date();
   const d = new Date(now);
   const day = d.getDay();

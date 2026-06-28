@@ -7,9 +7,9 @@ import HistoryPanel from './HistoryPanel';
 import PolicyPanel from './PolicyPanel';
 
 const SUGGESTIONS = [
-  { label: "📝 Tóm tắt bài học", prompt: "Tóm tắt nội dung video bài học vừa xem." },
-  { label: "💡 Giải thích khái niệm", prompt: "Giải thích các khái niệm quan trọng trong bài giảng." },
-  { label: "❓ Tạo Quiz ôn tập", prompt: "Tạo các bài kiểm tra ngắn (quiz)." }
+  { label: "📝 Lesson summary", prompt: "Summary of video lesson content just watched." },
+  { label: "💡 Explain the concept", prompt: "Explain important concepts in the lecture." },
+  { label: "❓ Create a review Quiz", prompt: "Create short tests (quiz)." }
 ];
 
 const VideoChatbox = ({ lessonId, onToggle }) => {
@@ -47,7 +47,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
   // Nếu đã đóng Chatbox -> Hiện bong bóng nhỏ nổi ở góc màn hình
   if (!isOpen) {
     return (
-      <button className="chatbox-toggle-btn" onClick={() => handleToggle(true)} title="Mở lại Teacher Bee AI">
+      <button className="chatbox-toggle-btn" onClick={() => handleToggle(true)} title="Reopen Teacher Bee AI">
         <Bot size={28} />
       </button>
     );
@@ -66,7 +66,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
             <button 
               className="action-btn" 
               onClick={startNewChat}
-              title="Cuộc trò chuyện mới"
+              title="New chat"
             >
               <Plus size={16} />
             </button>
@@ -74,11 +74,11 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
           <button 
             className="action-btn" 
             onClick={() => setShowHistory(true)}
-            title="Lịch sử trò chuyện"
+            title="Chat history"
           >
             <History size={16} />
           </button>
-          <div className={`credits-badge ${credits <= 5 ? 'low' : ''}`} title="Số lượt hỏi còn lại">
+          <div className={`credits-badge ${credits <= 5 ? 'low' : ''}`} title="Number of remaining questions">
             {credits} <Battery size={14} />
           </div>
           <button 
@@ -117,25 +117,25 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
             <div className="welcome-icon">
               <Sparkles size={28} />
             </div>
-            <h3 className="policy-title">Xin chào, mình là Teacher Bee AI!</h3>
-            <p className="policy-desc">Mình sẽ đồng hành cùng bạn trong suốt quá trình học tập. Mình có thể giúp bạn:</p>
+            <h3 className="policy-title">Hello, I'm Teacher Bee AI!</h3>
+            <p className="policy-desc">I will accompany you throughout the learning process. I can help you:</p>
             
             <div className="features-list">
               <div className="feature-item">
                 <Lightbulb className="feature-icon" size={16} color="#FBBF24" />
-                <span>Tóm lược nội dung bài học, giải thích trực quan.</span>
+                <span>Summary of lesson content, visual explanation.</span>
               </div>
               <div className="feature-item">
                 <Zap className="feature-icon" size={16} color="#34D399" />
-                <span>Hướng dẫn làm bài, gợi ý đáp án và các dạng bài tập để cải thiện đúng các điểm yếu trong bài của bạn.</span>
+                <span>Instructions for doing the test, suggested answers and types of exercises to properly improve the weak points in your test.</span>
               </div>
               <div className="feature-item">
                 <MessageCircle className="feature-icon" size={16} color="#60A5FA" />
-                <span>Hỏi đáp 1-1 (Giới hạn 25 lượt/giờ).</span>
+                <span>Q&A 1-1 (Limited 25 times/hour).</span>
               </div>
             </div>
 
-            <p className="welcome-hint">Hãy chọn một lệnh bên dưới hoặc nhập câu hỏi của bạn!</p>
+            <p className="welcome-hint">Choose a command below or enter your question!</p>
           </div>
         ) : (
           messages.map((msg, index) => (
@@ -155,7 +155,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
               <Bot size={14} />
             </div>
             <div className="message-content typing-indicator">
-              <Loader2 className="spinner" size={16} /> Teacher Bee AI đang suy nghĩ...
+              <Loader2 className="spinner" size={16} /> Teacher Bee AI is thinking...
             </div>
           </div>
         )}
@@ -181,14 +181,14 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
           <button 
             className={`tool-btn ${showMenu ? 'active' : ''}`} 
             onClick={() => setShowMenu(!showMenu)}
-            title="Menu lệnh nhanh"
+            title="Quick command menu"
           >
             <Menu size={18} strokeWidth={2.5} />
           </button>
 
           <input 
             type="text" 
-            placeholder="Nhập câu hỏi về bài học..." 
+            placeholder="Enter questions about the lesson..." 
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendMessage(input)}

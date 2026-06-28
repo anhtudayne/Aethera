@@ -16,7 +16,7 @@ const Footer = () => {
             <span>Aethera</span>
           </Link>
           <p className="footer-tagline">
-            Nơi tri thức được chắt lọc, trải nghiệm được nâng tầm — Hành trình học tập của bạn bắt đầu từ đây.
+            Where knowledge is refined, experience is enhanced — Your learning journey begins here.
           </p>
           <div className="footer-socials">
             <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="GitHub">
@@ -82,7 +82,7 @@ const Footer = () => {
           </p>
           <div className="footer-language">
             <Globe size={16} />
-            <span>English / Tiếng Việt</span>
+            <span>English / Vietnamese</span>
           </div>
         </div>
       </div>

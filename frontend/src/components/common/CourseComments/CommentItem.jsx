@@ -8,7 +8,7 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
   const [replyContent, setReplyContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
   
-  // Hiển thị tối đa 3 replies đầu, còn lại ẩn sau nút "Xem thêm bình luận"
+  // Display up to the first 3 replies, the rest are hidden behind the "See more comments" button
   const [showAllReplies, setShowAllReplies] = useState(false);
 
   const handleReplySubmit = async (e) => {
@@ -23,9 +23,9 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
       setReplyContent('');
       setIsReplying(false);
       setShowAllReplies(true);
-      toast.success('Đã gửi trả lời');
+      toast.success('Reply sent');
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Lỗi khi gửi trả lời');
+      toast.error(error?.response?.data?.message || 'Error sending response');
     } finally {
       setSubmitting(false);
     }
@@ -36,11 +36,11 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
     const diff = new Date() - new Date(dateString);
     const minutes = Math.floor(diff / 60000);
     if (minutes < 1) return 'Vừa xong';
-    if (minutes < 60) return `${minutes} phút trước`;
+    if (minutes < 60) return `${minutes} minutes ago`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} giờ trước`;
+    if (hours < 24) return `${hours} hours ago`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days} ngày trước`;
+    if (days < 30) return `${days} days ago`;
     return new Date(dateString).toLocaleDateString('vi-VN');
   };
 
@@ -74,11 +74,11 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
             </button>
           </div>
 
-          {/* Form trả lời */}
+          {/* Response form */}
           {isReplying && (
             <form className="reply-form" onSubmit={handleReplySubmit}>
               <textarea
-                placeholder="Viết câu trả lời..."
+                placeholder="Write your answer..."
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 disabled={submitting}
@@ -86,15 +86,15 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
                 autoFocus
               />
               <div className="reply-form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setIsReplying(false)}>Hủy</button>
+                <button type="button" className="btn-cancel" onClick={() => setIsReplying(false)}>Cancel</button>
                 <button type="submit" className="btn-submit" disabled={!replyContent.trim() || submitting}>
-                  {submitting ? 'Đang gửi...' : 'Gửi'}
+                  {submitting ? 'Sending...' : 'Sending'}
                 </button>
               </div>
             </form>
           )}
 
-          {/* Các replies con (Đệ quy) */}
+          {/* Child replies (Recursive) */}
           {replies.length > 0 && (
             <div className="nested-replies">
               {visibleReplies.map(reply => (
@@ -112,7 +112,7 @@ const CommentItem = ({ comment, courseId, onReplyAdded }) => {
                   onClick={() => setShowAllReplies(true)}
                 >
                   <Reply size={14} style={{ transform: 'scaleY(-1)' }} /> 
-                  Xem thêm {hiddenCount} câu trả lời
+                  See also {hiddenCount} answer
                 </button>
               )}
             </div>

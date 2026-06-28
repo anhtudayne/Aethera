@@ -27,30 +27,30 @@ const MyCertificatesPage = () => {
     <div className="certificates-page">
       <div className="mb-10">
         <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
-          Chứng chỉ của tôi <span className="text-3xl">🏆</span>
+          My certificate <span className="text-3xl">🏆</span>
         </h1>
         <p className="text-slate-600 max-w-2xl">
-          Quản lý và xem tất cả các chứng chỉ bạn đã đạt được từ các khóa học.
+          Manage and view all the certificates you have earned from your courses.
         </p>
       </div>
 
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
       ) : certificates.length === 0 ? (
         <EmptyState
           icon={Award}
-          title="Chưa có chứng chỉ nào"
-          description="Hoàn thành các khóa học để nhận chứng chỉ xác nhận."
+          title="No certificate yet nào"
+          description="Complete courses to receive a certified certificate."
         />
       ) : (
         <div className="flex flex-col gap-10">
           {certificates.map((cert) => {
             const studentName = cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : 'Học viên';
             const courseName = cert.courseName || cert.course?.name || 'Khóa học';
-            const instructorName = cert.course?.instructor || 'Giảng viên Aethera';
+            const instructorName = cert.course?.instructor || 'Instructor Aethera';
             const issuedDate = new Date(cert.issuedAt || cert.createdAt).toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
 
             return (
@@ -69,16 +69,16 @@ const MyCertificatesPage = () => {
                   <div className="relative z-10 flex flex-col items-center text-center w-full h-full py-8 px-8 md:py-12 md:px-16">
                       <p className="text-gray-700 uppercase tracking-widest mb-2 md:mb-4 text-xs md:text-base" style={{ fontFamily: "'Playfair Display', serif" }}>Aethera Academy</p>
                       
-                      <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#C5834C] mb-4 md:mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>CHỨNG NHẬN HOÀN THÀNH</h1>
+                      <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#C5834C] mb-4 md:mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>CERTIFICATE OF COMPLETION</h1>
                       
-                      <p className="text-gray-600 text-sm md:text-lg mb-4 md:mb-8">Chứng nhận này được trao cho</p>
+                      <p className="text-gray-600 text-sm md:text-lg mb-4 md:mb-8">This certification is awarded to</p>
                       
                       <div className="mb-2">
                           <h2 className="text-3xl md:text-5xl lg:text-6xl text-slate-800" style={{ fontFamily: "'Great Vibes', cursive" }}>{studentName}</h2>
                           <div className="w-48 md:w-64 h-px bg-[#C19A5B] mx-auto mt-2"></div>
                       </div>
                       
-                      <p className="text-gray-600 text-sm md:text-lg mt-4 md:mt-8 mb-2">vì đã hoàn thành xuất sắc khóa học</p>
+                      <p className="text-gray-600 text-sm md:text-lg mt-4 md:mt-8 mb-2">for successfully completing the course</p>
                       
                       <h3 className="text-lg md:text-2xl font-bold text-[#C5834C] px-4" style={{ fontFamily: "'Playfair Display', serif" }}>{courseName}</h3>
 
@@ -100,13 +100,13 @@ const MyCertificatesPage = () => {
                           <div className="flex flex-col items-center">
                               <span className="text-sm md:text-xl text-slate-700" style={{ fontFamily: "'Great Vibes', cursive" }}>{instructorName}</span>
                               <div className="w-20 md:w-32 h-px bg-[#C19A5B] my-1"></div>
-                              <span className="text-[8px] md:text-[10px] font-bold tracking-tighter text-gray-500 uppercase">GIẢNG VIÊN</span>
+                              <span className="text-[8px] md:text-[10px] font-bold tracking-tighter text-gray-500 uppercase">LECTURER</span>
                           </div>
                       </div>
                       
                       {cert.certificateCode && (
                         <div className="absolute top-0 right-0 mt-4 mr-4 text-xs text-gray-400 font-mono tracking-wider">
-                          Mã CC: {cert.certificateCode}
+                          CC Code: {cert.certificateCode}
                         </div>
                       )}
                   </div>

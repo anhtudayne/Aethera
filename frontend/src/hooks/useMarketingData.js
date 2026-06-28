@@ -21,7 +21,7 @@ export const useMarketingData = () => {
       if (res.pagination) setPagination(res.pagination);
     } catch (err) {
       console.error('Failed to fetch vouchers:', err);
-      toast.error('Không thể tải danh sách voucher. Vui lòng thử lại.');
+      toast.error('Unable to load voucher list. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -41,18 +41,18 @@ export const useMarketingData = () => {
   const handleVoucherSubmit = async (formData, id) => {
     if (id) {
       const res = await adminApi.updateVoucher(id, formData);
-      toast.success(`Đã cập nhật: ${formData.code}`);
+      toast.success(`Updated: ${formData.code}`);
       setVouchers((prev) => prev.map((v) => (v.id === id ? res.data : v)));
     } else {
       const res = await adminApi.createVoucher(formData);
-      toast.success(`Đã tạo voucher: ${formData.code}`);
+      toast.success(`Voucher created: ${formData.code}`);
       setVouchers((prev) => [res.data, ...prev]);
     }
   };
 
   const handleToggleVoucherStatus = async (voucher) => {
     if (voucher.status === 'EXPIRED') {
-      toast.warning('Voucher đã hết hạn, không thể kích hoạt lại.');
+      toast.warning('Voucher has expired and cannot be reactivated.');
       return;
     }
     const newStatus = voucher.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE';
@@ -63,7 +63,7 @@ export const useMarketingData = () => {
         prev.map((v) => (v.id === voucher.id ? { ...v, status: newStatus } : v))
       );
     } catch {
-      toast.error('Cập nhật trạng thái thất bại');
+      toast.error('Status update failed');
     }
   };
 
@@ -76,9 +76,9 @@ export const useMarketingData = () => {
       const newUrl = res.data.url;
       setBannerUrl(newUrl);
       await adminApi.updateSetting('campaign_banner_url', newUrl);
-      toast.success('Upload banner thành công!');
+      toast.success('Upload banner successfully!');
     } catch {
-      toast.error('Upload banner thất bại');
+      toast.error('Upload banner failed');
     } finally {
       setIsUploading(false);
     }
@@ -88,9 +88,9 @@ export const useMarketingData = () => {
     try {
       setBannerUrl(null); // Optimistic UI
       await adminApi.updateSetting('campaign_banner_url', '');
-      toast.success('Đã gỡ banner chiến dịch!');
+      toast.success('Campaign banner removed!');
     } catch {
-      toast.error('Gỡ banner thất bại');
+      toast.error('Banner removal failed');
     }
   };
 

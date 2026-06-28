@@ -53,7 +53,7 @@ const InstructorRegistrationPage = () => {
         setCertificateImage(res.imageUrl);
       }
     } catch (err) {
-      setError('Lỗi tải ảnh lên: ' + (err.response?.data?.message || err.message));
+      setError('Error uploading image: ' + (err.response?.data?.message || err.message));
     } finally {
       setUploading(false);
     }
@@ -62,7 +62,7 @@ const InstructorRegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!expertise.trim() || !experience.trim()) {
-      setError('Vui lòng điền đầy đủ thông tin chuyên môn và kinh nghiệm.');
+      setError('Please fill in complete professional and experience information.');
       return;
     }
     
@@ -75,7 +75,7 @@ const InstructorRegistrationPage = () => {
       const res = await userApi.applyInstructor(payload);
       setStatus('PENDING'); // Update local state immediately
     } catch (err) {
-      setError(err.response?.data?.message || 'Có lỗi xảy ra khi nộp đơn.');
+      setError(err.response?.data?.message || 'An error occurred while submitting the application.');
     } finally {
       setSubmitting(false);
     }
@@ -91,8 +91,8 @@ const InstructorRegistrationPage = () => {
         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
           <i className="fi fi-rr-check-circle"></i>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Đơn của bạn đã được duyệt!</h2>
-        <p className="text-gray-600 mb-6">Chúc mừng bạn đã trở thành giảng viên trên nền tảng. Bây giờ bạn có thể bắt đầu tạo khóa học.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Your application has been approved!</h2>
+        <p className="text-gray-600 mb-6">Congratulations on becoming an instructor on the platform. You can now start creating your course.</p>
       </div>
     );
   }
@@ -103,24 +103,24 @@ const InstructorRegistrationPage = () => {
         <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
           <i className="fi fi-rr-time-fast"></i>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Đơn đăng ký đang chờ duyệt</h2>
-        <p className="text-gray-600 mb-6">Quản trị viên đang xem xét đơn đăng ký của bạn. Vui lòng quay lại sau.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Registration application is pending approval</h2>
+        <p className="text-gray-600 mb-6">The administrator is reviewing your application. Please come back later.</p>
       </div>
     );
   }
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Trở thành Giảng viên</h2>
-      <p className="text-gray-600 mb-8">Chia sẻ kiến thức của bạn với hàng ngàn học viên bằng cách đăng ký làm giảng viên.</p>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Become a Lecturer</h2>
+      <p className="text-gray-600 mb-8">Share your knowledge with thousands of students by registering as an instructor.</p>
 
       {status === 'REJECTED' && (
         <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start gap-3">
           <i className="fi fi-rr-exclamation text-lg mt-0.5"></i>
           <div>
-            <h4 className="font-semibold mb-1">Đơn đăng ký trước đó bị từ chối</h4>
+            <h4 className="font-semibold mb-1">The previous application was rejected</h4>
             <p className="text-sm">{reason}</p>
-            <p className="text-sm mt-2 font-medium">Bạn có thể nộp lại đơn bên dưới.</p>
+            <p className="text-sm mt-2 font-medium">You can reapply below.</p>
           </div>
         </div>
       )}
@@ -133,28 +133,28 @@ const InstructorRegistrationPage = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Chuyên môn giảng dạy <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Teaching expertise <span className="text-red-500">*</span></label>
           <input
             type="text"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-            placeholder="VD: Lập trình Web, Thiết kế UI/UX, Marketing..."
+            placeholder="For example: Web Programming, UI/UX Design, Marketing..."
             value={expertise}
             onChange={(e) => setExpertise(e.target.value)}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Kinh nghiệm của bạn <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Your experience <span className="text-red-500">*</span></label>
           <textarea
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors h-32 resize-none"
-            placeholder="Hãy mô tả chi tiết về kinh nghiệm làm việc và giảng dạy của bạn..."
+            placeholder="Please describe your work and teaching experience in detail..."
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
           ></textarea>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh Bằng cấp / Chứng chỉ (Tùy chọn)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Image of Degree/Certificate (Optional)</label>
           <div className="mt-1 flex items-center gap-4">
             {certificateImage && (
               <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-gray-200 group">
@@ -186,10 +186,10 @@ const InstructorRegistrationPage = () => {
               ) : (
                 <i className="fi fi-rr-upload"></i>
               )}
-              {certificateImage ? 'Tải ảnh khác' : 'Tải lên hình ảnh'}
+              {certificateImage ? 'Upload another image' : 'Upload an image'}
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-2">Định dạng JPG, PNG. Bằng cấp liên quan giúp tăng khả năng duyệt đơn.</p>
+          <p className="text-xs text-gray-500 mt-2">JPG, PNG format. Relevant qualifications help increase the likelihood of application approval.</p>
         </div>
 
         <div className="pt-4 border-t border-gray-100 flex justify-end">
@@ -199,9 +199,9 @@ const InstructorRegistrationPage = () => {
             className="px-6 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {submitting ? (
-              <><span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span> Đang gửi...</>
+              <><span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span> Sending...</>
             ) : (
-              'Gửi Đăng Ký'
+              'Send Registration'
             )}
           </button>
         </div>

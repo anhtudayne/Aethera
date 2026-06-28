@@ -85,7 +85,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <KpiCard 
                     title="Total Revenue" 
-                    value={`${Number(stats.totalRevenue || 0).toLocaleString()} đ`}
+                    value={`${Number(stats.totalRevenue || 0).toLocaleString()} d`}
                     icon={DollarSign} 
                     colorClass="text-indigo-600" 
                     bgClass="bg-indigo-50 border-indigo-100" 

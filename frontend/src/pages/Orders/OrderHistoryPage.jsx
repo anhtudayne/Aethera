@@ -51,8 +51,8 @@ const OrderHistoryPage = () => {
 
   const getStatusDisplay = (status) => {
     const s = (status || '').toLowerCase();
-    if (s === 'paid' || s === 'completed' || s === 'fulfilled') return { label: '✅ Đã thanh toán', modifier: 'paid' };
-    if (s === 'pending') return { label: '⏳ Chờ xử lý', modifier: 'pending' };
+    if (s === 'paid' || s === 'completed' || s === 'fulfilled') return { label: '✅ Paid', modifier: 'paid' };
+    if (s === 'pending') return { label: '⏳ Waiting for processing', modifier: 'pending' };
     if (s === 'cancelled' || s === 'canceled') return { label: '❌ Đã hủy', modifier: 'cancelled' };
     return { label: status, modifier: 'pending' };
   };

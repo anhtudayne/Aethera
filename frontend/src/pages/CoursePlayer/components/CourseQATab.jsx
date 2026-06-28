@@ -114,7 +114,7 @@ const CourseQATab = ({ courseId, activeLessonId }) => {
                         type="text" 
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        placeholder="Tìm kiếm tất cả câu hỏi trong khóa học" 
+                        placeholder="Search all questions in the course" 
                         className="w-full border border-gray-900 rounded p-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     />
                     <Search className="absolute left-3 top-3.5 text-gray-500" size={20} />
@@ -133,23 +133,23 @@ const CourseQATab = ({ courseId, activeLessonId }) => {
                             onChange={(e) => { setFilterLesson(e.target.value); setPage(1); }}
                             className="font-bold p-2 border border-black rounded focus:outline-none"
                         >
-                            <option value="all">Tất cả bài giảng</option>
-                            <option value="current">Bài giảng hiện tại</option>
+                            <option value="all">All lectures</option>
+                            <option value="current">Current lecture</option>
                         </select>
                         <select 
                             value={sortBy}
                             onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
                             className="font-bold p-2 border border-black rounded focus:outline-none"
                         >
-                            <option value="recent">Mới nhất</option>
-                            <option value="upvoted">Được đề xuất (Upvotes)</option>
+                            <option value="recent">Latest</option>
+                            <option value="upvoted">Recommended (Upvotes)</option>
                         </select>
                     </div>
                     <button 
                         onClick={() => setViewMode('form')}
                         className="font-bold border border-black px-4 py-2 rounded hover:bg-gray-100 whitespace-nowrap"
                     >
-                        Đặt câu hỏi mới
+                        Ask new questions
                     </button>
                 </div>
             )}
@@ -168,14 +168,14 @@ const CourseQATab = ({ courseId, activeLessonId }) => {
             {viewMode === 'list' && (
                 <div>
                     <h3 className="font-bold text-lg mb-4">
-                        {questions.length > 0 ? `Tất cả câu hỏi trong khóa học (${questions.length})` : 'Tất cả câu hỏi'}
+                        {questions.length > 0 ? `All questions in the course (${questions.length})` : 'All questions'}
                     </h3>
                     
                     {loading ? (
-                        <div className="text-center py-12 text-gray-500">Đang tải...</div>
+                        <div className="text-center py-12 text-gray-500">Loading...</div>
                     ) : questions.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">
-                            Không tìm thấy câu hỏi nào. Bạn hãy là người đầu tiên đặt câu hỏi nhé!
+                            No questions found. Be the first to ask a question!
                         </div>
                     ) : (
                         <div className="border border-gray-200 rounded">

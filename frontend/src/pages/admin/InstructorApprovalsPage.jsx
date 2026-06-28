@@ -21,7 +21,7 @@ const InstructorApprovalsPage = () => {
       const res = await adminApi.getInstructorApplications({ status: filter });
       setApplications(res.data || []);
     } catch (err) {
-      toast.error('Lỗi khi tải danh sách đơn đăng ký');
+      toast.error('Error loading application list');
       console.error(err);
     } finally {
       setLoading(false);
@@ -29,32 +29,32 @@ const InstructorApprovalsPage = () => {
   };
 
   const handleApprove = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn duyệt người này thành Giảng viên?')) return;
+    if (!window.confirm('Are you sure you want to approve this person as a Lecturer?')) return;
     
     try {
       await adminApi.updateInstructorApplication(id, 'APPROVED');
-      toast.success('Đã duyệt thành công!');
+      toast.success('Successfully approved!');
       fetchApplications();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Có lỗi xảy ra');
+      toast.error(err.response?.data?.message || 'An error occurred');
     }
   };
 
   const handleReject = async () => {
     if (!rejectReason.trim()) {
-      toast.error('Vui lòng nhập lý do từ chối');
+      toast.error('Please enter reason for refusal');
       return;
     }
 
     try {
       await adminApi.updateInstructorApplication(selectedApp.id, 'REJECTED', rejectReason);
-      toast.success('Đã từ chối đơn đăng ký!');
+      toast.success('Application rejected!');
       setShowRejectModal(false);
       setRejectReason('');
       setSelectedApp(null);
       fetchApplications();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Có lỗi xảy ra');
+      toast.error(err.response?.data?.message || 'An error occurred');
     }
   };
 
@@ -62,8 +62,8 @@ const InstructorApprovalsPage = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Duyệt Đăng Ký Giảng Viên</h1>
-          <p className="text-gray-500 text-sm">Quản lý và xét duyệt các đơn đăng ký trở thành giảng viên</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Browse Instructor Registration</h1>
+          <p className="text-gray-500 text-sm">Manage and review applications to become lecturers</p>
         </div>
       </div>
 
@@ -79,9 +79,9 @@ const InstructorApprovalsPage = () => {
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            {status === 'PENDING' ? 'Chờ duyệt' : 
+            {status === 'PENDING' ? 'Waiting for approval' : 
              status === 'APPROVED' ? 'Đã duyệt' : 
-             status === 'REJECTED' ? 'Đã từ chối' : 'Tất cả'}
+             status === 'REJECTED' ? 'Refused' : 'Tất cả'}
           </button>
         ))}
       </div>
@@ -89,20 +89,20 @@ const InstructorApprovalsPage = () => {
       {/* Content */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Đang tải dữ liệu...</div>
+          <div className="p-8 text-center text-gray-500">Loading data...</div>
         ) : applications.length === 0 ? (
           <div className="p-12 text-center text-gray-500">
             <i className="fi fi-rr-document text-4xl mb-3 text-gray-300"></i>
-            <p>Không có đơn đăng ký nào.</p>
+            <p>There are no applications.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
                 <tr>
-                  <th className="py-4 px-6 font-medium">Người dùng</th>
-                  <th className="py-4 px-6 font-medium">Chuyên môn</th>
-                  <th className="py-4 px-6 font-medium">Kinh nghiệm</th>
+                  <th className="py-4 px-6 font-medium">User</th>
+                  <th className="py-4 px-6 font-medium">Expertise</th>
+                  <th className="py-4 px-6 font-medium">Experience</th>
                   <th className="py-4 px-6 font-medium text-center">Bằng cấp</th>
                   <th className="py-4 px-6 font-medium">Ngày nộp</th>
                   <th className="py-4 px-6 font-medium text-right">Thao tác</th>
@@ -168,7 +168,7 @@ const InstructorApprovalsPage = () => {
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                           app.status === 'APPROVED' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                         }`}>
-                          {app.status === 'APPROVED' ? 'Đã duyệt' : 'Đã từ chối'}
+                          {app.status === 'APPROVED' ? 'Approved' : 'Rejected'}
                         </span>
                       )}
                     </td>
@@ -180,21 +180,21 @@ const InstructorApprovalsPage = () => {
         )}
       </div>
 
-      {/* Modal từ chối */}
+      {/* Modal rejected */}
       {showRejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl">
             <div className="p-6 border-b border-gray-100">
-              <h3 className="text-xl font-bold text-gray-900">Từ chối đơn đăng ký</h3>
+              <h3 className="text-xl font-bold text-gray-900">Refuse the application</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Bạn đang từ chối đơn của <span className="font-medium text-gray-700">{selectedApp?.user?.email}</span>
+                You are rejecting my application <span className="font-medium text-gray-700">{selectedApp?.user?.email}</span>
               </p>
             </div>
             <div className="p-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Lý do từ chối (Bắt buộc)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Reason for refusal (Required)</label>
               <textarea
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors h-32 resize-none"
-                placeholder="Ví dụ: Kinh nghiệm chưa đủ, thông tin chưa rõ ràng..."
+                placeholder="For example: Not enough experience, unclear information..."
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
               ></textarea>
@@ -214,14 +214,14 @@ const InstructorApprovalsPage = () => {
                 onClick={handleReject}
                 className="px-5 py-2.5 bg-red-600 text-white font-medium hover:bg-red-700 rounded-xl transition-colors"
               >
-                Xác nhận từ chối
+                Confirmed refusal
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal Preview Ảnh */}
+      {/* Modal Preview Image */}
       {previewImage && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80" onClick={() => setPreviewImage(null)}>
           <div className="relative max-w-5xl w-full max-h-screen p-4 flex justify-center items-center">

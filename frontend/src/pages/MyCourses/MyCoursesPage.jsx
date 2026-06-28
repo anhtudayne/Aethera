@@ -9,13 +9,13 @@ import './MyCoursesPage.css';
 const STATUS_TABS = [
   { key: 'all', label: 'Tất cả' },
   { key: 'in-progress', label: 'Đang học' },
-  { key: 'completed', label: 'Hoàn thành' },
-  { key: 'not-started', label: 'Chưa bắt đầu' },
+  { key: 'completed', label: 'Complete' },
+  { key: 'not-started', label: "Haven't started yet" },
 ];
 
 const SORT_OPTIONS = [
-  { key: 'recent', label: 'Gần đây nhất' },
-  { key: 'enrolled', label: 'Ngày đăng ký' },
+  { key: 'recent', label: 'Most recently' },
+  { key: 'enrolled', label: 'Registration date' },
   { key: 'a-z', label: 'A → Z' },
   { key: 'progress', label: 'Tiến độ' },
 ];
@@ -50,9 +50,9 @@ const MyCoursesPage = () => {
   };
 
   const getStatusLabel = (progress) => {
-    if (progress >= 100) return 'Hoàn thành';
-    if (progress > 0) return 'Đang học';
-    return 'Chưa bắt đầu';
+    if (progress >= 100) return 'Completed';
+    if (progress > 0) return 'Studying';
+    return 'Not started yet';
   };
 
   return (
@@ -60,7 +60,7 @@ const MyCoursesPage = () => {
       <LearningStreak />
       
       <div className="my-courses-header">
-        <h2>Khóa học của tôi</h2>
+        <h2>My course</h2>
         <div className="sort-dropdown">
           <label>Sắp xếp:</label>
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -87,13 +87,13 @@ const MyCoursesPage = () => {
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
       ) : courses.length === 0 ? (
         <EmptyState
           icon={BookOpen}
           title="Chưa có khóa học nào"
-          description="Khám phá và đăng ký khóa học để bắt đầu hành trình học tập!"
+          description="Explore and sign up for courses to start your learning journey!"
         />
       ) : (
         <div className="enrolled-courses-grid">
@@ -109,13 +109,13 @@ const MyCoursesPage = () => {
                 <div className="enrolled-card-body">
                   <div className="enrolled-card-title">{course.name}</div>
                   <div className="enrolled-card-instructor">
-                    {course.instructor || 'Giảng viên'}
+                    {course.instructor || 'Lecturer'}
                   </div>
                   <div className="progress-bar-container">
                     <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
                   </div>
                   <div className="enrolled-card-footer">
-                    <span className="progress-text">{progress}% hoàn thành</span>
+                    <span className="progress-text">{progress}% complete</span>
                     <span className={`status-badge status-badge--${statusMod}`}>{getStatusLabel(progress)}</span>
                   </div>
                   <div style={{ marginTop: 'var(--space-sm)' }}>

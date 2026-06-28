@@ -11,7 +11,7 @@ const QAForm = ({ courseId, activeLessonId, onCancel, onSuccess }) => {
         e.preventDefault();
         
         if (!title.trim() || !content.trim()) {
-            setError('Vui lòng nhập đầy đủ tiêu đề và nội dung.');
+            setError('Please enter full title and content.');
             return;
         }
         
@@ -27,14 +27,14 @@ const QAForm = ({ courseId, activeLessonId, onCancel, onSuccess }) => {
             onSuccess();
         } catch (err) {
             console.error('Error submitting question:', err);
-            setError('Có lỗi xảy ra khi gửi câu hỏi. Vui lòng thử lại.');
+            setError('An error occurred while submitting your question. Please try again.');
             setIsSubmitting(false);
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded p-4 mb-6">
-            <h3 className="text-lg font-bold mb-4">Hỏi câu hỏi mới</h3>
+            <h3 className="text-lg font-bold mb-4">Ask new questions</h3>
             
             {error && (
                 <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
@@ -44,13 +44,13 @@ const QAForm = ({ courseId, activeLessonId, onCancel, onSuccess }) => {
 
             <div className="mb-4">
                 <label className="block text-sm font-bold text-gray-700 mb-1">
-                    Tiêu đề
+                    Title
                 </label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="VD: Làm sao để import module này?"
+                    placeholder="Example: How to import this module?"
                     className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     maxLength={100}
                 />
@@ -59,7 +59,7 @@ const QAForm = ({ courseId, activeLessonId, onCancel, onSuccess }) => {
 
             <div className="mb-4">
                 <label className="block text-sm font-bold text-gray-700 mb-1">
-                    Nội dung chi tiết
+                    Detailed content
                 </label>
                 <textarea
                     value={content}
@@ -83,7 +83,7 @@ const QAForm = ({ courseId, activeLessonId, onCancel, onSuccess }) => {
                     className="px-4 py-2 bg-gray-900 text-white font-bold rounded hover:bg-gray-800 disabled:bg-gray-400"
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? 'Đang gửi...' : 'Đăng câu hỏi'}
+                    {isSubmitting ? 'Sending...' : 'Posting question'}
                 </button>
             </div>
         </form>

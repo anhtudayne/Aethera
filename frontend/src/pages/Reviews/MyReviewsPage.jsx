@@ -31,18 +31,18 @@ const MyReviewsPage = () => {
 
   return (
     <div className="reviews-page">
-      <h2>Đánh giá của tôi ⭐</h2>
+      <h2>My review ⭐</h2>
 
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
       ) : reviews.length === 0 ? (
         <EmptyState
           icon={MessageSquare}
           title="Chưa có đánh giá nào"
-          description="Hãy đánh giá các khóa học bạn đã hoàn thành để giúp người khác!"
+          description="Rate the courses you've completed to help others!"
         />
       ) : (
         <div className="reviews-list">
@@ -50,7 +50,7 @@ const MyReviewsPage = () => {
             <div key={review.id} className="review-card">
               <div className="review-card-header">
                 <div className="review-course-title">
-                  {review.courseName || review.course?.name || 'Khóa học'}
+                  {review.courseName || review.course?.name || 'Course'}
                 </div>
                 <div className="review-rating">{renderStars(review.rating)}</div>
               </div>

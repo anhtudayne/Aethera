@@ -66,7 +66,7 @@ const CourseDetailPage = () => {
             const enrolled = typeof enrollRes === 'boolean' ? enrollRes : (enrollRes?.enrolled ?? enrollRes?.data?.enrolled ?? false);
             setIsEnrolled(enrolled);
           } catch (e) {
-            console.error('Lỗi check enroll:', e);
+            console.error('Error checking enroll:', e);
           }
         }
 

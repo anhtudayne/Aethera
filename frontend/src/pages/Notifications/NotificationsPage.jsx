@@ -71,9 +71,9 @@ const NotificationsPage = () => {
     const now = new Date();
     const diff = Math.floor((now - d) / 1000);
     if (diff < 60) return 'Vừa xong';
-    if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)} ngày trước`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
     return d.toLocaleDateString('vi-VN');
   };
 
@@ -82,10 +82,10 @@ const NotificationsPage = () => {
   return (
     <div className="notifications-page">
       <div className="notifications-header">
-        <h2>Thông báo 🔔 {unreadCount > 0 && <span style={{ fontSize: '0.9rem', color: 'var(--color-accent)' }}>({unreadCount} chưa đọc)</span>}</h2>
+        <h2>Notification 🔔 {unreadCount > 0 && <span style={{ fontSize: '0.9rem', color: 'var(--color-accent)' }}>({unreadCount} unread)</span>}</h2>
         {unreadCount > 0 && (
           <button className="mark-all-btn" onClick={handleMarkAllRead}>
-            <CheckCheck size={16} /> Đánh dấu tất cả đã đọc
+            <CheckCheck size={16} /> Mark all as read
           </button>
         )}
       </div>
@@ -93,13 +93,13 @@ const NotificationsPage = () => {
       {loading ? (
         <div className="dashboard-loading">
           <div className="loading-spinner" />
-          <span>Đang tải...</span>
+          <span>Loading...</span>
         </div>
       ) : notifications.length === 0 ? (
         <EmptyState
           icon={Bell}
           title="Không có thông báo nào"
-          description="Thông báo mới sẽ hiển thị ở đây khi có cập nhật."
+          description="New notifications will appear here when updates are available."
         />
       ) : (
         <div className="notifications-list">
@@ -119,7 +119,7 @@ const NotificationsPage = () => {
                   <button
                     className="notification-action-btn"
                     onClick={(e) => { e.stopPropagation(); handleMarkRead(n.id); }}
-                    title="Đánh dấu đã đọc"
+                    title="Mark as read"
                   >
                     <Check size={16} />
                   </button>

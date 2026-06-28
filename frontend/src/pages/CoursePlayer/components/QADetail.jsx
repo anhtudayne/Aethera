@@ -48,13 +48,13 @@ const QADetail = ({ questionId, onBack }) => {
     };
 
     if (loading) {
-        return <div className="p-8 text-center text-gray-500">Đang tải câu hỏi...</div>;
+        return <div className="p-8 text-center text-gray-500">Loading questions...</div>;
     }
 
     if (!question) {
         return (
             <div className="p-8 text-center text-gray-500">
-                Không tìm thấy câu hỏi.
+                No question found.
                 <button onClick={onBack} className="block mx-auto mt-4 text-[#5624d0] font-bold hover:underline">
                     Quay lại
                 </button>
@@ -73,7 +73,7 @@ const QADetail = ({ questionId, onBack }) => {
                     onClick={onBack}
                     className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-gray-900 mb-6"
                 >
-                    <ArrowLeft size={16} /> Quay lại danh sách câu hỏi
+                    <ArrowLeft size={16} /> Return to the question list
                 </button>
             </div>
 
@@ -117,7 +117,7 @@ const QADetail = ({ questionId, onBack }) => {
             <div className="mb-8">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                     <MessageSquare size={20} />
-                    {question.answers?.length || 0} câu trả lời
+                    {question.answers?.length || 0} answers
                 </h3>
 
                 <div className="space-y-6">
@@ -147,7 +147,7 @@ const QADetail = ({ questionId, onBack }) => {
                                         </span>
                                         {answer.isInstructor && (
                                             <span className="bg-[#5624d0] text-white text-xs px-2 py-0.5 rounded font-bold">
-                                                Giảng viên
+                                                Lecturer
                                             </span>
                                         )}
                                         <span className="text-gray-500">•</span>
@@ -174,7 +174,7 @@ const QADetail = ({ questionId, onBack }) => {
                     <textarea
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="Thêm câu trả lời..."
+                        placeholder="Add answer..."
                         className="w-full border border-gray-300 rounded p-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-gray-900 mb-2"
                     />
                     <div className="flex justify-end">
@@ -183,7 +183,7 @@ const QADetail = ({ questionId, onBack }) => {
                             disabled={isSubmitting || !replyContent.trim()}
                             className="px-6 py-2 bg-gray-900 text-white font-bold rounded hover:bg-gray-800 disabled:bg-gray-400"
                         >
-                            {isSubmitting ? 'Đang gửi...' : 'Trả lời'}
+                            {isSubmitting ? 'Sending...' : 'Reply'}
                         </button>
                     </div>
                 </form>

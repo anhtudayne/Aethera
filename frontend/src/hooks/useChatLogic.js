@@ -95,7 +95,7 @@ export const useChatLogic = (lessonId) => {
 
       let assistantReply = data.reply;
       if (!res.ok) {
-        assistantReply = data.message || 'Xin lỗi, tôi không thể trả lời lúc này.';
+        assistantReply = data.message || "Sorry, I can't answer right now.";
       }
 
       const updatedMessages = [...newMessages, { role: 'assistant', text: assistantReply }];
@@ -122,7 +122,7 @@ export const useChatLogic = (lessonId) => {
         };
         updatedSessions = [newSession, ...sessions];
       } else {
-        // Cập nhật session hiện tại
+        // Update session hiện tại
         const sessionIndex = updatedSessions.findIndex(s => s.id === targetSessionId);
         if (sessionIndex !== -1) {
           updatedSessions[sessionIndex].messages = updatedMessages;
@@ -134,7 +134,7 @@ export const useChatLogic = (lessonId) => {
 
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages([...newMessages, { role: 'assistant', text: 'Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.' }]);
+      setMessages([...newMessages, { role: 'assistant', text: 'A connection error has occurred. Please try again later.' }]);
     } finally {
       setIsLoading(false);
     }

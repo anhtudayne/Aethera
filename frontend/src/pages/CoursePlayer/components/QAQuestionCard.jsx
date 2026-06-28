@@ -55,7 +55,7 @@ const QAQuestionCard = ({ question, isUpvoted, onUpvote, onClick }) => {
                     </span>
                     <span>•</span>
                     <span className="truncate max-w-[200px]">
-                        Bài học: {question.lesson?.title || 'Chung'}
+                        Lesson: {question.lesson?.title || 'Chung'}
                     </span>
                     <span>•</span>
                     <span>{timeAgo}</span>

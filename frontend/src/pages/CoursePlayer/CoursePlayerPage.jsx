@@ -37,7 +37,7 @@ export const CoursePlayerPage = () => {
           // Fetch curriculum (authenticated content with paid video URLs)
           let rawRes = await learningApi.getCourseContent(slug);
           
-          // Helper to deeply find an array and parse JSON strings
+          // Helper to find deeply an array and parse JSON strings
           const findArray = (obj) => {
             if (!obj) return null;
             if (typeof obj === 'string') {
@@ -92,7 +92,7 @@ export const CoursePlayerPage = () => {
              setActiveLessonId(41);
           }
         } catch (error) {
-          console.error('Lỗi khi tải dữ liệu khóa học:', error);
+          console.error('Error loading course data:', error);
           setActiveLessonId(41); // Fallback
         }
       } else {

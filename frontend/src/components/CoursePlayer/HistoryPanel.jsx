@@ -60,10 +60,10 @@ const HistoryPanel = ({ show, onClose, sessions, onClearAll, onLoadSession, onDe
         <button className="back-btn" onClick={handleClose}>
           <ChevronLeft size={20} />
         </button>
-        <h4>Lịch sử trò chuyện</h4>
+        <h4>Chat history</h4>
         {sessions.length > 0 && !showConfirmClear && (
           <button className="clear-all-btn" onClick={() => setShowConfirmClear(true)}>
-            <Trash2 size={14} style={{ marginRight: '4px' }} /> Xóa tất cả
+            <Trash2 size={14} style={{ marginRight: '4px' }} /> Delete all
           </button>
         )}
       </div>
@@ -75,10 +75,10 @@ const HistoryPanel = ({ show, onClose, sessions, onClearAll, onLoadSession, onDe
               <AlertTriangle size={24} color="#EF4444" />
             </div>
             <div className="confirm-clear-content">
-              <p>Bạn có chắc chắn muốn xóa toàn bộ lịch sử trò chuyện? Hành động này không thể hoàn tác.</p>
+              <p>Are you sure you want to delete your entire chat history? This action cannot be undone.</p>
               <div className="confirm-clear-actions">
-                <button className="confirm-btn cancel" onClick={() => setShowConfirmClear(false)}>Hủy</button>
-                <button className="confirm-btn delete" onClick={handleClearConfirm}>Xóa vĩnh viễn</button>
+                <button className="confirm-btn cancel" onClick={() => setShowConfirmClear(false)}>Cancel</button>
+                <button className="confirm-btn delete" onClick={handleClearConfirm}>Delete permanently</button>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ const HistoryPanel = ({ show, onClose, sessions, onClearAll, onLoadSession, onDe
         {sessions.length === 0 ? (
           <div className="history-empty">
             <Ghost size={48} strokeWidth={1.5} />
-            <p>Bạn chưa có cuộc trò chuyện nào.<br/>Hãy bắt đầu đặt câu hỏi để AI hỗ trợ bạn nhé!</p>
+            <p>You haven't had any conversations yet.<br/>Start asking questions so AI can help you!</p>
           </div>
         ) : (
           Object.keys(groupedSessions).map(group => (
@@ -98,10 +98,10 @@ const HistoryPanel = ({ show, onClose, sessions, onClearAll, onLoadSession, onDe
                   <div key={session.id} className={`history-card ${deletingSessionId === session.id ? 'confirming' : ''}`} onClick={() => { if(deletingSessionId !== session.id) onLoadSession(session); }}>
                     {deletingSessionId === session.id ? (
                       <div className="history-card-confirm">
-                        <span style={{ color: '#EF4444', fontSize: '0.85rem', fontWeight: '500' }}>Xóa đoạn chat này?</span>
+                        <span style={{ color: '#EF4444', fontSize: '0.85rem', fontWeight: '500' }}>Delete this chat?</span>
                         <div style={{ display: 'flex', gap: '8px' }}>
-                          <button className="confirm-btn cancel" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={(e) => { e.stopPropagation(); setDeletingSessionId(null); }}>Hủy</button>
-                          <button className="confirm-btn delete" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={(e) => { e.stopPropagation(); onDeleteSession(e, session.id); setDeletingSessionId(null); }}>Xóa</button>
+                          <button className="confirm-btn cancel" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={(e) => { e.stopPropagation(); setDeletingSessionId(null); }}>Cancel</button>
+                          <button className="confirm-btn delete" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={(e) => { e.stopPropagation(); onDeleteSession(e, session.id); setDeletingSessionId(null); }}>Delete</button>
                         </div>
                       </div>
                     ) : (

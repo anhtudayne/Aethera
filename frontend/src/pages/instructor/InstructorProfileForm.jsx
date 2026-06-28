@@ -38,7 +38,7 @@ const InstructorProfileForm = () => {
       const response = await userApi.updateProfile(formData);
       if (response && response.data) {
         setMessage('Profile updated successfully!');
-        // Tùy chọn: update context if necessary
+        // Optional: update context if necessary
       }
     } catch (error) {
       console.error('Failed to update profile', error);

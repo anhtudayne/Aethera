@@ -29,7 +29,7 @@ const OrderDetailPage = () => {
   }, [id]);
 
   const handleCancel = async () => {
-    if (!window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
+    if (!window.confirm('Are you sure you want to cancel this order?')) return;
     try {
       setCancelling(true);
       await orderApi.cancelOrder(id);
@@ -37,7 +37,7 @@ const OrderDetailPage = () => {
       const res = await orderApi.getOrderDetail(id);
       setOrder(res.data);
     } catch {
-      alert('Không thể hủy đơn hàng. Vui lòng thử lại.');
+      alert('Orders cannot be canceled. Please try again.');
     } finally {
       setCancelling(false);
     }
@@ -57,8 +57,8 @@ const OrderDetailPage = () => {
 
   const getStatusDisplay = (status) => {
     const s = (status || '').toLowerCase();
-    if (s === 'paid' || s === 'completed' || s === 'fulfilled') return { label: '✅ Đã thanh toán', modifier: 'paid' };
-    if (s === 'pending') return { label: '⏳ Chờ xử lý', modifier: 'pending' };
+    if (s === 'paid' || s === 'completed' || s === 'fulfilled') return { label: '✅ Paid', modifier: 'paid' };
+    if (s === 'pending') return { label: '⏳ Waiting for processing', modifier: 'pending' };
     if (s === 'cancelled' || s === 'canceled') return { label: '❌ Đã hủy', modifier: 'cancelled' };
     return { label: status, modifier: 'pending' };
   };
@@ -67,7 +67,7 @@ const OrderDetailPage = () => {
     return (
       <div className="dashboard-loading">
         <div className="loading-spinner" />
-        <span>Đang tải chi tiết đơn hàng...</span>
+        <span>Loading order details...</span>
       </div>
     );
   }
@@ -76,8 +76,8 @@ const OrderDetailPage = () => {
     return (
       <div className="empty-state">
         <div className="empty-state-icon"><ShoppingBag size={28} /></div>
-        <h4>Không tìm thấy đơn hàng</h4>
-        <p>Đơn hàng này không tồn tại hoặc đã bị xóa.</p>
+        <h4>Order not found</h4>
+        <p>This order does not exist or has been deleted.</p>
       </div>
     );
   }
@@ -89,10 +89,10 @@ const OrderDetailPage = () => {
   return (
     <div className="order-detail-page">
       <Link to={ROUTES.ORDERS} className="order-detail-back">
-        <ArrowLeft size={16} /> Quay lại danh sách
+        <ArrowLeft size={16} /> Back to the list
       </Link>
 
-      <h2>Chi tiết đơn hàng #{order.orderCode || order.id}</h2>
+      <h2>Order details #{order.orderCode || order.id}</h2>
 
       <div className="order-detail-info">
         <div className="order-detail-info-item">
@@ -100,20 +100,20 @@ const OrderDetailPage = () => {
           <span>#{order.orderCode || order.id}</span>
         </div>
         <div className="order-detail-info-item">
-          <label>Ngày đặt</label>
+          <label>Booking date</label>
           <span>{formatDate(order.createdAt)}</span>
         </div>
         <div className="order-detail-info-item">
-          <label>Tổng tiền</label>
+          <label>Total amount</label>
           <span style={{ color: 'var(--color-accent)' }}>{formatPrice(order.totalAmount || order.total)}</span>
         </div>
         <div className="order-detail-info-item">
-          <label>Trạng thái</label>
+          <label>Status</label>
           <span className={`order-status order-status--${statusInfo.modifier}`}>{statusInfo.label}</span>
         </div>
       </div>
 
-      <h3 style={{ marginBottom: 'var(--space-md)' }}>Danh sách khóa học</h3>
+      <h3 style={{ marginBottom: 'var(--space-md)' }}>Course list</h3>
       <div className="order-items-list">
         {items.length > 0 ? items.map((item) => {
           const course = item.Course || item.course || item;
@@ -146,7 +146,7 @@ const OrderDetailPage = () => {
             </div>
           );
         }) : (
-          <p style={{ color: 'var(--color-text-muted)' }}>Không có khóa học trong đơn hàng này.</p>
+          <p style={{ color: 'var(--color-text-muted)' }}>There are no courses in this order.</p>
         )}
       </div>
 
@@ -156,7 +156,7 @@ const OrderDetailPage = () => {
           onClick={handleCancel}
           disabled={cancelling}
         >
-          {cancelling ? 'Đang hủy...' : '❌ Hủy đơn hàng'}
+          {cancel ? 'Cancel...' : '❌ Cancel order'}
         </button>
       )}
     </div>

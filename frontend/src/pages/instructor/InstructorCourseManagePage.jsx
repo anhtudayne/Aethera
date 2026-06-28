@@ -58,7 +58,7 @@ const InstructorCourseManagePage = () => {
           salePrice: courseData.salePrice || '',
           categoryId: courseData.categoryId || '',
           level: courseData.level || 'beginner',
-          language: courseData.language || 'Tiếng Việt',
+          language: courseData.language || 'Vietnamese',
           whatYouWillLearn: Array.isArray(courseData.whatYouWillLearn) ? courseData.whatYouWillLearn.join('\n') : '',
           requirements: Array.isArray(courseData.requirements) ? courseData.requirements.join('\n') : '',
           targetAudience: Array.isArray(courseData.targetAudience) ? courseData.targetAudience.join('\n') : '',

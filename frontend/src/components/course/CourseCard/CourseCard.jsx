@@ -77,7 +77,7 @@ const CourseCard = ({ course }) => {
         {(isCourseBestseller || isPremium) && (
           <div className="course-card-badges">
             {isCourseBestseller && (
-              <span className="badge-bestseller">Bán chạy nhất</span>
+              <span className="badge-bestseller">Best seller</span>
             )}
             {isPremium && (
               <span className="badge-premium">Premium</span>

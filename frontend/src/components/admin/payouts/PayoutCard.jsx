@@ -35,7 +35,7 @@ const PayoutCard = ({ payout, onAction, isProcessing, activeTab }) => {
       <div className="flex items-center gap-6 justify-between sm:justify-end border-t border-gray-100 sm:border-0 pt-4 sm:pt-0 mt-2 sm:mt-0 shrink-0">
         <div className="text-left sm:text-right shrink-0">
           <p className="font-mono text-lg text-emerald-600 font-bold">
-            {Number(amount).toLocaleString('vi-VN')} đ
+            {Number(amount).toLocaleString('en-VN')} d
           </p>
           <p className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
             Net Payout

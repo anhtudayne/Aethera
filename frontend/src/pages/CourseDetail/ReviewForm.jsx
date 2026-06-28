@@ -19,7 +19,7 @@ const ReviewForm = ({ courseId, onReviewSuccess, initialReview = null, onCancelE
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
-      toast.error('Vui lòng chọn số sao đánh giá');
+      toast.error('Please select the number of rating stars');
       return;
     }
 
@@ -27,14 +27,14 @@ const ReviewForm = ({ courseId, onReviewSuccess, initialReview = null, onCancelE
     try {
       if (initialReview && initialReview.id) {
         await reviewApi.update(initialReview.id, { rating, comment });
-        toast.success('Cập nhật đánh giá thành công!');
+        toast.success('Review update successful!');
       } else {
         await reviewApi.create({ courseId, rating, comment });
-        toast.success('Gửi đánh giá thành công!');
+        toast.success('Successful review submission!');
       }
       onReviewSuccess(); 
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi lưu đánh giá');
+      toast.error(error?.response?.data?.message || 'An error occurred while saving the review');
     } finally {
       setSubmitting(false);
     }
@@ -49,7 +49,7 @@ const ReviewForm = ({ courseId, onReviewSuccess, initialReview = null, onCancelE
       marginBottom: '24px' 
     }}>
       <h4 style={{ marginBottom: '16px', fontSize: '1.1rem' }}>
-        {initialReview ? 'Chỉnh sửa đánh giá của bạn' : 'Bạn nghĩ sao về khóa học này?'}
+        {initialReview ? 'Edit your review' : 'What do you think about this course?'}
       </h4>
       
       <form onSubmit={handleSubmit}>
@@ -68,14 +68,14 @@ const ReviewForm = ({ courseId, onReviewSuccess, initialReview = null, onCancelE
             />
           ))}
           <span style={{ marginLeft: '8px', color: 'var(--color-text-muted)', lineHeight: '28px' }}>
-            {rating > 0 ? `${rating} sao` : 'Chọn số sao'}
+            {rating > 0 ? `${rating} stars` : 'Select number of stars'}
           </span>
         </div>
 
         {/* Comment Textarea */}
         <div style={{ marginBottom: '16px' }}>
           <textarea
-            placeholder="Chia sẻ trải nghiệm của bạn về khóa học này (không bắt buộc)..."
+            placeholder="Share your experience about this course (optional)..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             disabled={submitting}
@@ -99,7 +99,7 @@ const ReviewForm = ({ courseId, onReviewSuccess, initialReview = null, onCancelE
             className="btn-primary-style"
             style={{ flex: 1 }}
           >
-            {submitting ? 'Đang lưu...' : (initialReview ? 'Cập nhật' : 'Gửi đánh giá')}
+            {submitting ? 'Saving...' : (initialReview ? 'Update' : 'Submit review')}
           </button>
           
           {initialReview && onCancelEdit && (
