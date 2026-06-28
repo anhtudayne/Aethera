@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   fetchCartCount, 
@@ -19,11 +20,11 @@ const useCart = () => {
     items,
     loading,
     error,
-    refreshCart: () => dispatch(fetchCartCount()),
-    loadCart: () => dispatch(fetchCartItems()),
-    addToCart: (courseId) => dispatch(addCourseToCart(courseId)),
-    removeItem: (itemId) => dispatch(removeCartItem(itemId)),
-    clearCart: () => dispatch(clearCart()),
+    refreshCart: useCallback(() => dispatch(fetchCartCount()), [dispatch]),
+    loadCart: useCallback(() => dispatch(fetchCartItems()), [dispatch]),
+    addToCart: useCallback((courseId) => dispatch(addCourseToCart(courseId)), [dispatch]),
+    removeItem: useCallback((itemId) => dispatch(removeCartItem(itemId)), [dispatch]),
+    clearCart: useCallback(() => dispatch(clearCart()), [dispatch]),
   };
 };
 
