@@ -24,7 +24,7 @@ const FeaturedCourses = () => {
   }, []);
 
   return (
-    <section className="home-section bg-white pt-12 pb-8">
+    <section className="home-section bg-white pt-12 pb-2">
       <div className="container max-w-[1340px] mx-auto px-4 md:px-6">
         <h1 className="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-8">
           What to learn next
@@ -43,7 +43,7 @@ const FeaturedCourses = () => {
             ))}
           </div>
         ) : courses.length > 0 ? (
-          <div className="mb-12">
+          <div className="mb-2">
             <CourseCarousel courses={courses} />
           </div>
         ) : (

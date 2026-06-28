@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, RefreshCw, AlertCircle, Clock, CheckCircle, X, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { Settings, RefreshCw, AlertCircle, Clock, CheckCircle, X, ChevronLeft, ChevronRight, Calendar, Download } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import PayoutCard from '../../components/admin/payouts/PayoutCard';
 import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
 
 const PAGE_SIZE = 8;
 
@@ -156,6 +157,44 @@ const PayoutsManagementPage = () => {
     }
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const toastId = toast.loading('Exporting to Excel...');
+      const params = { status: activeTab, limit: 1000 };
+      if (monthFilter) params.month = monthFilter;
+      
+      const res = await adminApi.getPayouts(params);
+      const dataToExport = res.data || [];
+      
+      if (dataToExport.length === 0) {
+        toast.error('No data to export', { id: toastId });
+        return;
+      }
+      
+      const exportData = dataToExport.map(p => ({
+        'ID': p.id,
+        'Instructor Name': `${p.instructor?.firstName || ''} ${p.instructor?.lastName || ''}`.trim(),
+        'Email': p.instructor?.email,
+        'Amount (VND)': Number(p.amount),
+        'Bank Name': p.bankName,
+        'Account Number': p.accountNumber,
+        'Status': p.status,
+        'Date': new Date(p.createdAt).toLocaleDateString('vi-VN'),
+        'Admin Note': p.adminNote || ''
+      }));
+      
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Payouts');
+      
+      XLSX.writeFile(workbook, `Payouts_${activeTab}_${new Date().toISOString().split('T')[0]}.xlsx`);
+      toast.success('Exported successfully!', { id: toastId });
+    } catch (err) {
+      toast.error('Failed to export to Excel');
+      console.error(err);
+    }
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -166,7 +205,15 @@ const PayoutsManagementPage = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">Financial Management</h2>
           <p className="text-lg text-gray-500">Manage platform rates and process pending instructor payouts.</p>
         </div>
-        <button
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={handleExportExcel}
+            className="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow-sm hover:bg-emerald-700 font-medium transition-colors flex items-center gap-2"
+          >
+            <Download size={16} />
+            Export Excel
+          </button>
+          <button
           onClick={async () => {
             if (window.confirm('Are you sure you want to process all PENDING payouts via MoMo Bulk Payout?')) {
               try {
@@ -181,10 +228,11 @@ const PayoutsManagementPage = () => {
             }
           }}
           className="px-4 py-2 bg-[#a50064] text-white rounded-lg shadow-sm hover:bg-[#80004d] font-medium transition-colors flex items-center gap-2"
-        >
-          <RefreshCw size={16} className={isProcessing ? 'animate-spin' : ''} />
-          Bulk Payout (MoMo)
-        </button>
+          >
+            <RefreshCw size={16} className={isProcessing ? 'animate-spin' : ''} />
+            Bulk Payout (MoMo)
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
