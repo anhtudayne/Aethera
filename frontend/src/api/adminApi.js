@@ -5,8 +5,9 @@ export const adminApi = {
   
   // Courses management
   getCourses: (params) => axiosClient.get('/admin/courses', { params }),
-  updateCourseStatus: (id, status, reason) => axiosClient.put(`/admin/courses/${id}/status`, { status, reason }),
+  updateCourseStatus: (id, data) => axiosClient.put(`/admin/courses/${id}/status`, data),
   getCourseHistory: (id) => axiosClient.get(`/admin/courses/${id}/history`),
+  getCoursePreview: (id) => axiosClient.get(`/admin/courses/${id}/preview`),
   
   // Users management
   getUsers: (params) => axiosClient.get('/admin/users', { params }),

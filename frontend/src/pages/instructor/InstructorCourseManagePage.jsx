@@ -5,7 +5,7 @@ import { categoryApi } from '../../api/categoryApi';
 import { instructorApi } from '../../api/instructorApi';
 import { ROUTES } from '../../utils/constants';
 import Button from '../../components/common/Button/Button';
-import { Loader2, ArrowLeft, Save, BookOpen, Upload } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, BookOpen, Upload, CheckCircle, Circle, Send } from 'lucide-react';
 
 const InstructorCourseManagePage = () => {
   const { slug } = useParams();
@@ -139,6 +139,22 @@ const InstructorCourseManagePage = () => {
     }
   };
 
+  const handleSubmitReview = async () => {
+    if (!window.confirm('Are you sure you want to submit this course for review? You will not be able to edit major details while it is pending.')) return;
+    setSaving(true);
+    setMessage(null);
+    setError(null);
+    try {
+      await instructorApi.submitReview(course.id);
+      setMessage('Course submitted for review successfully!');
+      setCourse(prev => ({ ...prev, status: 'pending' }));
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Failed to submit course for review');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return <div style={{ display: 'flex', justifyContent: 'center', padding: '64px' }}><Loader2 className="spinner" size={32} /></div>;
   }
@@ -169,6 +185,86 @@ const InstructorCourseManagePage = () => {
 
       {message && <div style={{ padding: '16px', backgroundColor: '#d1e7dd', color: '#0f5132', marginBottom: '24px' }}>{message}</div>}
       {error && <div style={{ padding: '16px', backgroundColor: '#fcebea', color: '#b30820', marginBottom: '24px' }}>{error}</div>}
+
+      {/* Pre-check Progress Bar */}
+      {(() => {
+        let totalLessons = 0;
+        let totalDurationSecs = 0;
+        if (course?.sections) {
+          course.sections.forEach(sec => {
+            if (sec.lessons) {
+              totalLessons += sec.lessons.length;
+              sec.lessons.forEach(l => {
+                if (l.duration) {
+                  const parts = l.duration.split(':').reverse();
+                  let secs = 0;
+                  if (parts[0]) secs += parseInt(parts[0], 10);
+                  if (parts[1]) secs += parseInt(parts[1], 10) * 60;
+                  if (parts[2]) secs += parseInt(parts[2], 10) * 3600;
+                  totalDurationSecs += secs;
+                }
+              });
+            }
+          });
+        }
+        
+        const isThumbnailOk = !!formData.thumbnail;
+        const isDescOk = formData.description?.trim().length >= 50;
+        const isCatOk = !!formData.categoryId;
+        const isLessonOk = totalLessons >= 3;
+        const isDurationOk = totalDurationSecs >= 15 * 60;
+        
+        const conditions = [
+          { label: 'Thumbnail uploaded', ok: isThumbnailOk },
+          { label: 'Description (>= 50 chars)', ok: isDescOk },
+          { label: 'Category selected', ok: isCatOk },
+          { label: `At least 3 lessons (has ${totalLessons})`, ok: isLessonOk },
+          { label: `At least 15 mins (has ${Math.floor(totalDurationSecs / 60)}m)`, ok: isDurationOk }
+        ];
+        
+        const completedCount = conditions.filter(c => c.ok).length;
+        const isReady = completedCount === conditions.length;
+        const isDraft = course?.status === 'draft';
+        const isRejected = course?.status === 'rejected';
+
+        return (isDraft || isRejected) && (
+          <div style={{ padding: '24px', border: '1px solid #d1d7dc', backgroundColor: '#f7f9fa', marginBottom: '24px', borderRadius: '4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+              <div>
+                <h2 style={{ fontSize: '18px', fontWeight: 700, margin: '0 0 8px 0' }}>Submit for Review</h2>
+                <p style={{ margin: 0, color: '#6a6f73', fontSize: '14px' }}>Complete all requirements to submit your course to the moderation team.</p>
+              </div>
+              <Button 
+                onClick={handleSubmitReview} 
+                disabled={!isReady || saving} 
+                style={{ 
+                  padding: '10px 20px', display: 'flex', gap: '8px', alignItems: 'center',
+                  backgroundColor: isReady ? '#a435f0' : '#e5e7eb',
+                  color: isReady ? 'white' : '#9ca3af',
+                  cursor: isReady ? 'pointer' : 'not-allowed',
+                  border: 'none', fontWeight: 700
+                }}
+              >
+                {saving ? <Loader2 className="spinner" size={16} /> : <Send size={16} />}
+                Submit for Review
+              </Button>
+            </div>
+            
+            <div style={{ width: '100%', height: '8px', backgroundColor: '#d1d7dc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
+              <div style={{ width: `${(completedCount / conditions.length) * 100}%`, height: '100%', backgroundColor: isReady ? '#198754' : '#a435f0', transition: 'width 0.3s ease' }}></div>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              {conditions.map((c, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: c.ok ? '#198754' : '#6a6f73' }}>
+                  {c.ok ? <CheckCircle size={16} /> : <Circle size={16} />}
+                  {c.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       <div style={{ borderTop: '1px solid #d1d7dc', paddingTop: '24px' }}>
         <form style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

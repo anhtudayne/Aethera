@@ -4,9 +4,16 @@ import ApiResponse from '../utils/ApiResponse';
 
 export const handleCreateOrder = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { courseIds, useCredit } = req.body;
-    const data = await orderService.createOrderFromCart(userId, courseIds, useCredit);
-    return res.status(201).json(new ApiResponse(201, data, 'Tạo đơn hàng thành công'));
+    const { courseIds, useCredit, voucherCode } = req.body;
+    const data = await orderService.createOrderFromCart(userId, courseIds, useCredit, voucherCode);
+    return res.status(201).json(new ApiResponse(201, data, 'Order created successfully'));
+});
+
+export const handleValidateVoucher = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { code, cartItemsTotal } = req.body;
+    const data = await orderService.validateVoucher(code, cartItemsTotal, userId);
+    return res.status(200).json(new ApiResponse(200, data, 'Voucher is valid'));
 });
 
 export const handleCheckOrderStatus = asyncHandler(async (req, res) => {

@@ -3,6 +3,7 @@ import { Tag, PlusCircle, RefreshCw, Pencil, Copy, Power, PowerOff } from 'lucid
 import { toast } from 'sonner';
 import VoucherFormModal from './VoucherFormModal';
 import PaginationBar from '../../common/PaginationBar';
+import { formatPrice } from '../../../utils/helpers';
 
 const formatDate = (dateStr) =>
   dateStr
@@ -134,7 +135,19 @@ const VoucherSection = ({ vouchers, isLoading, onAction, pagination }) => {
                       </span>
                     </td>
                     <td className="py-4 px-6 font-bold text-indigo-600 whitespace-nowrap">
-                      {Number(voucher.discountPercent)}%
+                      {voucher.discountType === 'FIXED' 
+                        ? formatPrice(Number(voucher.discountValue))
+                        : (
+                          <div className="flex flex-col">
+                            <span>{`${Number(voucher.discountValue || voucher.discountPercent)}%`}</span>
+                            {voucher.maxDiscountValue && (
+                              <span className="text-xs text-gray-500 font-normal">
+                                Tối đa {formatPrice(Number(voucher.maxDiscountValue))}
+                              </span>
+                            )}
+                          </div>
+                        )
+                      }
                     </td>
                     <td className="py-4 px-6 text-gray-500 whitespace-nowrap text-xs tabular-nums">
                       {formatDate(voucher.startDate)}

@@ -1,12 +1,12 @@
 import React from 'react';
 import { BookOpen, UserPlus, Bell } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const RecentActivities = ({ activities = [] }) => {
     return (
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-gray-900">Recent Activities</h3>
-                <button className="text-indigo-600 font-medium hover:underline text-sm">View All</button>
             </div>
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -27,7 +27,11 @@ const RecentActivities = ({ activities = [] }) => {
                                         <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200 text-gray-500 group-hover:text-indigo-600 transition-colors">
                                             {activity.type === 'course' ? <BookOpen size={16} /> : activity.type === 'user' ? <UserPlus size={16} /> : <Bell size={16} />}
                                         </div>
-                                        <span className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors cursor-pointer">{activity.title}</span>
+                                        {activity.url ? (
+                                            <Link to={activity.url} className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors cursor-pointer">{activity.title}</Link>
+                                        ) : (
+                                            <span className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors cursor-pointer">{activity.title}</span>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="py-4 px-6 text-gray-500">{activity.user}</td>

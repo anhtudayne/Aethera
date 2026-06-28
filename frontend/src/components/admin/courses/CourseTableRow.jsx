@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MoreVertical, CheckCircle, XCircle, AlertTriangle, ShieldAlert, History } from 'lucide-react';
+import { MoreVertical, CheckCircle, XCircle, AlertTriangle, ShieldAlert, History, Eye } from 'lucide-react';
+import { formatPrice } from '../../../utils/helpers';
 import CourseStatusBadge from './CourseStatusBadge';
 
-const CourseTableRow = ({ course, onApprove, onRequestReason, onViewHistory }) => {
+const CourseTableRow = ({ course, onApprove, onRequestReason, onViewHistory, onPreview }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -17,8 +18,8 @@ const CourseTableRow = ({ course, onApprove, onRequestReason, onViewHistory }) =
   }, []);
 
   const getPriceDisplay = () => {
-    if (!course.price || course.price == 0) return 'Free';
-    return `$${Number(course.price).toFixed(2)}`;
+    if (!course.price || course.price == 0) return 'Miễn phí';
+    return formatPrice(course.salePrice || course.price);
   };
 
   const ActionItem = ({ icon: Icon, label, onClick, colorClass, hoverClass }) => (
@@ -73,6 +74,16 @@ const CourseTableRow = ({ course, onApprove, onRequestReason, onViewHistory }) =
           {isDropdownOpen && (
             <div className="absolute right-full top-0 mr-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 z-50 overflow-hidden">
               <div className="py-1">
+                <ActionItem 
+                  icon={Eye} 
+                  label="Preview Course" 
+                  colorClass="text-indigo-600" 
+                  hoverClass="hover:bg-indigo-50"
+                  onClick={onPreview} 
+                />
+                
+                <div className="h-px bg-gray-200 my-1"></div>
+
                 {/* Approve is available unless already published */}
                 {course.status !== 'published' && (
                   <ActionItem 

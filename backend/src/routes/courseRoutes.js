@@ -4,9 +4,10 @@ import {
     handleGetCourseBySlug, handleGetCourseCurriculum, handleGetRelatedCourses, handleGetCategories, handleCreateCategory, handleCreateCourse,
     handleUpdateCourse, handlePublishCourse, handleToggleFeatured, handleToggleBestSeller, handleGetCoursesByCategory, handleGetTopViewed, handleIncrementView,
     handleCheckEnrollment, handleGetInstructorCourses, handleGetInstructorInfo,
-    handleGetCourseComments, handleCreateCourseComment
+    handleGetCourseComments, handleCreateCourseComment, handleSubmitReview
 } from '../controllers/courseController';
 import { verifyToken } from '../middlewares/authMiddleware';
+import { validateCoursePublish } from '../middlewares/validators/courseValidator';
 
 let router = express.Router();
 
@@ -29,6 +30,7 @@ router.get('/courses/:id/comments', handleGetCourseComments);
 router.post('/courses/:id/comments', verifyToken, handleCreateCourseComment);
 router.post('/courses', verifyToken, handleCreateCourse);
 router.put('/courses/:id', verifyToken, handleUpdateCourse);
+router.put('/courses/:id/submit-review', verifyToken, validateCoursePublish, handleSubmitReview);
 router.put('/courses/:id/publish', handlePublishCourse);
 router.put('/courses/:id/featured', handleToggleFeatured);
 router.put('/courses/:id/best-seller', handleToggleBestSeller);

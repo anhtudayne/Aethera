@@ -11,7 +11,7 @@ const MarketingManagementPage = () => {
       {/* Header */}
       <div>
         <h2 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">Marketing Admin</h2>
-        <p className="text-lg text-gray-500">Quản lý chiến dịch, voucher và tài sản quảng cáo.</p>
+        <p className="text-lg text-gray-500">Manage marketing campaigns, vouchers, and advertising assets.</p>
       </div>
 
       {/* Voucher Section */}

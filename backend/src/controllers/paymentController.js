@@ -8,7 +8,7 @@ import db from '../models';
 export const createMoMoPayment = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { courseIds, useCredit, requestType } = req.body;
+        const { courseIds, useCredit, requestType, voucherCode } = req.body;
 
         if (courseIds && (!Array.isArray(courseIds) || courseIds.length === 0)) {
             return res.status(400).json({
@@ -18,7 +18,7 @@ export const createMoMoPayment = async (req, res) => {
         }
 
         // 1. Tạo đơn hàng nháp hoặc thanh toán bằng credit
-        const orderResult = await orderService.createOrderFromCart(userId, courseIds, useCredit);
+        const orderResult = await orderService.createOrderFromCart(userId, courseIds, useCredit, voucherCode);
         const { orderCode, totalAmount, orderId, isPaid } = orderResult;
 
         if (isPaid) {

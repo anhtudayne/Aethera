@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
             price: { type: DataTypes.DECIMAL(12, 0), allowNull: false },
             salePrice: DataTypes.DECIMAL(12, 0),
             instructor: { type: DataTypes.STRING, allowNull: false },
+            instructorId: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: { model: 'Users', key: 'id' },
+            },
             duration: DataTypes.STRING,
             level: { type: DataTypes.ENUM('beginner', 'intermediate', 'advanced'), defaultValue: 'beginner' },
             language: { type: DataTypes.STRING, defaultValue: 'Tiếng Việt' },

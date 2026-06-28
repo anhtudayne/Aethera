@@ -1,4 +1,5 @@
 import { getAdminCourses, updateCourseStatus, getCourseStatusHistory } from '../services/adminCourseService';
+import { getCoursePreview } from '../services/adminCoursePreviewService';
 
 /**
  * Controller: Lấy danh sách khóa học cho Admin quản lý
@@ -19,14 +20,14 @@ export const handleGetAdminCourses = async (req, res, next) => {
 export const handleUpdateCourseStatus = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { status, reason } = req.body;
+        const { status, reasons } = req.body;
         const adminId = req.user ? req.user.id : null;
         
         if (!status) {
             return res.status(400).json({ status: 400, message: 'Vui lòng cung cấp trạng thái mới.' });
         }
 
-        const result = await updateCourseStatus(id, status, reason, adminId);
+        const result = await updateCourseStatus(id, status, reasons, adminId);
         return res.status(result.status || 200).json(result);
     } catch (err) {
         console.error('Controller - Lỗi cập nhật trạng thái khóa học:', err);
@@ -44,6 +45,17 @@ export const handleGetCourseHistory = async (req, res, next) => {
         return res.status(result.status || 200).json(result);
     } catch (err) {
         console.error('Controller - Lỗi lấy lịch sử trạng thái:', err);
+        next(err);
+    }
+};
+
+export const handleGetCoursePreview = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await getCoursePreview(id);
+        return res.status(result.status || 200).json(result);
+    } catch (err) {
+        console.error('Controller - Lỗi lấy admin course preview:', err);
         next(err);
     }
 };

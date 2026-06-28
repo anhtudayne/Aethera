@@ -3,7 +3,57 @@ import * as notificationService from './notificationService';
 import * as emailService from './emailService';
 import { createError } from '../utils/helpers';
 
-export const createOrderFromCart = async (userId, courseIds, useCredit = false) => {
+export const validateVoucher = async (code, cartItemsTotal, userId = null) => {
+    if (!code) throw createError(400, 'Voucher code is required');
+    const voucher = await db.Voucher.findOne({ where: { code: code.toUpperCase() } });
+    if (!voucher) throw createError(404, 'Voucher not found');
+
+    if (voucher.status !== 'ACTIVE') throw createError(400, 'Voucher has expired or is disabled');
+    const now = new Date();
+    if (voucher.startDate && now < new Date(voucher.startDate)) throw createError(400, 'Voucher is not yet active');
+    if (now > new Date(voucher.expiryDate)) throw createError(400, 'Voucher has expired');
+
+    if (voucher.maxUsage !== null && voucher.usageCount >= voucher.maxUsage) {
+        throw createError(400, 'Voucher usage limit has been reached');
+    }
+
+    if (userId) {
+        const existingOrder = await db.Order.findOne({
+            where: {
+                userId,
+                voucherId: voucher.id,
+                status: {
+                    [db.Sequelize.Op.ne]: 'cancelled'
+                }
+            }
+        });
+        if (existingOrder) {
+            throw createError(400, 'You have already used this voucher');
+        }
+    }
+
+    let discountAmount = 0;
+    if (voucher.discountType === 'PERCENTAGE') {
+        discountAmount = (cartItemsTotal * Number(voucher.discountValue)) / 100;
+        
+        if (voucher.maxDiscountValue !== null && voucher.maxDiscountValue !== undefined) {
+            discountAmount = Math.min(discountAmount, Number(voucher.maxDiscountValue));
+        }
+    } else if (voucher.discountType === 'FIXED') {
+        discountAmount = Number(voucher.discountValue);
+    }
+
+    // Ensure discount doesn't exceed total
+    discountAmount = Math.min(discountAmount, cartItemsTotal);
+
+    return {
+        voucherId: voucher.id,
+        code: voucher.code,
+        discountAmount: Math.round(discountAmount)
+    };
+};
+
+export const createOrderFromCart = async (userId, courseIds, useCredit = false, voucherCode = null) => {
     const transaction = await db.sequelize.transaction();
     try {
         // 1. Lấy giỏ hàng
@@ -40,14 +90,28 @@ export const createOrderFromCart = async (userId, courseIds, useCredit = false) 
             orderItemsData.push({ courseId: item.courseId, price });
         }
 
+        // 3b. Xử lý Voucher nếu có
+        let voucherDiscount = 0;
+        let voucherId = null;
+        if (voucherCode) {
+            const voucherResult = await validateVoucher(voucherCode, originalTotal, userId);
+            voucherDiscount = voucherResult.discountAmount;
+            voucherId = voucherResult.voucherId;
+
+            await db.Voucher.increment('usageCount', { by: 1, where: { id: voucherId }, transaction });
+        }
+
+        let amountAfterVoucher = originalTotal - voucherDiscount;
+        if (amountAfterVoucher < 0) amountAfterVoucher = 0;
+
         // 4. Áp dụng Credit Balance
         let creditUsed = 0;
-        let finalAmount = originalTotal;
+        let finalAmount = amountAfterVoucher;
         const user = await db.User.findByPk(userId, { transaction });
         if (useCredit && user && Number(user.creditBalance) > 0) {
-            creditUsed = Math.min(Number(user.creditBalance), originalTotal);
-            finalAmount = originalTotal - creditUsed;
-            
+            creditUsed = Math.min(Number(user.creditBalance), amountAfterVoucher);
+            finalAmount = amountAfterVoucher - creditUsed;
+
             // Trừ credit balance của user
             user.creditBalance = Number(user.creditBalance) - creditUsed;
             await user.save({ transaction });
@@ -60,6 +124,8 @@ export const createOrderFromCart = async (userId, courseIds, useCredit = false) 
             userId,
             totalAmount: finalAmount,
             creditUsed,
+            voucherId,
+            voucherDiscount,
             status: finalAmount === 0 ? 'paid' : 'pending',
         }, { transaction });
 

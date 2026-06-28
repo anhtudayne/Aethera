@@ -4,7 +4,7 @@ import TicketList from '../../components/admin/tickets/TicketList';
 import TicketDetail from '../../components/admin/tickets/TicketDetail';
 import { toast } from 'sonner';
 import { formatDistanceToNow, format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+
 import { User, Calendar, ReceiptText, Inbox, CheckCircle2, CreditCard, Wallet, MessageSquare } from 'lucide-react';
 
 const TicketManagementPage = () => {
@@ -209,7 +209,7 @@ const TicketManagementPage = () => {
                 ) : (
                   refunds.map(req => {
                     const isActive = selectedRefundId === req.id;
-                    const dateRelative = formatDistanceToNow(new Date(req.createdAt), { addSuffix: true, locale: vi });
+                    const dateRelative = formatDistanceToNow(new Date(req.createdAt), { addSuffix: true });
                     return (
                       <div
                         key={req.id}

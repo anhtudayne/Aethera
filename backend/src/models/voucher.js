@@ -18,9 +18,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
     },
-    discountPercent: {
-      type: DataTypes.DECIMAL(5, 2),
+    discountType: {
+      type: DataTypes.ENUM('PERCENTAGE', 'FIXED'),
+      defaultValue: 'PERCENTAGE',
+    },
+    discountValue: {
+      type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
+    },
+    maxDiscountValue: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
     },
     expiryDate: {
       type: DataTypes.DATE,
