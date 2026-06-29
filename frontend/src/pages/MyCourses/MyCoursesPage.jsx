@@ -7,8 +7,8 @@ import LearningStreak from '../../components/common/LearningStreak/LearningStrea
 import './MyCoursesPage.css';
 
 const STATUS_TABS = [
-  { key: 'all', label: 'Tất cả' },
-  { key: 'in-progress', label: 'Đang học' },
+  { key: 'all', label: 'All' },
+  { key: 'in-progress', label: 'In-progress' },
   { key: 'completed', label: 'Complete' },
   { key: 'not-started', label: "Haven't started yet" },
 ];
@@ -17,7 +17,7 @@ const SORT_OPTIONS = [
   { key: 'recent', label: 'Most recently' },
   { key: 'enrolled', label: 'Registration date' },
   { key: 'a-z', label: 'A → Z' },
-  { key: 'progress', label: 'Tiến độ' },
+  { key: 'progress', label: 'Progress' },
 ];
 
 const MyCoursesPage = () => {
@@ -62,7 +62,7 @@ const MyCoursesPage = () => {
       <div className="my-courses-header">
         <h2>My course</h2>
         <div className="sort-dropdown">
-          <label>Sắp xếp:</label>
+          <label>Sort by:</label>
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
             {SORT_OPTIONS.map((opt) => (
               <option key={opt.key} value={opt.key}>{opt.label}</option>
@@ -92,7 +92,7 @@ const MyCoursesPage = () => {
       ) : courses.length === 0 ? (
         <EmptyState
           icon={BookOpen}
-          title="Chưa có khóa học nào"
+          title="No courses yet"
           description="Explore and sign up for courses to start your learning journey!"
         />
       ) : (
@@ -120,7 +120,7 @@ const MyCoursesPage = () => {
                   </div>
                   <div style={{ marginTop: 'var(--space-sm)' }}>
                     <Link to={`/learn/${course.slug || course.id}`} className="continue-btn">
-                      Tiếp tục <ArrowRight size={14} />
+                      Continue <ArrowRight size={14} />
                     </Link>
                   </div>
                 </div>

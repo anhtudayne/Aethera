@@ -112,7 +112,7 @@ const ProfileSettingsPage = () => {
             )}
           </div>
           <div className="profile-header-info">
-            <h4>{fullName || 'Student'}</h4>
+            <h4>{fullName || (user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Student')}</h4>
             <p>{user?.email || 'email@example.com'} (cannot be changed)</p>
           </div>
         </div>
