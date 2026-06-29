@@ -18,26 +18,26 @@ const PolicyPanel = ({ show, onClose }) => {
         </div>
         <h3 className="policy-title">Hello, I'm Teacher Bee AI!</h3>
         <p className="policy-desc">
-          I will accompany you throughout the learning process. With artificial intelligence and the ability to understand and analyze lecture content in depth, I can help you:
+          I will accompany you throughout your learning journey. With artificial intelligence and the ability to deeply understand and analyze lecture content, I can help you with:
         </p>
         
         <div className="features-list">
           <div className="feature-item">
             <Lightbulb className="feature-icon" size={18} color="#FBBF24" />
-            <span>Summarize and summarize the lesson content, explain with visual examples.</span>
+            <span>Summarizing lesson content and explaining with visual examples.</span>
           </div>
           <div className="feature-item">
             <Zap className="feature-icon" size={18} color="#34D399" />
-            <span>Instructions for doing the test, suggested answers and types of exercises to properly improve the weak points in your test.</span>
+            <span>Guiding you through exercises, suggesting answers and practices to improve your weak points.</span>
           </div>
           <div className="feature-item">
             <MessageCircle className="feature-icon" size={18} color="#60A5FA" />
-            <span>Talk to you <strong>25 turns/hour</strong>, helps you ask and answer 1-1 like studying directly with a lecturer.</span>
+            <span>Interacting with you up to <strong>25 times/hour</strong>, providing 1-on-1 Q&A just like studying directly with an instructor.</span>
           </div>
         </div>
         
         <p className="policy-footer">
-          Each class session will become more effective and interesting when you actively explore knowledge and have all problems suggested to you by the virtual teacher!
+          Every lesson will become more effective and enjoyable when you actively explore knowledge and discuss concepts with your virtual teacher!
         </p>
       </div>
     </div>

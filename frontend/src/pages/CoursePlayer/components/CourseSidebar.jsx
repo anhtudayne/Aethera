@@ -11,13 +11,7 @@ const CourseSidebar = ({ curriculum, activeLessonId, setActiveLessonId, onClose 
   };
 
   return (
-    <div className="w-full md:w-80 lg:w-[400px] border-l border-gray-200 bg-white flex flex-col h-full z-40 relative">
-      <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white sticky top-0 z-10">
-        <h2 className="font-bold text-gray-800">Course content</h2>
-        <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
-          <X size={20} />
-        </button>
-      </div>
+    <div className="flex-1 flex flex-col h-full bg-white relative">
 
       <div className="flex-1 overflow-y-auto">
         {(!Array.isArray(curriculum) || curriculum.length === 0) ? (

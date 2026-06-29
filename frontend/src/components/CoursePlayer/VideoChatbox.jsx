@@ -7,12 +7,12 @@ import HistoryPanel from './HistoryPanel';
 import PolicyPanel from './PolicyPanel';
 
 const SUGGESTIONS = [
-  { label: "📝 Lesson summary", prompt: "Summary of video lesson content just watched." },
-  { label: "💡 Explain the concept", prompt: "Explain important concepts in the lecture." },
-  { label: "❓ Create a review Quiz", prompt: "Create short tests (quiz)." }
+  { label: "📝 Lesson Summary", prompt: "Summarize content of the video lesson just watched." },
+  { label: "💡 Explain Concepts", prompt: "Explain the important concepts in the lecture." },
+  { label: "❓ Create Review Quiz", prompt: "Create quizzes (short)." }
 ];
 
-const VideoChatbox = ({ lessonId, onToggle }) => {
+const VideoChatbox = ({ lessonId }) => {
   const {
     messages,
     input,
@@ -31,12 +31,6 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = (val) => {
-    setIsOpen(val);
-    if (onToggle) onToggle(val);
-  };
   
   const messagesEndRef = useRef(null);
 
@@ -44,14 +38,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Nếu đã đóng Chatbox -> Hiện bong bóng nhỏ nổi ở góc màn hình
-  if (!isOpen) {
-    return (
-      <button className="chatbox-toggle-btn" onClick={() => handleToggle(true)} title="Reopen Teacher Bee AI">
-        <Bot size={28} />
-      </button>
-    );
-  }
+  // Render directly since the Chatbox is now integrated into a sidebar tab
 
   return (
     <div className="video-chatbox">
@@ -66,7 +53,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
             <button 
               className="action-btn" 
               onClick={startNewChat}
-              title="New chat"
+              title="New conversation"
             >
               <Plus size={16} />
             </button>
@@ -78,17 +65,9 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
           >
             <History size={16} />
           </button>
-          <div className={`credits-badge ${credits <= 5 ? 'low' : ''}`} title="Number of remaining questions">
+          <div className={`credits-badge ${credits <= 5 ? 'low' : ''}`} title="Remaining questions">
             {credits} <Battery size={14} />
           </div>
-          <button 
-            className="action-btn" 
-            onClick={() => handleToggle(false)}
-            title="Thu gọn"
-            style={{ marginLeft: '4px' }}
-          >
-            <X size={18} />
-          </button>
         </div>
       </div>
       
@@ -118,24 +97,24 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
               <Sparkles size={28} />
             </div>
             <h3 className="policy-title">Hello, I'm Teacher Bee AI!</h3>
-            <p className="policy-desc">I will accompany you throughout the learning process. I can help you:</p>
+            <p className="policy-desc">I will accompany you throughout your learning process. I can help you with:</p>
             
             <div className="features-list">
               <div className="feature-item">
                 <Lightbulb className="feature-icon" size={16} color="#FBBF24" />
-                <span>Summary of lesson content, visual explanation.</span>
+                <span>Summarizing lesson content, visual explanations.</span>
               </div>
               <div className="feature-item">
                 <Zap className="feature-icon" size={16} color="#34D399" />
-                <span>Instructions for doing the test, suggested answers and types of exercises to properly improve the weak points in your test.</span>
+                <span>Guiding you through exercises, suggesting answers and exercises to improve your weak points.</span>
               </div>
               <div className="feature-item">
                 <MessageCircle className="feature-icon" size={16} color="#60A5FA" />
-                <span>Q&A 1-1 (Limited 25 times/hour).</span>
+                <span>1-1 Q&A (Limit 25 questions/hour).</span>
               </div>
             </div>
 
-            <p className="welcome-hint">Choose a command below or enter your question!</p>
+            <p className="welcome-hint">Please select a command below or enter your question!</p>
           </div>
         ) : (
           messages.map((msg, index) => (
@@ -167,7 +146,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
         {showMenu && (
           <div className="action-menu-scrollable">
             <button className="suggestion-pill" onClick={() => { setShowPolicy(true); setShowMenu(false); }}>
-              ℹ️ Giới thiệu & Tính năng
+              ℹ️ Introduction & Features
             </button>
             {SUGGESTIONS.map((sug, i) => (
               <button key={i} className="suggestion-pill" onClick={() => { sendMessage(sug.prompt); setShowMenu(false); }}>
@@ -188,7 +167,7 @@ const VideoChatbox = ({ lessonId, onToggle }) => {
 
           <input 
             type="text" 
-            placeholder="Enter questions about the lesson..." 
+            placeholder="Enter a question about the lesson..." 
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendMessage(input)}

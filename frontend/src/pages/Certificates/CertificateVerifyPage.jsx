@@ -59,10 +59,10 @@ const CertificateVerifyPage = () => {
                 <CheckCircle size={40} style={{ color: 'var(--color-success)', marginBottom: 'var(--space-sm)' }} />
                 <h3 style={{ color: 'var(--color-success)' }}>✅ Valid certificate</h3>
                 <div className="cert-verify-detail">
-                  {result.studentName && <p><strong>Students:</strong> {result.studentName}</p>}
+                  {result.studentName && <p><strong>Student:</strong> {result.studentName}</p>}
                   {result.courseName && <p><strong>Course:</strong> {result.courseName}</p>}
                   {(result.issuedAt || result.createdAt) && (
-                    <p><strong>Date of issue:</strong> {new Date(result.issuedAt || result.createdAt).toLocaleDateString('vi-VN')}</p>
+                    <p><strong>Date of issue:</strong> {new Date(result.issuedAt || result.createdAt).toLocaleDateString('en-US')}</p>
                   )}
                 </div>
               </>

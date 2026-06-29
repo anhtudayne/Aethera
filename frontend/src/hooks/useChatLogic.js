@@ -5,8 +5,11 @@ export const useChatLogic = (lessonId) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [credits, setCredits] = useState(25);
-  
+  const [credits, setCredits] = useState(() => {
+    const saved = localStorage.getItem('aethera_ai_credits');
+    return saved !== null ? parseInt(saved, 10) : 25;
+  });
+
   // Mảng sessions bây giờ chứa các object: { id, timestamp, title, messages: [] }
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
@@ -16,8 +19,24 @@ export const useChatLogic = (lessonId) => {
     if (lessonId) {
       const saved = getSavedSessions(lessonId);
       setSessions(saved);
-      // Backend sẽ quyết định credits sau khi gọi API, tạm thời hiện 25 hoặc có thể gọi API check credits riêng
-      // Ở đây ta cứ để default là 25, sau tin nhắn đầu tiên backend sẽ trả về remainingCredits chuẩn.
+      
+      const fetchCredits = async () => {
+        try {
+          const token = localStorage.getItem('aethera_token');
+          if (!token) return;
+          const res = await fetch('/api/learning/chat/credits', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (res.ok && data.credits !== undefined) {
+            setCredits(data.credits);
+            localStorage.setItem('aethera_ai_credits', data.credits);
+          }
+        } catch (error) {
+          console.error("Failed to fetch credits", error);
+        }
+      };
+      fetchCredits();
     }
   }, [lessonId]);
 
@@ -39,8 +58,8 @@ export const useChatLogic = (lessonId) => {
     setSessions(updated);
     saveSessions(lessonId, updated);
     if (currentSessionId === id) {
-       setMessages([]);
-       setCurrentSessionId(null);
+      setMessages([]);
+      setCurrentSessionId(null);
     }
   };
 
@@ -53,10 +72,8 @@ export const useChatLogic = (lessonId) => {
     const userMessage = text.trim();
     if (!userMessage || isLoading) return;
 
-    if (credits <= 0) {
-      alert("Bạn đã hết lượt hỏi cho bài học này. Vui lòng chuyển sang bài tiếp theo hoặc quay lại sau!");
-      return;
-    }
+    // Let backend handle 0 credits instead of blocking on frontend
+    // to prevent outdated local states from blocking requests.
 
     // Append tin nhắn user
     const newMessages = [...messages, { role: 'user', text: userMessage }];
@@ -77,32 +94,34 @@ export const useChatLogic = (lessonId) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ 
-          lessonId, 
+        body: JSON.stringify({
+          lessonId,
           message: userMessage,
           history: formattedHistory
         })
       });
 
       const data = await res.json();
-      
+
       if (res.status === 429) {
         // Hết lượt hỏi do server từ chối
         setMessages([...newMessages, { role: 'assistant', text: data.message }]);
         setCredits(0);
+        localStorage.setItem('aethera_ai_credits', 0);
         return;
       }
 
       let assistantReply = data.reply;
       if (!res.ok) {
-        assistantReply = data.message || "Sorry, I can't answer right now.";
+        assistantReply = data.message || 'Sorry, I cannot answer right now.';
       }
 
       const updatedMessages = [...newMessages, { role: 'assistant', text: assistantReply }];
       setMessages(updatedMessages);
-      
+
       if (data.remainingCredits !== undefined) {
         setCredits(data.remainingCredits);
+        localStorage.setItem('aethera_ai_credits', data.remainingCredits);
       }
 
       // Xử lý cập nhật/tạo mới session
@@ -113,7 +132,7 @@ export const useChatLogic = (lessonId) => {
         // Bắt đầu một session mới
         targetSessionId = generateId();
         setCurrentSessionId(targetSessionId);
-        
+
         const newSession = {
           id: targetSessionId,
           timestamp: new Date().getTime(),
@@ -134,7 +153,7 @@ export const useChatLogic = (lessonId) => {
 
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages([...newMessages, { role: 'assistant', text: 'A connection error has occurred. Please try again later.' }]);
+      setMessages([...newMessages, { role: 'assistant', text: 'Connection error occurred. Please try again later.' }]);
     } finally {
       setIsLoading(false);
     }
