@@ -93,8 +93,9 @@ export const createOrderFromCart = async (userId, courseIds, useCredit = false, 
         // 3b. Xử lý Voucher nếu có
         let voucherDiscount = 0;
         let voucherId = null;
-        if (voucherCode) {
-            const voucherResult = await validateVoucher(voucherCode, originalTotal, userId);
+        const cleanVoucherCode = typeof voucherCode === 'string' ? voucherCode.trim() : null;
+        if (cleanVoucherCode && cleanVoucherCode !== '' && cleanVoucherCode.toLowerCase() !== 'null' && cleanVoucherCode.toLowerCase() !== 'undefined') {
+            const voucherResult = await validateVoucher(cleanVoucherCode, originalTotal, userId);
             voucherDiscount = voucherResult.discountAmount;
             voucherId = voucherResult.voucherId;
 
