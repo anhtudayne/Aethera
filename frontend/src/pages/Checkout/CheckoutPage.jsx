@@ -141,7 +141,7 @@ const CheckoutPage = () => {
 
       // If credit covers the entire purchase
       if (netTotal === 0) {
-        const res = await orderApi.createMoMoPayment(ids, applyCredit, appliedVoucher?.code);
+        const res = await orderApi.createMoMoPayment(ids, applyCredit, 'captureWallet', appliedVoucher?.code);
         if (res?.isPaid || res?.data?.isPaid || (res?.success && !res?.payUrl)) {
           const orderId = res?.orderId || res?.data?.orderId;
           toast.success('Order completed successfully using Credit!');
@@ -154,7 +154,7 @@ const CheckoutPage = () => {
       if (paymentMethod === 'momo-wallet' || paymentMethod === 'momo-atm') {
         // MoMo Payment Flow
         const requestType = paymentMethod === 'momo-wallet' ? 'captureWallet' : 'payWithATM';
-        const res = await orderApi.createMoMoPayment(ids, applyCredit, requestType);
+        const res = await orderApi.createMoMoPayment(ids, applyCredit, requestType, appliedVoucher?.code);
         const payUrl = res?.data?.payUrl || res?.payUrl;
         
         if (!payUrl) {
