@@ -91,13 +91,6 @@ const CategoryTable = ({ categories, loading, onEdit, onDelete }) => {
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
-                                            <button 
-                                                onClick={() => onDelete(category.id)}
-                                                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" 
-                                                title="Delete"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>

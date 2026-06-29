@@ -16,7 +16,7 @@ export const handleGetAdminUsers = async (req, res) => {
 export const handleUpdateUserStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { isActive } = req.body;
+        const { isActive, reason } = req.body;
         
         if (isActive === undefined) {
             return res.status(400).json({
@@ -25,7 +25,7 @@ export const handleUpdateUserStatus = async (req, res) => {
             });
         }
 
-        const result = await updateUserStatus(id, isActive);
+        const result = await updateUserStatus(id, isActive, reason);
         return res.status(result.status || 200).json(result);
     } catch (error) {
         console.error('Controller - Lỗi cập nhật trạng thái user:', error);

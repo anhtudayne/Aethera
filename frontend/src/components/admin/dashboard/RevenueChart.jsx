@@ -3,10 +3,17 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { MoreVertical, Activity } from 'lucide-react';
 
 const RevenueChart = ({ data }) => {
+    const formatYAxis = (val) => {
+        if (val >= 1000000000) return `${(val / 1000000000).toFixed(1)} Tỷ đ`;
+        if (val >= 1000000) return `${(val / 1000000).toFixed(1)} Tr đ`;
+        if (val >= 1000) return `${(val / 1000).toFixed(0)}K đ`;
+        return `${val} đ`;
+    };
+
     return (
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-8">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Monthly Revenue</h3>
+                <h3 className="text-xl font-bold text-gray-900">Revenue Overview</h3>
                 <button className="text-gray-400 hover:text-gray-900 transition-colors">
                     <MoreVertical size={20} />
                 </button>
@@ -22,14 +29,14 @@ const RevenueChart = ({ data }) => {
                         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
-                                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2} />
+                                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-                            <XAxis dataKey="name" stroke="#9ca3af" tick={{fill: '#6b7280', fontSize: 11}} axisLine={false} tickLine={false} />
-                            <YAxis stroke="#9ca3af" tick={{fill: '#6b7280', fontSize: 11}} axisLine={false} tickLine={false} tickFormatter={(val) => `$${val/1000}k`} />
-                            <Tooltip contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', color: '#111827'}} />
+                            <XAxis dataKey="name" stroke="#9ca3af" tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} />
+                            <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={formatYAxis} width={80} />
+                            <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', color: '#111827' }} />
                             <Area type="monotone" dataKey="revenue" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
                         </AreaChart>
                     </ResponsiveContainer>

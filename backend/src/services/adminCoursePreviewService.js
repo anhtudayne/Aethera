@@ -10,7 +10,7 @@ export const getCoursePreview = async (courseId) => {
             },
             {
                 model: db.User,
-                as: 'instructorData',
+                as: 'instructorUser',
                 attributes: ['id', 'firstName', 'lastName', 'email', 'image', 'bio']
             },
             {
@@ -35,6 +35,11 @@ export const getCoursePreview = async (courseId) => {
     }
 
     const data = course.toJSON();
+
+    if (data.instructorUser) {
+        data.instructorData = data.instructorUser;
+        delete data.instructorUser;
+    }
 
     try {
         data.requirements = data.requirements ? JSON.parse(data.requirements) : [];

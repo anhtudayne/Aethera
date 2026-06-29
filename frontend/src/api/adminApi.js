@@ -11,7 +11,7 @@ export const adminApi = {
   
   // Users management
   getUsers: (params) => axiosClient.get('/admin/users', { params }),
-  updateUserStatus: (id, isActive) => axiosClient.put(`/admin/users/${id}/status`, { isActive }),
+  updateUserStatus: (id, isActive, reason) => axiosClient.put(`/admin/users/${id}/status`, { isActive, reason }),
   
   // Instructor applications
   getInstructorApplications: (params) => axiosClient.get('/admin/instructor-applications', { params }),

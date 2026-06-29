@@ -100,26 +100,3 @@ export const handleUpdateCategory = async (req, res, next) => {
         next(err);
     }
 };
-
-export const handleDeleteCategory = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const category = await db.Category.findByPk(id, {
-            include: [{ model: db.Course, as: 'courses', attributes: ['id'] }]
-        });
-
-        if (!category) return res.status(404).json({ status: 404, message: 'Category not found' });
-
-        if (category.courses && category.courses.length > 0) {
-            return res.status(400).json({ 
-                status: 400, 
-                message: `Cannot delete this category. It contains ${category.courses.length} course(s).` 
-            });
-        }
-
-        await category.destroy();
-        return res.status(200).json({ status: 200, message: 'Category deleted successfully' });
-    } catch (err) {
-        next(err);
-    }
-};

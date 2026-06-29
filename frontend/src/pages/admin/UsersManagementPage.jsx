@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, ChevronDown, RefreshCw, AlertCircle, FolderOpen, Loader2 } from 'lucide-react';
+import { Search, Filter, ChevronDown, RefreshCw, AlertCircle, FolderOpen, Loader2, X } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import UserTableRow from '../../components/admin/users/UserTableRow';
 import { toast } from 'sonner';
@@ -17,6 +17,9 @@ const UsersManagementPage = () => {
   const search = searchParams.get('search') || '';
 
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 10 });
+  const [banModal, setBanModal] = useState({ isOpen: false, userId: null, userName: '' });
+  const [banReason, setBanReason] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -62,13 +65,39 @@ const UsersManagementPage = () => {
     setSearchParams(newParams);
   };
 
-  const handleToggleStatus = async (userId, isActive) => {
+  const handleToggleStatus = async (userId, isActive, userFullName = '') => {
+    if (!isActive) {
+      // Prompt for reason when banning
+      setBanModal({ isOpen: true, userId, userName: userFullName });
+      setBanReason('');
+      return;
+    }
+
+    // Unbanning immediately
     try {
-      await adminApi.updateUserStatus(userId, isActive);
-      toast.success(`User successfully ${isActive ? 'unbanned' : 'banned'}`);
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, isActive } : u));
+      await adminApi.updateUserStatus(userId, true, '');
+      toast.success('User successfully unbanned');
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, isActive: true } : u));
     } catch (err) {
       toast.error('Failed to update user status');
+    }
+  };
+
+  const handleBanSubmit = async () => {
+    if (!banReason.trim()) {
+      toast.error('Please provide a reason for banning this user');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await adminApi.updateUserStatus(banModal.userId, false, banReason.trim());
+      toast.success('User successfully banned');
+      setUsers(prev => prev.map(u => u.id === banModal.userId ? { ...u, isActive: false } : u));
+      setBanModal({ isOpen: false, userId: null, userName: '' });
+    } catch (err) {
+      toast.error('Failed to ban user');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -184,6 +213,64 @@ const UsersManagementPage = () => {
           />
         </div>
       </div>
+
+      {/* Ban Reason Modal */}
+      {banModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Ban User</h3>
+              <button 
+                onClick={() => !isSubmitting && setBanModal({ isOpen: false, userId: null, userName: '' })} 
+                disabled={isSubmitting} 
+                className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-gray-600 mb-4">
+                You are about to <strong className="text-red-600">Ban</strong> the user: <br />
+                <span className="font-medium text-gray-900">{banModal.userName}</span>
+              </p>
+              
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Reason for Ban <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                disabled={isSubmitting}
+                placeholder="Enter reason for banning this user..."
+                className="w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-700 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none resize-none h-24 disabled:bg-gray-50"
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                This reason will be included in the email sent to the user.
+              </p>
+            </div>
+            <div className="px-4 py-3 bg-gray-50 flex justify-end gap-3 border-t border-gray-200">
+              <button
+                onClick={() => setBanModal({ isOpen: false, userId: null, userName: '' })}
+                disabled={isSubmitting}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBanSubmit}
+                disabled={isSubmitting}
+                className="px-4 py-2 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 flex items-center gap-2 transition-colors disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+                ) : (
+                  'Ban User'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

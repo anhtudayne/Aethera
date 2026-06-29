@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../components/admin/layout/AdminLayout';
 import KpiCard from '../../components/admin/dashboard/KpiCard';
 import RevenueChart from '../../components/admin/dashboard/RevenueChart';
-import RecentActivities from '../../components/admin/dashboard/RecentActivities';
 import TopCourses from '../../components/admin/dashboard/TopCourses';
 import '../../components/admin/admin.css';
 import axiosClient from '../../api/axiosClient';
@@ -125,9 +124,8 @@ const Dashboard = () => {
             <RevenueChart data={stats.chartData || []} />
 
             {/* Tables Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-grid-gutter">
+            <div className="grid grid-cols-1 gap-grid-gutter">
                 <TopCourses courses={stats.topCourses || []} />
-                <RecentActivities activities={stats.recentActivities || []} />
             </div>
         </div>
     );

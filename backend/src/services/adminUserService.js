@@ -1,6 +1,7 @@
 import db from '../models';
 import { Op } from 'sequelize';
 import { ROLES, PAGINATION } from '../utils/constants';
+import { sendUserSuspensionEmail } from '../utils/emailHelper';
 
 export const getAdminUsers = async (query) => {
     try {
@@ -58,7 +59,7 @@ export const getAdminUsers = async (query) => {
     }
 };
 
-export const updateUserStatus = async (id, isActive) => {
+export const updateUserStatus = async (id, isActive, reason) => {
     try {
         const user = await db.User.findByPk(id);
         if (!user) {
@@ -78,6 +79,12 @@ export const updateUserStatus = async (id, isActive) => {
 
         user.isActive = isActive;
         await user.save();
+
+        if (isActive === false) {
+            // Ban/Suspend: Send email
+            const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+            await sendUserSuspensionEmail(user.email, fullName || 'User', reason || 'Vi phạm chính sách nền tảng.');
+        }
 
         return {
             status: 200,
