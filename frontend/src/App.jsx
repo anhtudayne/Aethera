@@ -59,6 +59,7 @@ function App() {
         <Route path={ROUTES.COURSE_DETAIL} element={<CourseDetailPage />} />
         <Route path={ROUTES.CATEGORY} element={<CategoryPage />} />
         <Route path={ROUTES.CERTIFICATE_VERIFY} element={<CertificateVerifyPage />} />
+        <Route path="/verify-certificate/:code" element={<CertificateVerifyPage />} />
       </Route>
 
       {/* Authentication Routes — AuthLayout */}

@@ -125,6 +125,17 @@
   text-align: center;
 }
 
+.cert-verify-container.has-result {
+  max-width: 950px;
+}
+
+.cert-verify-result.valid-wrapper {
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: center;
+}
+
 .cert-verify-result.invalid {
   border-color: var(--color-error);
   background: var(--color-error-light);
