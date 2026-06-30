@@ -33,11 +33,15 @@ const GoogleLoginButton = ({ onSuccess, onError }) => {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy-client-id.apps.googleusercontent.com',
         callback: handleCredentialResponse,
+        locale: 'en'
       });
+
+      const containerWidth = divRef.current?.clientWidth || 400;
+      const buttonWidth = Math.min(Math.max(containerWidth, 200), 400);
 
       window.google.accounts.id.renderButton(
         divRef.current,
-        { theme: 'outline', size: 'large', width: '380px' }
+        { theme: 'outline', size: 'large', width: buttonWidth, text: 'signin_with' }
       );
     }
   }, [login, onSuccess, onError]);
@@ -51,7 +55,7 @@ const GoogleLoginButton = ({ onSuccess, onError }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
       {window.google?.accounts?.id ? (
-        <div ref={divRef} style={{ width: '100%' }}></div>
+        <div ref={divRef} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}></div>
       ) : (
         <button
           type="button"
