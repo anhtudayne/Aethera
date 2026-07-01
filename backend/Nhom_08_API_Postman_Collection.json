@@ -1,0 +1,4266 @@
+{
+    "info": {
+        "name": "Aethera API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "admin",
+            "item": [
+                {
+                    "name": "Lấy thông báo",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "profile"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy dashboard Admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "dashboard"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật thông tin Admin",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "profile"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Super\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách người dùng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "users"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Thay đổi trạng thái người dùng",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users/1/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "users",
+                                "1",
+                                "status"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"isActive\": false\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách khóa học (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/courses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "courses"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy lịch sử thay đổi trạng thái khóa học",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/courses/1/history",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "courses",
+                                "1",
+                                "history"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Thay đổi trạng thái khóa học",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/courses/1/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "courses",
+                                "1",
+                                "status"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"published\",\n  \"reason\": \"Approved\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách payout",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/payouts",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "payouts"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu payout đã thanh toán",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/payouts/1/complete",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "payouts",
+                                "1",
+                                "complete"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Từ chối payout",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/payouts/1/reject",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "payouts",
+                                "1",
+                                "reject"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy setting",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/settings/site_title",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "settings",
+                                "site_title"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật setting",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/settings/site_title",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "settings",
+                                "site_title"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"value\": \"My E-Learning Platform\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách Vouchers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/marketing/vouchers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "marketing",
+                                "vouchers"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tạo Voucher",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/marketing/vouchers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "marketing",
+                                "vouchers"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"code\": \"SUMMER2026\",\n  \"discountPercent\": 20,\n  \"maxDiscountAmount\": 50000,\n  \"minOrderValue\": 100000,\n  \"startDate\": \"2026-06-01\",\n  \"endDate\": \"2026-06-30\",\n  \"usageLimit\": 100\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đổi trạng thái Voucher",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/marketing/vouchers/1/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "marketing",
+                                "vouchers",
+                                "1",
+                                "status"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"isActive\": true\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật Voucher",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/marketing/vouchers/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "marketing",
+                                "vouchers",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"usageLimit\": 200\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Upload Banner",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/marketing/upload-banner",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "marketing",
+                                "upload-banner"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"banner\"; filename=\"banner.jpg\"\nContent-Type: image/jpeg\n\n< ./banner.jpg\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "auth",
+            "item": [
+                {
+                    "name": "Đăng ký",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xác thực OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/verify-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "verify-otp"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otp\": \"123456\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Gửi lại OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/resend-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "resend-otp"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john.doe@example.com\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đăng nhập",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"quocsensei@gmail.com\",\n  \"password\": \"123456abc\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đăng nhập Google",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/google",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "google"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"tokenId\": \"google_token_here\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đổi mật khẩu",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/change-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"oldPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Quên mật khẩu",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/forgot-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "forgot-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john.doe@example.com\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đặt lại mật khẩu",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/reset-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "reset-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"NewPassword123!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "cart",
+            "item": [
+                {
+                    "name": "Lấy giỏ hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy số lượng giỏ hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart/count",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart",
+                                "count"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Thêm vào giỏ hàng",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"courseId\": 1\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xóa khỏi giỏ hàng",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xóa toàn bộ giỏ hàng",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "categories",
+            "item": [
+                {
+                    "name": "Lấy danh sách danh mục",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/categories",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "categories"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Thêm mới danh mục (Lưu ý: Backend hiện tại chưa có api POST cho categories)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/categories",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "categories"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Music\",\n  \"slug\": \"music\",\n  \"description\": \"Học về âm nhạc\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "certificates",
+            "item": [
+                {
+                    "name": "Lấy chứng chỉ của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/certificates",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "certificates"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xác thực chứng chỉ (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/certificates/verify/CERT_CODE",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "certificates",
+                                "verify",
+                                "CERT_CODE"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "content_management",
+            "item": [
+                {
+                    "name": "Tạo section",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/sections",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "sections"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"courseId\": 1,\n  \"title\": \"New Section\",\n  \"order\": 1\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách section",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/sections?courseId=1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "sections"
+                            ],
+                            "query": [
+                                {
+                                    "key": "courseId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tạo lesson",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/lessons",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "lessons"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"sectionId\": 1,\n  \"title\": \"New Lesson\",\n  \"type\": \"video\",\n  \"order\": 1\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách lesson",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/lessons?sectionId=1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "lessons"
+                            ],
+                            "query": [
+                                {
+                                    "key": "sectionId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xóa lesson",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/lessons/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "lessons",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "courses",
+            "item": [
+                {
+                    "name": "Lấy danh sách khóa học (có phân trang)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Dành cho Instructor] Lấy danh sách khóa học của mình (bao gồm cả bản nháp)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/instructor/my-courses?instructorName=Quoc%20Sensei&page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "instructor",
+                                "my-courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "instructorName",
+                                    "value": "Quoc%20Sensei"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy khóa học nổi bật",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/featured",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "featured"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu/Bỏ đánh dấu khóa học Nổi bật",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/5/featured",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "5",
+                                "featured"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy khóa học mới",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/new-arrivals",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "new-arrivals"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy khóa học bán chạy",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/best-sellers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "best-sellers"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu/Bỏ đánh dấu khóa học Bán chạy",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/5/best-seller",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "5",
+                                "best-seller"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy khóa học xem nhiều",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/top-viewed",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "top-viewed"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy khóa học theo danh mục (slug)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/category/web-development",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "category",
+                                "web-development"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy chương trình giảng dạy (curriculum) của khóa học",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/some-course-slug/curriculum",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "some-course-slug",
+                                "curriculum"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy chi tiết khóa học (theo slug)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/complete-data-analyst-bootcamp-from-basics-to-advanced-1781944596015",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "complete-data-analyst-bootcamp-from-basics-to-advanced-1781944596015"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Các khóa học liên quan",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/1/related",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "1",
+                                "related"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Kiểm tra user đã đăng ký khóa học chưa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/some-course-slug/check-enrollment",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "some-course-slug",
+                                "check-enrollment"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tạo khóa học mới",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Complete Data Analyst Bootcamp From Basics To Advanced\",\n  \"description\": \"Master Data Analysis from foundational concepts to advanced techniques with practical Python projects.\",\n  \"categoryId\": 2,\n  \"instructor\": \"Quoc Sensei\",\n  \"price\": 200000\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Publish (xuất bản) khóa học",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/5/publish",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "5",
+                                "publish"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tăng lượt xem khóa học",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/1/view",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "1",
+                                "view"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "favorites",
+            "item": [
+                {
+                    "name": "Bật/Tắt yêu thích khóa học",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites/toggle",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites",
+                                "toggle"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"courseId\": 1\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách khóa học yêu thích",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Kiểm tra khóa học có yêu thích chưa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites/check/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites",
+                                "check",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "learning",
+            "item": [
+                {
+                    "name": "Lấy danh sách khóa học của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/my-courses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "my-courses"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy nội dung khóa học (khi học)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/courses/some-course-slug/content",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "courses",
+                                "some-course-slug",
+                                "content"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu bài học đã hoàn thành",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/lessons/1/complete",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "lessons",
+                                "1",
+                                "complete"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật vị trí xem video",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/lessons/1/position",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "lessons",
+                                "1",
+                                "position"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"position\": 120\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy bài học tiếp theo",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/courses/1/next-lesson",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "courses",
+                                "1",
+                                "next-lesson"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "sections",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/sections?courseId=23",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "sections"
+                            ],
+                            "query": [
+                                {
+                                    "key": "courseId",
+                                    "value": "23"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "notes",
+            "item": [
+                {
+                    "name": "Tạo ghi chú",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"lessonId\": 1,\n  \"courseId\": 1,\n  \"content\": \"This is a note\",\n  \"timePosition\": 120\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy ghi chú của bài học",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/lesson/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "lesson",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy ghi chú của khóa học",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/course/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "course",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật ghi chú",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"content\": \"Updated note\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xóa ghi chú",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "notifications",
+            "item": [
+                {
+                    "name": "Lấy thông báo",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy số lượng thông báo chưa đọc",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications/unread-count",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "unread-count"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu tất cả là đã đọc",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications/read-all",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "read-all"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Đánh dấu 1 thông báo là đã đọc",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications/1/read",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "1",
+                                "read"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Xóa thông báo",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "orders",
+            "item": [
+                {
+                    "name": "Tạo đơn hàng từ giỏ hàng",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/create-from-cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "create-from-cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"paymentMethod\": \"vnpay\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Kiểm tra trạng thái đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/check-status/ORDER_CODE",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "check-status",
+                                "ORDER_CODE"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy danh sách đơn hàng của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy chi tiết đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hủy đơn hàng",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/1/cancel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "1",
+                                "cancel"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hoàn thành đơn hàng (Dùng để test)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/1/fulfill",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "1",
+                                "fulfill"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "reviews",
+            "item": [
+                {
+                    "name": "Đánh giá khóa học",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"courseId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Great course!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy đánh giá của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/my-reviews",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "my-reviews"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Kiểm tra xem user có quyền đánh giá không",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/can-review/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "can-review",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy các đánh giá của khóa học",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/course/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "course",
+                                "1"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "sepay",
+            "item": [
+                {
+                    "name": "1. Webhook SePay (Endpoint để SePay gọi về khi có thanh toán)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer [SEPAY_API_TOKEN_HERE]"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/sepay/webhook",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "sepay",
+                                "webhook"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"gateway\": \"sepay\",\n    \"transactionDate\": \"2023-10-27 10:00:00\",\n    \"accountNumber\": \"123456789\",\n    \"subAccount\": \"\",\n    \"transferAmount\": 500000,\n    \"transferType\": \"in\",\n    \"transferContent\": \"DH12345 Thanh toan don hang\",\n    \"referenceCode\": \"FT123456\",\n    \"description\": \"Nhan tien thanh toan\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "stage_2_auth",
+            "item": [
+                {
+                    "name": "Trích xuất token tự động sau khi đăng nhập thành công",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 3. LẤY DASHBOARD NGƯỜI DÙNG (Get User Dashboard)\n# ==============================================================================\n# Kiểm tra:\n# - Trả về thống kê stats: totalEnrolled, completedCourses, inProgressCourses, totalCertificates, totalReviews.\n# - Trả về danh sách coursesInProgress (tối đa 4 khóa học gần nhất đang học).\n# - Trả về danh sách recentCertificates (tối đa 3 chứng chỉ gần nhất).\nGET {{baseUrl}}/user/dashboard\nAuthorization: Bearer {{authToken}}\n\n\n# ==============================================================================\n# 4. ĐỔI MẬT KHẨU (Change Password)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.1 Thử đổi mật khẩu - Lỗi Validation (Mật khẩu mới ngắn hơn 6 ký tự)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/change-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"oldPassword\": \"{{password}}\",\n    \"newPassword\": \"123\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.2 Thử đổi mật khẩu - Lỗi Sai mật khẩu hiện tại (oldPassword sai)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/change-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"oldPassword\": \"WrongOldPassword@123\",\n    \"newPassword\": \"NewStudentPassword@123\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.3 Thử đổi mật khẩu - Thành công",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/change-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"oldPassword\": \"{{password}}\",\n    \"newPassword\": \"NewStudentPassword@123\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.4 Khôi phục lại mật khẩu cũ để thuận tiện cho việc test tiếp theo",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"NewStudentPassword@123\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tiến hành khôi phục lại mật khẩu cũ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{newAuthToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/change-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"oldPassword\": \"NewStudentPassword@123\",\n    \"newPassword\": \"{{password}}\"\n}\n\n\n# ==============================================================================\n# 5. ĐĂNG NHẬP BẰNG GOOGLE (Google OAuth)\n# ==============================================================================\n# Flow kiểm tra (ở môi trường phát triển):\n# - Gửi Google idToken nhận được từ frontend lên backend.\n# - Backend verify với Google và tự động đăng nhập hoặc tạo tài khoản mới nếu chưa tồn tại.\n# Lưu ý: Cần cấu hình GOOGLE_CLIENT_ID hợp lệ trong file .env và thay thế [YOUR_GOOGLE_ID_TOKEN] dưới đây.\nPOST {{baseUrl}}/auth/google\nContent-Type: application/json\n\n{\n    \"idToken\": \"YOUR_GOOGLE_ID_TOKEN_HERE\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "stage_3_courses",
+            "item": [
+                {
+                    "name": "2.1 Danh sách khóa học - Phân trang & Sắp xếp theo phổ biến (Popular - viewCount)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses?sort=popular&page=1&limit=4",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "sort",
+                                    "value": "popular"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "4"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.2 Danh sách khóa học - Tìm kiếm theo từ khóa",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses?search=nextjs",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "nextjs"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.3 Xem chi tiết khóa học bằng Slug (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/{{courseSlug}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "{{courseSlug}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.4 Xem trước chương trình học (Curriculum Preview)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/courses/{{courseSlug}}/curriculum",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "courses",
+                                "{{courseSlug}}",
+                                "curriculum"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 3. DANH SÁCH YÊU THÍCH (Wishlist / Favorites)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.1 Kiểm tra xem một khóa học đã có trong wishlist hay chưa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites/check/{{courseId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites",
+                                "check",
+                                "{{courseId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.2 Toggle trạng thái wishlist (Thêm / Xóa)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites/toggle",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites",
+                                "toggle"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}}\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.3 Lấy danh sách khóa học yêu thích có phân trang",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/favorites?page=1&limit=3",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "favorites"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "3"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "stage_4_learning",
+            "item": [
+                {
+                    "name": "2.1 Lấy danh sách khóa học đã đăng ký (My Enrolled Courses)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/my-courses?status=all&sort=recent&page=1&limit=12",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "my-courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "all"
+                                },
+                                {
+                                    "key": "sort",
+                                    "value": "recent"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "12"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.2 Xem toàn bộ nội dung học tập (Full Curriculum Content)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/courses/{{courseSlug}}/content",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "courses",
+                                "{{courseSlug}}",
+                                "content"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.3 Cập nhật vị trí đang xem video (Update Watch Position)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/lessons/{{lessonId}}/position",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "lessons",
+                                "{{lessonId}}",
+                                "position"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"position\": 350\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.4 Đánh dấu hoàn thành bài học (Mark Lesson Complete)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/lessons/{{lessonId}}/complete",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "lessons",
+                                "{{lessonId}}",
+                                "complete"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.5 Lấy bài học tiếp theo (Get Next Lesson)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/learning/courses/{{courseId}}/next-lesson?currentLessonId={{lessonId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "learning",
+                                "courses",
+                                "{{courseId}}",
+                                "next-lesson"
+                            ],
+                            "query": [
+                                {
+                                    "key": "currentLessonId",
+                                    "value": "{{lessonId}}"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 3. CHỨNG CHỈ (Certificates)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.1 Xem danh sách chứng chỉ cá nhân của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/certificates",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "certificates"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.2 Xác thực chứng chỉ công khai (Verify Certificate - Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/certificates/verify/CERT-2025-000001",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "certificates",
+                                "verify",
+                                "CERT-2025-000001"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 4. GHI CHÚ BÀI HỌC (Lesson Notes - CRUD)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.1 Tạo ghi chú mới cho bài học",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}},\n    \"lessonId\": {{lessonId}},\n    \"content\": \"Đây là ghi chú thử nghiệm tại giây thứ 45\",\n    \"timestamp\": 45\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.2 Lấy tất cả ghi chú của tôi trong bài học hiện tại",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/lesson/{{lessonId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "lesson",
+                                "{{lessonId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.3 Lấy tất cả ghi chú của tôi trong toàn bộ khóa học",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/course/{{courseId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "course",
+                                "{{courseId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.4 Chỉnh sửa ghi chú",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/{{noteId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "{{noteId}}"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"Ghi chú đã được chỉnh sửa nội dung thành công.\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.5 Xóa ghi chú",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notes/{{noteId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notes",
+                                "{{noteId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "stage_5_social",
+            "item": [
+                {
+                    "name": "2.1 Thêm khóa học vào giỏ hàng",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}}\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.2 Thêm lại khóa học vào giỏ hàng (Sẽ lỗi 400 vì đã có trong giỏ hàng)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}}\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2.3 Xem giỏ hàng hiện tại",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 3. ĐƠN HÀNG & THANH TOÁN (Orders & Checkout - Simplified)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.1 Tạo đơn hàng từ giỏ hàng (Checkout)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/create-from-cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "create-from-cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.2 Lấy danh sách đơn hàng cá nhân (Có phân trang)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders?page=1&limit=5",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.3 Xem chi tiết đơn hàng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "{{orderId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.4 Thực hiện fulfill đơn hàng (Simulate Payment System - Helper endpoint)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/{{orderId}}/fulfill",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "{{orderId}}",
+                                "fulfill"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3.5 Kiểm tra lại chi tiết đơn hàng sau khi fulfill (Status phải là 'paid')",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/orders/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "orders",
+                                "{{orderId}}"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 4. CHẶN THÊM VÀO GIỎ HÀNG NẾU ĐÃ SỞ HỮU (Enrolled Course Cart Block)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4.1 Thử thêm khóa học đã sở hữu vào giỏ (Sẽ báo lỗi 400: Bạn đã sở hữu khóa học này.)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/cart",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cart"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}}\n}\n\n\n# ==============================================================================\n# 5. REVIEW KHÓA HỌC (Enrolled reviews only)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5.1 Kiểm tra xem user đã có quyền đánh giá khóa học chưa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/can-review/{{courseId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "can-review",
+                                "{{courseId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5.2 Tạo đánh giá cho khóa học",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}},\n    \"rating\": 5,\n    \"comment\": \"Khóa học rất tuyệt vời, nội dung chuẩn chỉ!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5.3 Thử đánh giá lại khóa học lần nữa (Sẽ báo lỗi 400 vì đã đánh giá rồi)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"courseId\": {{courseId}},\n    \"rating\": 4,\n    \"comment\": \"Đánh giá lại\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5.4 Lấy danh sách đánh giá của khóa học (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/course/{{courseId}}?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "course",
+                                "{{courseId}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5.5 Xem danh sách các đánh giá cá nhân của tôi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reviews/my-reviews",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reviews",
+                                "my-reviews"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "# ==============================================================================\n# 6. THÔNG BÁO (Notifications - Expanded & Deletable)\n# ==============================================================================\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "6.1 Lấy danh sách thông báo (Kiểm tra xem có order_created, order_paid, new_review không)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "6.2 Xóa một thông báo cụ thể",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications/{{notificationId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "{{notificationId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "6.3 Lấy lại danh sách thông báo sau khi xóa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{authToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "notifications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "stats",
+            "item": [
+                {
+                    "name": "Lấy thống kê tổng quan",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/stats",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "stats"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "test",
+            "item": [
+                {
+                    "name": "1. Đăng ký tài khoản mới",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/register",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"fullName\": \"Vu Anh Quoc\",\n    \"firstName\": \"Vu\",\n    \"lastName\": \"Quoc\",\n    \"email\": \"quoc1@gmail.com\",\n    \"password\": \"123456q\",\n    \"phone\": \"0123456789\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2. Xác nhận OTP (Kích hoạt tài khoản)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/verify-otp",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"quoc1@gmail.com\",\n    \"otp\": \"801410\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3. Gửi lại mã OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/resend-otp",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "resend-otp"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"testuser@example.com\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4. Đăng nhập",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/login",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"vuanhquoc0397144200@gmail.com\",\n    \"password\": \"123456q\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5. Quên mật khẩu (Yêu cầu mã OTP)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/forgot-password",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "forgot-password"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"testuser@example.com\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "6. Đặt lại mật khẩu (Dùng OTP và mật khẩu mới)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/auth/reset-password",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "reset-password"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewPassword123!\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "7. Lấy thông tin cá nhân (User)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjA3NCwiZXhwIjoxNzc4NDg1Njc0fQ.li4jZg_0cSpFhRYj1Y1MT44akhOpRv3FUFrZiB3po9s"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/user/profile",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "user",
+                                "profile"
+                            ],
+                            "protocol": "http"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "8. Cập nhật thông tin cá nhân (User)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer [YOUR_TOKEN]"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/user/profile",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "user",
+                                "profile"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"fullName\": \"Nguyễn Văn A Updated\",\n    \"phone\": \"0987654321\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "9. Lấy thông tin cá nhân (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjM4OCwiZXhwIjoxNzc4NDg1OTg4fQ.CZWwu19uuqwJ2B6DjogFPNI1Z9pI3J4pHm0VOuDfLLs"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/admin/profile",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "profile"
+                            ],
+                            "protocol": "http"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "10. Admin cập nhật thông tin cá nhân",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJ2dWFuaHF1b2MwMzk3MTQ0MjAwQGdtYWlsLmNvbSIsImlhdCI6MTc3ODQ4MjM4OCwiZXhwIjoxNzc4NDg1OTg4fQ.CZWwu19uuqwJ2B6DjogFPNI1Z9pI3J4pHm0VOuDfLLs"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/admin/profile",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "profile"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"firstName\": \"Vũ\",\n    \"lastName\": \"Anh Quốc 2\",\n    \"address\": \"Hà Nội\",\n    \"gender\": true,\n    \"phoneNumber\": \"0338997920\",\n    \"image\": \"https://example.com/image.jpg\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "11. Tạo khóa học mới",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8089/api/courses",
+                            "host": [
+                                "localhost:8089"
+                            ],
+                            "path": [
+                                "api",
+                                "courses"
+                            ],
+                            "protocol": "http"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Khóa học Python nâng cao\",\n    \"description\": \"Học Python từ cơ bản đến nâng cao\",\n    \"thumbnail\": \"https://tse2.mm.bing.net/th/id/OIP.OhFIiZIh1cUZCiGfDr5i1gHaEK?rs=1&pid=ImgDetMain&o=7&rm=3\",\n    \"price\": 500000,\n    \"salePrice\": 300000,\n    \"instructor\": \"Nguyen Van A\",\n    \"duration\": \"10h\",\n    \"level\": \"intermediate\",\n    \"language\": \"Tiếng Việt\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "upload",
+            "item": [
+                {
+                    "name": "Upload Avatar",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/upload/avatar",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "upload",
+                                "avatar"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"avatar\"; filename=\"avatar.jpg\"\nContent-Type: image/jpeg\n\n< ./avatar.jpg\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Upload Video",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/upload/video",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "upload",
+                                "video"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "------WebKitFormBoundary7MA4YWxkTrZu0gW\nContent-Disposition: form-data; name=\"video\"; filename=\"video.mp4\"\nContent-Type: video/mp4\n\n< ./video.mp4\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "item": [
+                {
+                    "name": "Lấy thông tin user",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cập nhật thông tin user",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"Quoc\",\n  \"lastName\": \"Sensei\",\n  \"phoneNumber\": \"0329675562\",\n  \"address\": \"123 Main St\",\n  \"bio\": \"I am an expert instructor at Aethera.\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Lấy dashboard user",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user/dashboard",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user",
+                                "dashboard"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8089/api",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
