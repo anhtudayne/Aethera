@@ -1,0 +1,120 @@
+# Aethera - E-Learning Platform
+
+Aethera là một nền tảng học trực tuyến (E-Learning) hiện đại, hỗ trợ nhiều tính năng tiên tiến bao gồm học tập qua video, tương tác thời gian thực, tích hợp AI (Google Generative AI) và đa ngôn ngữ.
+
+Dự án được chia thành hai phần chính:
+- **Frontend:** Xây dựng giao diện người dùng với React, Vite, và Tailwind CSS.
+- **Backend:** Cung cấp RESTful API với Node.js, Express, và cơ sở dữ liệu MySQL sử dụng Sequelize ORM.
+
+## 🚀 Các tính năng chính (Dự kiến dựa trên công nghệ tích hợp)
+- **Xác thực & Bảo mật:** Đăng nhập, đăng ký, OTP qua Email (Nodemailer), mã hóa mật khẩu (Bcrypt), và JSON Web Tokens (JWT). Tích hợp Google OAuth.
+- **Hỗ trợ đa ngôn ngữ:** Dịch thuật động với Google Translate API (en/vi).
+- **Trí tuệ nhân tạo (AI):** Tích hợp Google Generative AI để hỗ trợ học tập hoặc tạo nội dung.
+- **Thời gian thực (Real-time):** Tích hợp Socket.io cho các tính năng thời gian thực như trò chuyện hoặc thông báo.
+- **Lưu trữ đám mây:** Tích hợp Cloudinary để lưu trữ ảnh/video và upload với Multer.
+- **Quản lý trạng thái phức tạp:** Sử dụng Redux Toolkit trên Frontend.
+- **Giao diện hiện đại, mượt mà:** Xây dựng với Tailwind CSS và Framer Motion cho các hiệu ứng chuyển động.
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Framework:** React 19, Vite
+- **Styling:** Tailwind CSS, Framer Motion
+- **State Management:** Redux Toolkit, React-Redux
+- **Routing:** React Router DOM
+- **Khác:** Axios, Socket.io-client, Recharts (biểu đồ), Lucide React (icon), React Player.
+
+### Backend
+- **Môi trường:** Node.js, Express.js
+- **Cơ sở dữ liệu:** MySQL, Sequelize ORM (có hỗ trợ cấu hình Prisma)
+- **Bảo mật:** JWT, Bcryptjs, Express Rate Limit, Express Validator
+- **Dịch vụ bên thứ ba:** Cloudinary, Nodemailer, Google Auth Library, Google Generative AI.
+
+## 📋 Yêu cầu hệ thống (Prerequisites)
+- [Node.js](https://nodejs.org/) (phiên bản 18+ khuyến nghị)
+- [MySQL](https://www.mysql.com/) Server đang chạy.
+
+## ⚙️ Cài đặt & Chạy dự án
+
+### 1. Clone hoặc tải mã nguồn
+Mở terminal và di chuyển vào thư mục dự án:
+```bash
+cd Aethera
+```
+
+### 2. Cài đặt Backend
+```bash
+cd backend
+npm install
+```
+**Cấu hình môi trường Backend:**
+- Copy file `.env.example` thành `.env` (hoặc tạo file `.env` mới trong thư mục `backend`).
+- Cập nhật các thông tin kết nối Database, Email, JWT, và các API keys khác:
+```env
+PORT=8089
+NODE_ENV=development
+
+# Email config (Nodemailer - Gmail)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+
+# JWT Secret
+JWT_SECRET=your_jwt_secret_key
+OTP_EXPIRE_MINUTES=5
+
+# MySQL Database
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=aethera_db
+DB_PORT=3306
+```
+
+**Khởi tạo Database & Chạy Server:**
+```bash
+# Chạy migrations / seed (nếu có)
+npm run seed
+
+# Khởi động server (Development mode)
+npm run dev
+```
+Backend sẽ chạy tại `http://localhost:8089` (hoặc port bạn đã cấu hình).
+
+### 3. Cài đặt Frontend
+Mở một terminal mới:
+```bash
+cd Aethera/frontend
+npm install
+```
+**Cấu hình môi trường Frontend:**
+- Tạo file `.env` nếu cần thiết (tùy thuộc vào thiết lập các biến môi trường Vite, thường bắt đầu bằng `VITE_`).
+
+**Chạy Frontend Server:**
+```bash
+npm run dev
+```
+Giao diện sẽ chạy tại `http://localhost:5173` (hoặc địa chỉ Vite cung cấp).
+
+## 📁 Cấu trúc thư mục
+
+```
+Aethera/
+├── backend/               # Mã nguồn API Server (Node.js/Express)
+│   ├── src/               # Code chính của backend
+│   ├── api-test/          # Các file test API
+│   ├── public/            # Static assets
+│   ├── package.json       # Dependencies backend
+│   └── .env               # Biến môi trường backend
+│
+├── frontend/              # Mã nguồn Giao diện (React/Vite)
+│   ├── src/               # Components, pages, redux slices, etc.
+│   ├── public/            # Static assets frontend
+│   ├── index.html         # Entry HTML
+│   ├── package.json       # Dependencies frontend
+│   └── tailwind.config.js # Cấu hình TailwindCSS
+│
+└── bao-cao/               # Tài liệu báo cáo dự án
+```
+
+## 📜 Giấy phép
+Dự án được cấp phép theo giấy phép ISC.
