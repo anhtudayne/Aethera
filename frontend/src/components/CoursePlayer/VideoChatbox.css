@@ -28,9 +28,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background-color: var(--bg-primary);
-  border-bottom: 1px solid var(--border-light);
-  box-shadow: none;
+  background: linear-gradient(135deg, var(--accent-color), #7e22ce);
+  border-bottom: none;
+  box-shadow: 0 4px 15px rgba(164, 53, 240, 0.15);
   z-index: 10;
 }
 
@@ -44,11 +44,13 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #FFFFFF;
   letter-spacing: 0.5px;
 }
 
-.header-title svg { color: #818CF8; }
+.header-title svg { 
+  color: #E9D5FF; 
+}
 
 .header-actions {
   display: flex;
@@ -57,37 +59,45 @@
 }
 
 .action-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 8px;
   transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.action-btn:hover { background: var(--border-light); color: var(--text-main); }
+.action-btn:hover { 
+  background: rgba(255, 255, 255, 0.25); 
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
 .credits-badge {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(16, 185, 129, 0.15); /* Emerald tint */
-  color: #10B981;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: none;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .credits-badge.low {
-  background: rgba(239, 68, 68, 0.15); /* Red tint */
-  color: #EF4444;
-  border-color: rgba(239, 68, 68, 0.2);
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 
