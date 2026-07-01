@@ -196,7 +196,7 @@ const InstructorRegistrationPage = () => {
           <button
             type="submit"
             disabled={submitting || uploading}
-            className="px-6 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {submitting ? (
               <><span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span> Sending...</>
