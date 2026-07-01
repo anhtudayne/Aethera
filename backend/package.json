@@ -9,6 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec babel-node src/server.js",
+    "build": "babel src --out-dir dist --copy-files",
+    "start": "node dist/server.js",
     "seed": "sequelize-cli db:seed:all"
   },
   "dependencies": {
@@ -35,6 +37,7 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.29.7",
     "@babel/core": "^7.29.0",
     "@babel/node": "^7.29.0",
     "@babel/preset-env": "^7.29.3",
