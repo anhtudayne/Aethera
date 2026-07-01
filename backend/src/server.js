@@ -35,9 +35,20 @@ import agentRoutes from './routes/agentRoutes';
 
 const app = express();
 
-// Middleware
+const allowedOrigin = process.env.FRONTEND_URL;
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (!allowedOrigin) return callback(null, true); // Allow all in dev mode
+    
+    const cleanAllowed = allowedOrigin.replace(/\/$/, '');
+    const cleanOrigin = origin.replace(/\/$/, '');
+    
+    if (cleanOrigin === cleanAllowed) {
+      return callback(null, true);
+    }
+    callback(null, false);
+  },
   credentials: true,
 }));
 app.use(bodyParser.json());
