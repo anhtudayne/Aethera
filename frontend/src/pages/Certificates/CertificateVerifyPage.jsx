@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Download } from 'lucide-react';
 import { certificateApi } from '../../api/certificateApi';
+import { downloadCertificatePDF } from '../../utils/pdfHelper';
 import './MyCertificatesPage.css';
+
 const CertificateVerifyPage = () => {
   const { code: urlCode } = useParams();
   const [code, setCode] = useState(urlCode || '');
@@ -10,6 +12,8 @@ const CertificateVerifyPage = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [downloading, setDownloading] = useState(false);
+  const certRef = useRef(null);
 
   if (urlCode !== prevUrlCode) {
     setPrevUrlCode(urlCode);
@@ -75,6 +79,18 @@ const CertificateVerifyPage = () => {
     fetchAndVerify(code);
   };
 
+  const handleDownload = async () => {
+    if (!certRef.current || !certData) return;
+    try {
+      setDownloading(true);
+      await downloadCertificatePDF(certRef.current, certData.code);
+    } catch (err) {
+      console.error('Error downloading public certificate:', err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const certData = result?.certificate;
 
   return (
@@ -106,11 +122,20 @@ const CertificateVerifyPage = () => {
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--space-md)' }}>
                   <CheckCircle size={40} style={{ color: 'var(--color-success)', marginBottom: 'var(--space-xs)' }} />
-                  <h3 style={{ color: 'var(--color-success)', margin: 0 }}>✅ Valid certificate</h3>
+                  <h3 style={{ color: 'var(--color-success)', margin: '0 0 12px 0' }}>✅ Valid certificate</h3>
+                  
+                  <button
+                    onClick={handleDownload}
+                    className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-md shadow-sm transition duration-200 text-sm mb-4"
+                    disabled={downloading}
+                  >
+                    <Download size={16} />
+                    {downloading ? 'Generating PDF...' : 'Download PDF'}
+                  </button>
                 </div>
 
                 {/* Premium Certificate Render */}
-                <div className="relative w-full max-w-4xl mx-auto aspect-[1.4/1] bg-white shadow-2xl rounded-sm p-4 md:p-8 flex flex-col items-center justify-between text-slate-800 overflow-hidden">
+                <div ref={certRef} className="relative w-full max-w-4xl mx-auto aspect-[1.4/1] bg-white shadow-2xl rounded-sm p-4 md:p-8 flex flex-col items-center justify-between text-slate-800 overflow-hidden">
                   {/* Golden Border */}
                   <div className="absolute inset-4 border-2 border-[#C19A5B] pointer-events-none"></div>
                   <div className="absolute inset-6 border border-[#C19A5B] pointer-events-none"></div>
@@ -122,43 +147,43 @@ const CertificateVerifyPage = () => {
                   <div className="absolute bottom-4 right-4 w-8 h-8 md:w-12 md:h-12 border-b-4 border-r-4 border-[#C19A5B]"></div>
 
                   {/* Certificate Content */}
-                  <div className="relative z-10 flex flex-col items-center text-center w-full h-full py-8 px-8 md:py-12 md:px-16">
-                    <p className="text-gray-700 uppercase tracking-widest mb-2 md:mb-4 text-xs md:text-base" style={{ fontFamily: "'Playfair Display', serif" }}>Aethera Academy</p>
+                  <div className="relative z-10 flex flex-col items-center text-center w-full h-full py-8 px-8 md:py-12 md:px-16 justify-between">
+                    <p className="text-gray-700 uppercase tracking-widest text-[10px] md:text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>Aethera Academy</p>
 
-                    <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#C5834C] mb-4 md:mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>CERTIFICATE OF COMPLETION</h1>
+                    <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-[#C5834C]" style={{ fontFamily: "'Playfair Display', serif" }}>CERTIFICATE OF COMPLETION</h1>
 
-                    <p className="text-gray-600 text-sm md:text-lg mb-4 md:mb-8">This certification is awarded to</p>
+                    <p className="text-gray-600 text-xs md:text-base">This certification is awarded to</p>
 
-                    <div className="mb-2">
-                      <h2 className="text-3xl md:text-5xl lg:text-6xl text-slate-800" style={{ fontFamily: "'Great Vibes', cursive" }}>{certData?.studentName}</h2>
-                      <div className="w-48 md:w-64 h-px bg-[#C19A5B] mx-auto mt-2"></div>
+                    <div className="my-1">
+                      <h2 className="text-2xl md:text-4xl lg:text-5xl text-slate-800" style={{ fontFamily: "'Great Vibes', cursive" }}>{certData?.studentName}</h2>
+                      <div className="w-32 md:w-64 h-px bg-[#C19A5B] mx-auto mt-2"></div>
                     </div>
 
-                    <p className="text-gray-600 text-sm md:text-lg mt-4 md:mt-8 mb-2">for successfully completing the course</p>
+                    <p className="text-gray-600 text-xs md:text-base">for successfully completing the course</p>
 
-                    <h3 className="text-lg md:text-2xl font-bold text-[#C5834C] px-4" style={{ fontFamily: "'Playfair Display', serif" }}>{certData?.courseName}</h3>
+                    <h3 className="text-sm md:text-xl font-bold text-[#C5834C] px-4" style={{ fontFamily: "'Playfair Display', serif" }}>{certData?.courseName}</h3>
 
                     {/* Footer */}
-                    <div className="mt-auto w-full grid grid-cols-3 items-end">
+                    <div className="w-full grid grid-cols-3 items-end mt-4">
                       <div className="flex flex-col items-center">
-                        <span className="text-sm md:text-xl text-slate-700" style={{ fontFamily: "'Great Vibes', cursive" }}>
+                        <span className="text-xs md:text-lg text-slate-700" style={{ fontFamily: "'Great Vibes', cursive" }}>
                           {certData?.issuedAt ? new Date(certData.issuedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''}
                         </span>
-                        <div className="w-20 md:w-32 h-px bg-[#C19A5B] my-1"></div>
-                        <span className="text-[8px] md:text-[10px] font-bold tracking-tighter text-gray-500 uppercase">DATE ISSUED</span>
+                        <div className="w-16 md:w-32 h-px bg-[#C19A5B] my-1"></div>
+                        <span className="text-[6px] md:text-[8px] font-bold tracking-tighter text-gray-500 uppercase">DATE ISSUED</span>
                       </div>
 
                       <div className="flex flex-col items-center">
                         <div className="relative flex items-center justify-center">
-                          <span className="material-symbols-outlined text-4xl md:text-6xl text-[#C19A5B] opacity-40">military_tech</span>
-                          <span className="absolute text-[6px] md:text-[8px] font-bold text-[#C19A5B] text-center leading-tight">AETHERA<br />ACADEMY</span>
+                          <span className="material-symbols-outlined text-3xl md:text-5xl text-[#C19A5B] opacity-40">military_tech</span>
+                          <span className="absolute text-[5px] md:text-[7px] font-bold text-[#C19A5B] text-center leading-tight">AETHERA<br />ACADEMY</span>
                         </div>
                       </div>
 
                       <div className="flex flex-col items-center">
-                        <span className="text-sm md:text-xl text-slate-700" style={{ fontFamily: "'Great Vibes', cursive" }}>{certData?.instructor || 'Instructor Aethera'}</span>
-                        <div className="w-20 md:w-32 h-px bg-[#C19A5B] my-1"></div>
-                        <span className="text-[8px] md:text-[10px] font-bold tracking-tighter text-gray-500 uppercase">LECTURER</span>
+                        <span className="text-xs md:text-lg text-slate-700" style={{ fontFamily: "'Great Vibes', cursive" }}>{certData?.instructor || 'Instructor Aethera'}</span>
+                        <div className="w-16 md:w-32 h-px bg-[#C19A5B] my-1"></div>
+                        <span className="text-[6px] md:text-[8px] font-bold tracking-tighter text-gray-500 uppercase">LECTURER</span>
                       </div>
                     </div>
 

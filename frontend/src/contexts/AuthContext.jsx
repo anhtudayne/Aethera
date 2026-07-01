@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import { STORAGE_KEYS } from '../utils/constants';
 import { disconnectSocket, connectSocket } from '../socket';
+import { learningApi } from '../api/learningApi';
 
 export const AuthContext = createContext(null);
 
@@ -20,6 +21,42 @@ export const AuthProvider = ({ children }) => {
     return null;
   });
   const [loading] = useState(false);
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState([]);
+
+  // Fetch enrolled courses if logged in
+  const fetchEnrolledCourses = async () => {
+    if (!token) return;
+    try {
+      const res = await learningApi.getMyCourses();
+      const courseList = res.data?.data || (Array.isArray(res.data) ? res.data : []);
+      const ids = courseList.map(c => c.courseId || c.id || c.course?.id);
+      setEnrolledCourseIds(ids.filter(Boolean));
+    } catch (e) {
+      console.error('Error fetching enrolled courses in AuthContext:', e);
+    }
+  };
+
+  useEffect(() => {
+    let active = true;
+    if (token) {
+      const load = async () => {
+        try {
+          const res = await learningApi.getMyCourses();
+          if (active) {
+            const courseList = res.data?.data || (Array.isArray(res.data) ? res.data : []);
+            const ids = courseList.map(c => c.courseId || c.id || c.course?.id);
+            setEnrolledCourseIds(ids.filter(Boolean));
+          }
+        } catch (e) {
+          console.error('Error in AuthContext useEffect:', e);
+        }
+      };
+      load();
+    }
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   // Connect socket when user is logged in
   useEffect(() => {
@@ -40,6 +77,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
+    setEnrolledCourseIds([]);
     localStorage.removeItem(STORAGE_KEYS.TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
     // Disconnect socket on logout
@@ -62,6 +100,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUser,
+    enrolledCourseIds,
+    refreshEnrolledCourses: fetchEnrolledCourses,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

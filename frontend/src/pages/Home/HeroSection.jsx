@@ -2,9 +2,12 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Button from '../../components/common/Button/Button';
 import { ROUTES } from '../../utils/constants';
+import useAuth from '../../hooks/useAuth';
 import './HeroSection.css';
 
 const HeroSection = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="hero-section">
       <div className="container hero-container">
@@ -26,11 +29,19 @@ const HeroSection = () => {
                 Explore Courses
               </Button>
             </Link>
-            <Link to={ROUTES.REGISTER}>
-              <Button variant="secondary" size="lg">
-                Create Account
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <Link to={ROUTES.DASHBOARD}>
+                <Button variant="secondary" size="lg">
+                  Go to Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link to={ROUTES.REGISTER}>
+                <Button variant="secondary" size="lg">
+                  Create Account
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 

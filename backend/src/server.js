@@ -31,6 +31,7 @@ import paymentRoutes from './routes/paymentRoutes';
 import ticketRoutes from './routes/ticketRoutes';
 import refundRoutes from './routes/refundRoutes';
 import qaRoutes from './routes/qaRoutes';
+import agentRoutes from './routes/agentRoutes';
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.get('/', (req, res) => res.json({
 
 // ===== PUBLIC & AUTH ROUTES =====
 app.use('/api/auth', authRoutes);
+app.use('/api/agent', agentRoutes);
 
 // ===== USER ROUTES =====
 app.use('/api/user', userRoutes);

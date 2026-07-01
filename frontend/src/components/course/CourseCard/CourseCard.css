@@ -170,3 +170,256 @@
   letter-spacing: 0.05em;
 }
 
+/* Udemy-style Course Popover Styles */
+.course-card-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.course-popover {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 330px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  padding: 18px;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  animation: popoverFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.course-popover.popover-right {
+  left: calc(100% + 14px);
+}
+
+.course-popover.popover-left {
+  right: calc(100% + 14px);
+}
+
+/* Hover bridges to prevent popover closing on hover gap */
+.course-popover.popover-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -16px;
+  width: 16px;
+  height: 100%;
+  background: transparent;
+  z-index: 10;
+}
+
+.course-popover.popover-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -16px;
+  width: 16px;
+  height: 100%;
+  background: transparent;
+  z-index: 10;
+}
+
+/* Popover Arrow */
+.course-popover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  transform: translateY(-50%) rotate(45deg);
+  border: 1px solid #e2e8f0;
+  z-index: -1;
+}
+
+.course-popover.popover-right::after {
+  left: -8px;
+  border-right: none;
+  border-top: none;
+}
+
+.course-popover.popover-left::after {
+  right: -8px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.popover-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  text-align: left;
+}
+
+.popover-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+.popover-badges-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.popover-updated-date {
+  font-size: 11px;
+  color: #059669;
+  font-weight: 600;
+}
+
+.popover-details-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.popover-dot {
+  color: #cbd5e1;
+}
+
+.popover-description-text {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.popover-learn-section {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+  margin-bottom: 12px;
+}
+
+.popover-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.popover-learn-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.popover-learn-section li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.popover-learn-section .check-icon {
+  color: #475569;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.popover-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+
+.popover-add-to-cart-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: var(--color-accent-gradient);
+  color: white;
+}
+
+.popover-add-to-cart-btn:hover {
+  opacity: 0.95;
+}
+
+.popover-add-to-cart-btn.in-cart {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.popover-add-to-cart-btn.in-cart:hover {
+  background: #e2e8f0;
+}
+
+.popover-add-to-cart-btn.enrolled {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.popover-add-to-cart-btn.enrolled:hover {
+  opacity: 0.95;
+}
+
+.popover-heart-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.popover-heart-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+/* Responsive constraints: disable popover on mobile/tablet */
+@media (max-width: 1024px) {
+  .course-popover {
+    display: none !important;
+  }
+}
+

@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import useAuth from './hooks/useAuth';
+import useCart from './hooks/useCart';
 import MainLayout from './components/layouts/MainLayout';
 import DashboardLayout from './components/layouts/DashboardLayout';
 import InstructorLayout from './components/layouts/InstructorLayout';
@@ -50,6 +53,15 @@ import {
 import './App.css';
 
 function App() {
+  const { isAuthenticated } = useAuth();
+  const { loadCart } = useCart();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadCart();
+    }
+  }, [isAuthenticated, loadCart]);
+
   return (
     <Routes>
       {/* Public Routes — MainLayout */}
