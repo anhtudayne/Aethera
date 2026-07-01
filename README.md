@@ -127,6 +127,8 @@ Dưới đây là tổng hợp các tính năng chính của hệ thống:
 - Hỗ trợ đăng nhập truyền thống và Google OAuth.
 - Xác thực email qua mã OTP.
 
+<img width="1566" height="838" alt="image" src="https://github.com/user-attachments/assets/25039071-0069-464d-a4a2-d9b2930a5dff" />
+
 ### 2. Trang chủ & Khám phá khóa học
 
 - Hiển thị danh sách khóa học nổi bật, phân loại theo danh mục.
@@ -160,4 +162,5 @@ Dưới đây là tổng hợp các tính năng chính của hệ thống:
 
 <img width="1317" height="634" alt="image" src="https://github.com/user-attachments/assets/7ac4ebf8-9bc2-44ab-bbea-6db564fb3aef" />
 
+<img width="1424" height="788" alt="image" src="https://github.com/user-attachments/assets/2c14477b-e23f-415d-b58b-8ef787d9af77" />
 
