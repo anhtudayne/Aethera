@@ -113,8 +113,51 @@ Aethera/
 │   ├── package.json       # Dependencies frontend
 │   └── tailwind.config.js # Cấu hình TailwindCSS
 │
+
+
 └── bao-cao/               # Tài liệu báo cáo dự án
 ```
 
-## 📜 Giấy phép
-Dự án được cấp phép theo giấy phép ISC.
+## 🖼️ Danh sách các tính năng và Giao diện (UI)
+
+Dưới đây là tổng hợp các tính năng chính của hệ thống:
+
+### 1. Đăng nhập / Đăng ký & Xác thực OTP
+
+- Hỗ trợ đăng nhập truyền thống và Google OAuth.
+- Xác thực email qua mã OTP.
+
+### 2. Trang chủ & Khám phá khóa học
+
+- Hiển thị danh sách khóa học nổi bật, phân loại theo danh mục.
+  
+<img width="1288" height="961" alt="image" src="https://github.com/user-attachments/assets/1034ccb8-b864-4993-b753-2efeb431b7dd" />
+  
+<img width="1304" height="954" alt="image" src="https://github.com/user-attachments/assets/23afb8cd-5b55-4e0a-a952-0bff46a537ec" />
+
+<img width="1282" height="898" alt="image" src="https://github.com/user-attachments/assets/b8c8536b-84fd-4e7d-bb1f-e207f447b25c" />
+
+<img width="1210" height="921" alt="image" src="https://github.com/user-attachments/assets/cadbb682-9b96-460c-a6f9-623d4c911493" />
+
+
+### 3. Chi tiết khóa học & Trình phát Video
+
+- Xem thông tin khóa học, lộ trình học và danh sách bài giảng.
+- Học tập qua video tương tác.
+
+<img width="1854" height="976" alt="image" src="https://github.com/user-attachments/assets/ce5218fd-1e5e-4a13-935e-db6ebc8d91f6" />
+
+### 4. Trợ lý học tập AI (Generative AI)
+
+- Trợ lý ảo hỗ trợ giải đáp thắc mắc bài học dựa trên Google Generative AI.
+
+<img width="856" height="928" alt="image" src="https://github.com/user-attachments/assets/1bec476c-36db-4036-9b1c-06a387314e81" />
+
+
+### 5. Tương tác & Thông báo
+
+- Nhận thông báo mới
+
+<img width="1317" height="634" alt="image" src="https://github.com/user-attachments/assets/7ac4ebf8-9bc2-44ab-bbea-6db564fb3aef" />
+
+
