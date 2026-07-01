@@ -7,12 +7,12 @@ import { authorizeRole } from '../middlewares/authorizeMiddleware';
 import { ROLES } from '../utils/constants';
 import { updateProfileValidation } from '../middlewares/validators/userValidator';
 import { handleValidationErrors } from '../middlewares/validators/authValidator';
-import { handleGetAdminCourses, handleUpdateCourseStatus, handleGetCourseHistory } from '../controllers/adminCourseController';
+import { handleGetAdminCourses, handleUpdateCourseStatus, handleGetCourseHistory, handleGetCoursePreview } from '../controllers/adminCourseController';
 import { handleGetAdminUsers, handleUpdateUserStatus, handleGetInstructorApplications, handleUpdateInstructorApplication } from '../controllers/adminUserController';
 import { handleGetPayouts, handleMarkAsPaid, handleRejectPayout } from '../controllers/adminPayoutController';
 import { handleGetSetting, handleUpdateSetting } from '../controllers/adminSettingsController';
 import { handleGetVouchers, handleCreateVoucher, handleUpdateVoucherStatus, handleUpdateVoucher, handleUploadBanner } from '../controllers/adminMarketingController';
-import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory, handleDeleteCategory } from '../controllers/adminCategoryController';
+import { handleGetAdminCategories, handleCreateCategory, handleUpdateCategory } from '../controllers/adminCategoryController';
 import { getAllTickets, updateTicketStatus, updateInternalNote, updateAdminResponse } from '../controllers/adminTicketController';
 import { getRefundRequests, completeRefundTransfer } from '../controllers/adminRefundController';
 import uploadCloud from '../middlewares/uploadMiddleware';
@@ -79,6 +79,14 @@ router.get(
     verifyToken,
     authorizeRole(ROLES.ADMIN),
     handleGetCourseHistory
+);
+
+// Xem trước khóa học
+router.get(
+    '/courses/:id/preview',
+    verifyToken,
+    authorizeRole(ROLES.ADMIN),
+    handleGetCoursePreview
 );
 
 // Cập nhật trạng thái khóa học
@@ -201,12 +209,7 @@ router.put(
     handleUpdateCategory
 );
 
-router.delete(
-    '/categories/:id',
-    verifyToken,
-    authorizeRole(ROLES.ADMIN),
-    handleDeleteCategory
-);
+
 
 // Quản lý Support Tickets (Refund / Report)
 router.get(

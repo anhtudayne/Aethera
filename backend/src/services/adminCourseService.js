@@ -1,7 +1,7 @@
 import db from '../models/index';
 import { Op } from 'sequelize';
 import { getReviewCriteriaById } from '../utils/reviewCriteria';
-import { sendCourseRejectionEmail } from '../utils/emailHelper';
+import { sendCourseRejectionEmail, sendCourseSuspensionEmail } from '../utils/emailHelper';
 
 const Course = db.Course;
 const Category = db.Category;
@@ -66,7 +66,7 @@ export const updateCourseStatus = async (courseId, newStatus, reasons = [], admi
     }
 
     const course = await Course.findByPk(courseId, {
-        include: [{ model: db.User, as: 'instructorData' }]
+        include: [{ model: db.User, as: 'instructorUser' }]
     });
     
     if (!course) {
@@ -97,10 +97,14 @@ export const updateCourseStatus = async (courseId, newStatus, reasons = [], admi
         const reasonArray = Array.isArray(reasons) ? reasons : [reasons];
         const criteriaDetails = reasonArray.map(r => getReviewCriteriaById(r));
         const isEmail = course.instructor && course.instructor.includes('@');
-        const instructorEmail = course.instructorData?.email || (isEmail ? course.instructor : 'instructor@example.com');
+        const instructorEmail = course.instructorUser?.email || (isEmail ? course.instructor : 'instructor@example.com');
         await sendCourseRejectionEmail(instructorEmail, course.name, criteriaDetails);
     } else if (newStatus === 'suspended') {
-        console.log(`[EMAIL SIMULATION] Gửi email đình chỉ khóa học ${course.name}.`);
+        const reasonArray = Array.isArray(reasons) ? reasons : [reasons];
+        const criteriaDetails = reasonArray.map(r => getReviewCriteriaById(r));
+        const isEmail = course.instructor && course.instructor.includes('@');
+        const instructorEmail = course.instructorUser?.email || (isEmail ? course.instructor : 'instructor@example.com');
+        await sendCourseSuspensionEmail(instructorEmail, course.name, criteriaDetails);
     }
 
     return {

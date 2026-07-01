@@ -105,29 +105,75 @@ export const getAdminDashboardStats = async (range = '30') => {
             });
         }
 
-        // 5. Monthly Revenue Chart (Last 6 months)
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
-        sixMonthsAgo.setDate(1);
+        // 5. Revenue Chart (Daily or Monthly depending on range)
+        let chartOrders = [];
+        const chartDataMap = {};
+        const isDaily = range !== 'all';
 
-        const orders = await db.Order.findAll({
-            where: {
-                status: 'paid',
-                createdAt: { [Op.gte]: sixMonthsAgo }
-            },
-            attributes: ['totalAmount', 'createdAt']
-        });
+        if (isDaily) {
+            const days = parseInt(range) || 30;
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+            
+            // Pre-fill all days with 0
+            for (let i = 0; i < days; i++) {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() + i + 1);
+                const dayLabel = `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
+                chartDataMap[dayLabel] = 0;
+            }
 
-        const monthlyRevenue = {};
-        orders.forEach(order => {
-            const month = order.createdAt.toLocaleString('default', { month: 'short' });
-            if (!monthlyRevenue[month]) monthlyRevenue[month] = 0;
-            monthlyRevenue[month] += Number(order.totalAmount);
-        });
+            chartOrders = await db.Order.findAll({
+                where: {
+                    status: 'paid',
+                    createdAt: { [Op.gte]: startDate }
+                },
+                attributes: ['totalAmount', 'createdAt']
+            });
+
+            chartOrders.forEach(order => {
+                const dayLabel = `${order.createdAt.getDate()} ${order.createdAt.toLocaleString('default', { month: 'short' })}`;
+                if (chartDataMap[dayLabel] !== undefined) {
+                    chartDataMap[dayLabel] += Number(order.totalAmount);
+                } else {
+                    chartDataMap[dayLabel] = Number(order.totalAmount);
+                }
+            });
+        } else {
+            // Group by month for the last 12 months
+            const twelveMonthsAgo = new Date();
+            twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11);
+            twelveMonthsAgo.setDate(1);
+
+            // Pre-fill months
+            for (let i = 0; i < 12; i++) {
+                const d = new Date(twelveMonthsAgo);
+                d.setMonth(d.getMonth() + i);
+                const monthLabel = d.toLocaleString('default', { month: 'short', year: 'numeric' });
+                chartDataMap[monthLabel] = 0;
+            }
+
+            chartOrders = await db.Order.findAll({
+                where: {
+                    status: 'paid',
+                    createdAt: { [Op.gte]: twelveMonthsAgo }
+                },
+                attributes: ['totalAmount', 'createdAt']
+            });
+
+            chartOrders.forEach(order => {
+                const monthLabel = order.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' });
+                if (chartDataMap[monthLabel] !== undefined) {
+                    chartDataMap[monthLabel] += Number(order.totalAmount);
+                } else {
+                    chartDataMap[monthLabel] = Number(order.totalAmount);
+                }
+            });
+        }
         
-        const chartData = Object.keys(monthlyRevenue).map(month => ({
-            name: month,
-            revenue: monthlyRevenue[month]
+        const chartData = Object.keys(chartDataMap).map(key => ({
+            name: key,
+            revenue: chartDataMap[key]
         }));
 
         const topCourses = await db.Course.findAll({
@@ -136,25 +182,13 @@ export const getAdminDashboardStats = async (range = '30') => {
             limit: 5
         });
 
-        const latestUsers = await db.User.findAll({ limit: 2, order: [['createdAt', 'DESC']], attributes: ['id', 'firstName', 'lastName', 'createdAt'] });
-        const latestCourses = await db.Course.findAll({ limit: 2, order: [['createdAt', 'DESC']], attributes: ['id', 'name', 'slug', 'createdAt'] });
-        
-        let activities = [
-            ...latestUsers.map(u => ({ id: `u-${u.id}`, title: 'User Onboarded', user: `${u.firstName} ${u.lastName}`, time: u.createdAt, status: 'Completed', type: 'user', url: '/dashboard/users' })),
-            ...latestCourses.map(c => ({ id: `c-${c.id}`, title: 'Course Created', user: 'System', time: c.createdAt, status: 'Completed', type: 'course', url: '/dashboard/approvals' }))
-        ];
-
-        activities.sort((a, b) => b.time - a.time);
-        activities = activities.slice(0, 5);
-
         return {
             totalRevenue,
             newUsers,
             pendingCourses,
             pendingPayouts,
             chartData,
-            topCourses,
-            recentActivities: activities
+            topCourses
         };
     } catch (error) {
         console.error('Lỗi lấy admin dashboard:', error);

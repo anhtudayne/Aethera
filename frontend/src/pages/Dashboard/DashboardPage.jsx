@@ -88,14 +88,19 @@ const DashboardPage = () => {
             const progress = item.progressPercent ?? 0;
             return (
               <Link key={item.courseId || course.id} to={`/learn/${course.slug || course.id}`} className="recent-course-card">
-                <div className="recent-course-title">{course.name}</div>
-                <div className="recent-course-instructor">
-                  {course.instructor || 'Lecturer'}
+                {course.thumbnail && (
+                  <img src={course.thumbnail} alt={course.name} className="recent-course-image" />
+                )}
+                <div className="recent-course-body">
+                  <div className="recent-course-title">{course.name}</div>
+                  <div className="recent-course-instructor">
+                    {course.instructor || 'Lecturer'}
+                  </div>
+                  <div className="progress-bar-container">
+                    <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
+                  </div>
+                  <div className="progress-text">{progress}% complete</div>
                 </div>
-                <div className="progress-bar-container">
-                  <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
-                </div>
-                <div className="progress-text">{progress}% complete</div>
               </Link>
             );
           })}

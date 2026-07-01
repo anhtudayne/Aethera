@@ -107,7 +107,7 @@ const UserTableRow = ({ user, onToggleStatus }) => {
                     label="Ban User" 
                     colorClass="text-red-600" 
                     hoverClass="hover:bg-red-50"
-                    onClick={() => onToggleStatus(user.id, false)} 
+                    onClick={() => onToggleStatus(user.id, false, `${user.firstName} ${user.lastName}`.trim())} 
                   />
                 ) : (
                   <ActionItem 
