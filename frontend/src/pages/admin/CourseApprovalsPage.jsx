@@ -5,6 +5,7 @@ import CourseTableRow from '../../components/admin/courses/CourseTableRow';
 import AdminCoursePreviewModal from '../../components/admin/courses/AdminCoursePreviewModal';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
+import PaginationBar from '../../components/common/PaginationBar';
 
 const CourseApprovalsPage = () => {
   const [courses, setCourses] = useState([]);
@@ -264,6 +265,18 @@ const CourseApprovalsPage = () => {
             )}
           </tbody>
         </table>
+        
+        {/* Pagination */}
+        <div className="px-4 pb-4 bg-white">
+          <PaginationBar
+            totalPages={pagination.totalPages}
+            currentPage={page}
+            setCurrentPage={handlePageChange}
+            totalItems={pagination.totalItems}
+            loading={loading}
+            pageSize={pagination.limit}
+          />
+        </div>
       </div>
 
       {/* Confirmation Modal */}

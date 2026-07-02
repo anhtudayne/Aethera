@@ -15,7 +15,7 @@ const PaginationBar = ({ totalPages, currentPage, setCurrentPage, totalItems, lo
       </p>
       <div className="flex items-center gap-1.5">
         <button
-          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1 || loading}
           className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50
                      disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
@@ -51,7 +51,7 @@ const PaginationBar = ({ totalPages, currentPage, setCurrentPage, totalItems, lo
           )}
 
         <button
-          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages || loading}
           className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50
                      disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
